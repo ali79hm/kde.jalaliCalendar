@@ -1,0 +1,27 @@
+{
+	"KPlugin": {
+		"Authors": [
+			{
+				"Email": "ali79hm@gmail.com",
+				"Name": "seyed ali hosseini"
+			}
+		],
+		"Category": "Date and Time",
+		"Description": "Plasmoid for a calendar+agenda that syncs to Google Calendar.",
+		"Icon": "view-calendar",
+		"Id": "mycal2", 
+		"License": "GPL",
+		"Name": "aliJalaliCalendar",
+		"ServiceTypes": [
+			"Plasma/Applet"
+		],
+		"Version": "76",
+		"Website": "https://github.com/"
+	},
+	"X-Plasma-API": "declarativeappletscript",
+	"X-Plasma-MainScript": "ui/main.qml",
+	"X-Plasma-Provides": [
+		"org.kde.plasma.time",
+		"org.kde.plasma.date"
+	]
+}
