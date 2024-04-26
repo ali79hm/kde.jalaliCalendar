@@ -1,7 +1,3 @@
-var breaks = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210
-    , 1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178
-]
-
 function Jweek_days() {
     var names =  ['شنبه', '۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه']
     return names
@@ -28,7 +24,7 @@ function Jget_title(jy=-1,jm=0,lang='en'){
     if (lang=='fa'){
         text += Jmonth_name(jm)
         if (jy!=-1){
-            text = convertToPersianNumbers(jy.toString())+' '+text //+'     ' 
+            text = text+' '+convertToPersianNumbers(jy.toString()) //+'     ' 
         }   
     }
     else{
