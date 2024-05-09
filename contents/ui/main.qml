@@ -10,7 +10,7 @@ import "lib/main.js" as CalendarBackend
 Item{
     id:root
     // property int startOfWeek: Scripts.startOfWeek(screenDate)
-    property int startOfWeek: 7 //FIXME:must come from calendar backend
+    property int startOfWeek: 6 //FIXME:must come from calendar backend
 
      //FIXME:must come from calendar backend
     // day : [year,month,day,is_today,is_holyday:{0:noholyday , 1:weekends,2:holyday}]
@@ -27,7 +27,7 @@ Item{
         return date
     }
     function daysBedoreCurrentMonth(){
-        var count = CalendarBackend.daysBedoreCurrentMonth(6,root.currntDate.getDay())
+        var count = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
         var j = currntDate.daysInMonth()
         var days_list = []
         for(let i = 0;i<count;i++){

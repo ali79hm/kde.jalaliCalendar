@@ -70,7 +70,7 @@ MouseArea {
     }
 
     // Show days number on screen
-    Column{
+    Item{
 		anchors.fill: todayRect
 
         // show second calendar date

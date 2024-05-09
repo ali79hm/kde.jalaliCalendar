@@ -16,7 +16,9 @@ Item{
 	id:monthView
 	property int rows:7
 	property int columns:7
-	ColumnLayout{
+	property var nextMonthDate : root.currntDate.addMonth()
+	property var prevMonthDate : root.currntDate.subtractMonth()
+	Item{
 		anchors.fill: parent
 
 		//header controls
@@ -84,7 +86,7 @@ Item{
 			PlasmaComponents3.ToolButton {
 				id: nextButton
 				icon.name: "go-next"
-				onClicked: monthView.nextMonth() //FIXME not defined
+				onClicked: monthView.nextMonth()
 				property string tooltip: i18nd("libplasma5", "Next Month")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
@@ -130,8 +132,8 @@ Item{
                 model: root.daysBedoreCurrentMonth()
                 id: daysBeforeRepeater
                 DayCell{
-					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,root.currntDate.subtractMonth())
-                    weekends : CalendarBackend.get_month_weekends(root.first_cal_type,root.currntDate.subtractMonth())
+					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,prevMonthDate)
+                    weekends : CalendarBackend.get_month_weekends(root.first_cal_type,prevMonthDate)
 					isCurrentMonth:false
                 }
             }
@@ -152,8 +154,8 @@ Item{
                 model: root.daysAfterCurrentMonth()
                 id: daysAfterRepeater
                 DayCell{
-					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,root.currntDate.addMonth())
-					weekends : CalendarBackend.get_month_weekends(root.first_cal_type,root.currntDate.addMonth())
+					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,nextMonthDate)
+					weekends : CalendarBackend.get_month_weekends(root.first_cal_type,nextMonthDate)
 					isCurrentMonth:false
 				}
             }
@@ -162,10 +164,19 @@ Item{
 
 	}
 	function nextMonth() {
-		root.currntDate = root.currntDate.addMonth()
+		// console.log("!!!pressed!!!")
+		root.currntDate = nextMonthDate
+		nextMonthDate = root.currntDate.addMonth()
+		prevMonthDate = root.currntDate.subtractMonth()
+		// console.log("!!!ok!!!")
 	}
 	function prevMonth() {
-		root.currntDate = root.currntDate.subtractMonth()
+		console.log("!!!pressed!!!")
+		root.currntDate = prevMonthDate
+		console.log('ok1!')
+		nextMonthDate = root.currntDate.addMonth()
+		prevMonthDate = root.currntDate.subtractMonth()
+		console.log("!!!ok!!!")
 	}
 	function resetToToday(){
 		root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(first_cal_type))

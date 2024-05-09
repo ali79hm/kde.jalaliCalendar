@@ -5,8 +5,6 @@ import QtQuick.Layouts 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.calendar 2.0 as PlasmaCalendar
 
-// import "lib/persian-date.js" as PersianDate
-
 // main page of calendar
 MouseArea{
 	id: popup
