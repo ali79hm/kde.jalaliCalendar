@@ -5,20 +5,27 @@ import QtQuick.Layouts 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.calendar 2.0 as PlasmaCalendar
 
+// import "lib/persian-date.js" as PersianDate
+
 // main page of calendar
 MouseArea{
 	id: popup
 
 	onClicked: focus = true
 
+	// Component.onCompleted : {
+    //     console.log("===============================")
+    //     console.log("===============================")
+    // }
+	
 	property int padding: 0 // Assigned in main.qml
-	property int spacing: 10 * units.devicePixelRatio
+	property int spacing: 10 * PlasmaCore.Units.devicePixelRatio
 
 	property bool showAgenda:true //TODO : add to config
-	property int rowHeight: plasmoid.configuration.rowHeight * units.devicePixelRatio //TODO:add to config
+	property int rowHeight: plasmoid.configuration.rowHeight * PlasmaCore.Units.devicePixelRatio //TODO:add to config
 
-	property int leftColumnWidth: plasmoid.configuration.leftColumnWidth * units.devicePixelRatio // MonthView //TODO:add to config
-	property int rightColumnWidth: plasmoid.configuration.rightColumnWidth * units.devicePixelRatio // AgendaView //TODO:add to config
+	property int leftColumnWidth: plasmoid.configuration.leftColumnWidth * PlasmaCore.Units.devicePixelRatio // MonthView //TODO:add to config
+	property int rightColumnWidth: plasmoid.configuration.rightColumnWidth * PlasmaCore.Units.devicePixelRatio // AgendaView //TODO:add to config
 
 
 	//FIXME: minimumWidth & minimumHeight must set later
@@ -28,16 +35,16 @@ MouseArea{
     // height: 400 * PlasmaCore.Units.devicePixelRatio
 	Layout.minimumWidth: {
 		if(showAgenda){
-			return units.gridUnit * 40
+			return PlasmaCore.Units.gridUnit * 40
 		}
 		else{
-			return units.gridUnit * 20
+			return PlasmaCore.Units.gridUnit * 20
 		}
 	}
 	Layout.preferredWidth: {
 		return (leftColumnWidth + spacing + rightColumnWidth) + padding * 2
 	}
-	Layout.minimumHeight: units.gridUnit * 20
+	Layout.minimumHeight: PlasmaCore.Units.gridUnit * 20
 	Layout.preferredHeight: {
 		return rowHeight + padding * 2
 	}

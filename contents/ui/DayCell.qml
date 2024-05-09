@@ -7,12 +7,14 @@ import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 // import org.kde.plasma.extras 2.0 as PlasmaExtras
 
-import "./lib/Jalali.js" as Jalali
+import "lib/main.js" as CalendarBackend
 
 MouseArea {
     id: daycell
     property bool isCurrentMonth:true
-    // property var today
+    property var holidays:[]
+    property var weekends:[]
+    property var is_today:root.currntDate.getMonth()==root.today.getMonth() && modelData==root.today.getDate()
     hoverEnabled: true
     width: monthGrid.cellWidth
     height: monthGrid.cellHeight
@@ -23,7 +25,7 @@ MouseArea {
         anchors.fill: parent
         // opacity:0
         opacity: {
-            if (modelData[3]){// Today
+            if (is_today){// Today
                 0.4
             } else {
                 0
@@ -81,13 +83,13 @@ MouseArea {
                 margins: PlasmaCore.Units.smallSpacing
             }
             height:daycell.height/4
-            text: modelData[2] //FIXME : fix for calendar
+            text: modelData
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))/2
             font.pointSize: -1
-            color: modelData[3] ? PlasmaCore.Theme.backgroundColor : (modelData[4]>0 ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
         }
 
         PlasmaComponents3.Label {
@@ -100,14 +102,14 @@ MouseArea {
             height:daycell.height/3
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text: Jalali.convertToPersianNumbers(modelData[2]) //FIXME : fix for calendar
+            text: CalendarBackend.convertToPersianNumbers(modelData) //FIXME : fix for calendar
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))
             font.pointSize: -1
-            color: modelData[3] ? PlasmaCore.Theme.backgroundColor : (modelData[4]>0 ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
             Behavior on color {
                 ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
             }

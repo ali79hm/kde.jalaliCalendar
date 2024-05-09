@@ -5,11 +5,11 @@ ConfigModel {
     ConfigCategory {
         name: i18n("General")
         icon: "configure"
-        source: "configGeneral.qml"
+        source: "config/configGeneral.qml"
     }
-    ConfigCategory {
-        name: i18n("Another Tab")
-        icon: "color-management"
-        source: "configAnotherTab.qml"
-    }
+    // ConfigCategory {
+    //     name: i18n("Another Tab")
+    //     icon: "color-management"
+    //     source: "configGeneral.qml"
+    // }
 }

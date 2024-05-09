@@ -4,6 +4,9 @@ import org.kde.plasma.plasmoid 2.0
 import QtQuick.Layouts 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 
+import "lib/persian-date.js" as PersianDate
+import "lib/main.js" as CalendarBackend
+
 Item{
     id:root
     // property int startOfWeek: Scripts.startOfWeek(screenDate)
@@ -11,15 +14,40 @@ Item{
 
      //FIXME:must come from calendar backend
     // day : [year,month,day,is_today,is_holyday:{0:noholyday , 1:weekends,2:holyday}]
-    property var days_before: [[1403, 3, 26, 0, 0], [1403, 3, 27, 0, 0], [1403, 3, 28, 0, 2], [1403, 3, 29, 0, 0], [1403, 3, 30, 0, 0], [1403, 3, 31, 0, 0]]
-    property var days: [[1403, 4, 1, 0, 1], [1403, 4, 2, 0, 0], [1403, 4, 3, 0, 0], [1403, 4, 4, 0, 0], [1403, 4, 5, 0, 2], [1403, 4, 6, 0, 0], [1403, 4, 7, 0, 0], [1403, 4, 8, 0, 1], [1403, 4, 9, 0, 0], [1403, 4, 10, 1, 0], [1403, 4, 11, 0, 0], [1403, 4, 12, 0, 0], [1403, 4, 13, 0, 0], [1403, 4, 14, 0, 0], [1403, 4, 15, 0, 1], [1403, 4, 16, 0, 0], [1403, 4, 17, 0, 0], [1403, 4, 18, 0, 0], [1403, 4, 19, 0, 0], [1403, 4, 20, 0, 0], [1403, 4, 21, 0, 0], [1403, 4, 22, 0, 1], [1403, 4, 23, 0, 0], [1403, 4, 24, 0, 0], [1403, 4, 25, 0, 2], [1403, 4, 26, 0, 2], [1403, 4, 27, 0, 0], [1403, 4, 28, 0, 0], [1403, 4, 29, 0, 1], [1403, 4, 30, 0, 0], [1403, 4, 31, 0, 0]]
-    property var days_after :[[1403, 5, 1, 0, 0], [1403, 5, 2, 0, 0], [1403, 5, 3, 0, 0], [1403, 5, 4, 0, 0], [1403, 5, 5, 0, 1]]
-    property var today : [1403, 4, 10, 1, 0]
-
-
+    property var first_cal_type : plasmoid.configuration.main_calendar
+    property var today : CalendarBackend.get_unvirsal_date(first_cal_type) // WARN:all today usage must change
+    property var currntDate : reset_day(CalendarBackend.get_unvirsal_date(first_cal_type))
+    property var selectedDay : CalendarBackend.get_unvirsal_date(first_cal_type)
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.fullRepresentation: Calendar{
         showAgenda:true
     }
+    function reset_day(date){
+        date.setDate(1)
+        return date
+    }
+    function daysBedoreCurrentMonth(){
+        var count = CalendarBackend.daysBedoreCurrentMonth(6,root.currntDate.getDay())
+        var j = currntDate.daysInMonth()
+        var days_list = []
+        for(let i = 0;i<count;i++){
+            days_list.push(j-i)
+        }
+        return days_list.reverse()
+        // return CalendarBackend.daysBedoreCurrentMonth(6,root.currntDate.getDay())
+    }
+    function daysAfterCurrentMonth(){
+        var count = 42 - root.currntDate.daysInMonth() - daysBedoreCurrentMonth().length
+        var days_list = []
+        for(let i = 0;i<count;i++){
+            days_list.push(i+1)
+        }
+        return days_list
+        // return 42 - root.currntDate.daysInMonth().length - daysBedoreCurrentMonth() 
+    }
 
+    // Component.onCompleted : {
+    //     console.log("===============================")
+    //     console.log("===============================")
+    // }
 }

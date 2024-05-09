@@ -2,7 +2,6 @@ import QtQuick 2.2
 import QtQuick.Controls 2.0 as QQC2
 import QtQuick.Layouts 1.1
 
-// import "./calendars/Jalali.js" as Jalali
 
 import org.kde.plasma.calendar 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -11,7 +10,7 @@ import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 
-import "./lib/Jalali.js" as Jalali
+import "lib/main.js" as CalendarBackend
 
 Item{
 	id:monthView
@@ -23,7 +22,7 @@ Item{
 		//header controls
 		RowLayout {
 			id:controls
-			spacing: units.smallSpacing
+			spacing: PlasmaCore.Units.smallSpacing
 			// layoutDirection :Qt.RightToLeft
 			anchors {
 				top: parent.top
@@ -46,7 +45,7 @@ Item{
                     font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, parent.height)
 					y: -font.pixelSize*0.6
 					horizontalAlignment: Text.AlignLeft
-					text:Jalali.Jget_title(root.today[0],root.today[1],'fa')
+					text:CalendarBackend.get_title(root.first_cal_type, root.currntDate)
 					}
 				onClicked: {
 					if (!stack.busy) {
@@ -59,7 +58,7 @@ Item{
 			PlasmaComponents3.ToolButton {
 				id: previousButton
 				icon.name: "go-previous"
-				onClicked: monthView.previous() //FIXME not defined
+				onClicked: monthView.prevMonth() //FIXME not defined
 				property string tooltip: i18nd("libplasma5", "Previous Month")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
@@ -71,7 +70,7 @@ Item{
 
 			PlasmaComponents3.ToolButton {
 				icon.name: "go-jump-today"
-				onClicked: root.resetToToday() //FIXME not defined
+				onClicked: monthView.resetToToday() //FIXME not defined
 				property string tooltip: i18ndc("libplasma5", "Reset calendar to today", "Today")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
@@ -85,7 +84,7 @@ Item{
 			PlasmaComponents3.ToolButton {
 				id: nextButton
 				icon.name: "go-next"
-				onClicked: monthView.next() //FIXME not defined
+				onClicked: monthView.nextMonth() //FIXME not defined
 				property string tooltip: i18nd("libplasma5", "Next Month")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
@@ -111,7 +110,7 @@ Item{
 
             // day names
             Repeater {
-				model: Jalali.Jweek_days() //TODO:add to config
+				model : CalendarBackend.get_weekdays_names(root.first_cal_type)
                 PlasmaComponents3.Label {
                     width: monthGrid.cellWidth
                     height: monthGrid.cellHeight*2/3
@@ -128,30 +127,47 @@ Item{
 
 			// before Days offset
             Repeater {
-                model: root.days_before
+                model: root.daysBedoreCurrentMonth()
                 id: daysBeforeRepeater
                 DayCell{
-                    isCurrentMonth:false
+					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,root.currntDate.subtractMonth())
+                    weekends : CalendarBackend.get_month_weekends(root.first_cal_type,root.currntDate.subtractMonth())
+					isCurrentMonth:false
                 }
             }
 
+
 			// Days cell
             Repeater {
-                model: root.days
-                id: daysRepeater
-                DayCell{}
+                model: Array.from({length: root.currntDate.daysInMonth()}, (_, i) => i + 1)
+                id: daysRepeaterS
+                DayCell{
+					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,root.currntDate)
+					weekends : CalendarBackend.get_month_weekends(root.first_cal_type,root.currntDate)
+				}
             }
 
             // after Days offset
 			Repeater {
-                model: root.days_after
+                model: root.daysAfterCurrentMonth()
                 id: daysAfterRepeater
                 DayCell{
+					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,root.currntDate.addMonth())
+					weekends : CalendarBackend.get_month_weekends(root.first_cal_type,root.currntDate.addMonth())
 					isCurrentMonth:false
 				}
             }
         
 		}
 
+	}
+	function nextMonth() {
+		root.currntDate = root.currntDate.addMonth()
+	}
+	function prevMonth() {
+		root.currntDate = root.currntDate.subtractMonth()
+	}
+	function resetToToday(){
+		root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(first_cal_type))
 	}
 }
