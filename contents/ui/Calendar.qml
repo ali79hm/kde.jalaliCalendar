@@ -11,15 +11,11 @@ MouseArea{
 
 	onClicked: focus = true
 
-	// Component.onCompleted : {
-    //     console.log("===============================")
-    //     console.log("===============================")
-    // }
 	
 	property int padding: 0 // Assigned in main.qml
 	property int spacing: 10 * PlasmaCore.Units.devicePixelRatio
 
-	property bool showAgenda:true //TODO : add to config
+	property var showAgenda:true
 	property int rowHeight: plasmoid.configuration.rowHeight * PlasmaCore.Units.devicePixelRatio //TODO:add to config
 
 	property int leftColumnWidth: plasmoid.configuration.leftColumnWidth * PlasmaCore.Units.devicePixelRatio // MonthView //TODO:add to config

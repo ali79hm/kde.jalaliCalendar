@@ -28,7 +28,7 @@ Item{
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.fullRepresentation: Calendar{
-        showAgenda:true
+        showAgenda:plasmoid.configuration.show_events 
     }
     function reset_day(date){
         date.setDate(1)

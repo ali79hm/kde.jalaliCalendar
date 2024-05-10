@@ -82,6 +82,7 @@ Kirigami.FormLayout {
     property var secondCalendarDropdownValue : plasmoid.configuration.second_calendar
     property alias cfg_main_calendar: page.firstCalendarDropdownValue
     property alias cfg_second_calendar: page.secondCalendarDropdownValue
+    property alias cfg_show_events: showEvents.checked
 
     property var calendar_type_list_old : ["gregorian", "Jalali(shamsi)",'ghamari']
     
@@ -129,6 +130,10 @@ Kirigami.FormLayout {
             lastchoosenIndex = currentIndex
             cfg_second_calendar = secondCalendarDropdown.model.get(currentIndex).key
         }
+    }
+    QQC2.CheckBox {
+        id: showEvents
+        text: i18n("Show event pane")
     }
     function calendar_type_list2Init(){
         calendar_type_list2.insert(0, { 'key': "NO", 'value': '--' , 'enabled1': true })
