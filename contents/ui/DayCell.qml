@@ -16,23 +16,35 @@ MouseArea {
     property var holidays:[]
     property var weekends:[]
     property var is_today:root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData==root.today.getDate()
-    property var is_selected:isCurrentMonth && root.selectedDate.getFullYear()==root.currntDate.getFullYear() && root.selectedDate.getMonth()==root.currntDate.getMonth() && modelData==root.selectedDate.getDate()
+    
+    property var is_selected:isSelected()
+    
     hoverEnabled: true
     width: monthGrid.cellWidth
     height: monthGrid.cellHeight
     onClicked : onClick()
 
-    function onClick(){
+    function isSelected(){
         if (isCurrentMonth){
-            root.selectedDate = CalendarBackend.get_unvirsal_date(first_cal_type,[root.currntDate.getFullYear(),root.currntDate.getMonth(),modelData])
+            return root.selectedDate.getFullYear()==root.currntDate.getFullYear() && root.selectedDate.getMonth()==root.currntDate.getMonth() && modelData==root.selectedDate.getDate()
         }
         else if(isNextMonth){
-            root.selectedDate = CalendarBackend.get_unvirsal_date(first_cal_type,[monthView.nextMonthDate.getFullYear(),monthView.nextMonthDate.getMonth(),modelData])
-            monthView.nextMonth()
+            return root.selectedDate.getFullYear()==root.nextMonthDate.getFullYear() && root.selectedDate.getMonth()==root.nextMonthDate.getMonth() && modelData==root.selectedDate.getDate()
         }
         else{
-            root.selectedDate = CalendarBackend.get_unvirsal_date(first_cal_type,[monthView.prevMonthDate.getFullYear(),monthView.prevMonthDate.getMonth(),modelData])
-            monthView.prevMonth()
+            return root.selectedDate.getFullYear()==root.prevMonthDate.getFullYear() && root.selectedDate.getMonth()==root.prevMonthDate.getMonth() && modelData==root.selectedDate.getDate()
+        }
+        console.log(prevMonthDate.format())
+    }
+    function onClick(){
+        if (isCurrentMonth){
+            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),modelData])
+        }
+        else if(isNextMonth){
+            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.nextMonthDate.getFullYear(),root.nextMonthDate.getMonth(),modelData])
+        }
+        else{
+            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.prevMonthDate.getFullYear(),root.prevMonthDate.getMonth(),modelData])
         }
         
     }
@@ -45,7 +57,7 @@ MouseArea {
             if (is_today && is_selected){// Selected and Today
                 0.6
             } else if (is_today){// Today  
-                0.4
+                0.3
             } else {
                 0
             } 
@@ -68,6 +80,8 @@ MouseArea {
             }
         }
         radius: 2
+        // border.color: PlasmaCore.Theme.highlightColor
+        // border.width: 2
         Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.textColor
         z: todayRect.z - 1
@@ -87,11 +101,11 @@ MouseArea {
                 margins: PlasmaCore.Units.smallSpacing
             }
             height:daycell.height/4
-            text: modelData
+            text:CalendarBackend.getLocalNumber(modelData,root.secondCalType)
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             fontSizeMode: Text.HorizontalFit
-            font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))/2
+            font.pixelSize: getSecondCalendarFontSize()
             font.pointSize: -1
             color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
         }
@@ -106,17 +120,35 @@ MouseArea {
             height:daycell.height/3
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text: CalendarBackend.convertToPersianNumbers(modelData) //FIXME : fix for calendar
+            text:CalendarBackend.getLocalNumber(modelData,root.firstCalType)
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
             fontSizeMode: Text.HorizontalFit
-            font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))
+            font.pixelSize: getFirstCalendarFontSize()
             font.pointSize: -1
             color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
             Behavior on color {
                 ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
             }
+        }
+    }
+    function getFirstCalendarFontSize(){
+        if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
+            
+            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))
+        }
+        else{
+            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 32 *13), Math.floor(daycell.width * 7/8)))
+        }
+    }
+    function getSecondCalendarFontSize(){
+        if (CalendarBackend.isFarsiNumbers(root.secondCalType)){
+            
+            return Math.floor(Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))/8*5)
+        }
+        else{
+            return Math.floor( Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 8 *3), Math.floor(daycell.width * 7/8)))/2)
         }
     }
 }

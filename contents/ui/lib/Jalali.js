@@ -85,6 +85,15 @@ class Jalali {
         var tmp = this.date.subtract('months', 1)
         return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
     }
+    addDate(){
+        var tmp = this.date.add('days', 1)
+        return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
+        // return 
+    }
+    subtractDate(){
+        var tmp = this.date.subtract('days', 1)
+        return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
+    }
     format(args=''){
         if (args==''){
             return this.date.format()
@@ -93,4 +102,14 @@ class Jalali {
             return this.date.format(args)
         }
     }
+}
+
+function JalaliToGregorian(JalaliObj){
+    var cal2 = JalaliObj.date.toCalendar('gregorian')
+    return [cal2.year(),cal2.month(),cal2.date()]
+}
+
+function GregorianToJalali(DateObj){
+    var cal2 = new persianDate(DateObj.date)
+    return [cal2.year(),cal2.month(),cal2.date()]
 }
