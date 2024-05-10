@@ -37,6 +37,7 @@ class Jalali {
             this.date = new persianDate(new Date())
         }
         else{
+            IN_Date[1] = IN_Date[1]+1
             this.date = new persianDate(IN_Date)
         }
     }
@@ -77,12 +78,12 @@ class Jalali {
     }
     addMonth(){
         var tmp = this.date.add('months', 1)
-        return new Jalali([tmp.year(),tmp.month(),tmp.date()])
+        return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
         // return 
     }
     subtractMonth(){
         var tmp = this.date.subtract('months', 1)
-        return new Jalali([tmp.year(),tmp.month(),tmp.date()])
+        return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
     }
     format(args=''){
         if (args==''){

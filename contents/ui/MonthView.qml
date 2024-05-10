@@ -112,7 +112,7 @@ Item{
 
             // day names
             Repeater {
-				model : CalendarBackend.get_weekdays_names(root.first_cal_type)
+				model : root.weekdaysNames
                 PlasmaComponents3.Label {
                     width: monthGrid.cellWidth
                     height: monthGrid.cellHeight*2/3
@@ -135,6 +135,7 @@ Item{
 					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,prevMonthDate)
                     weekends : CalendarBackend.get_month_weekends(root.first_cal_type,prevMonthDate)
 					isCurrentMonth:false
+					isNextMonth:false
                 }
             }
 
@@ -157,6 +158,7 @@ Item{
 					holidays:CalendarBackend.get_month_holidays(root.first_cal_type,nextMonthDate)
 					weekends : CalendarBackend.get_month_weekends(root.first_cal_type,nextMonthDate)
 					isCurrentMonth:false
+					isNextMonth:true
 				}
             }
         
@@ -164,19 +166,14 @@ Item{
 
 	}
 	function nextMonth() {
-		// console.log("!!!pressed!!!")
 		root.currntDate = nextMonthDate
 		nextMonthDate = root.currntDate.addMonth()
 		prevMonthDate = root.currntDate.subtractMonth()
-		// console.log("!!!ok!!!")
 	}
 	function prevMonth() {
-		console.log("!!!pressed!!!")
 		root.currntDate = prevMonthDate
-		console.log('ok1!')
 		nextMonthDate = root.currntDate.addMonth()
 		prevMonthDate = root.currntDate.subtractMonth()
-		console.log("!!!ok!!!")
 	}
 	function resetToToday(){
 		root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(first_cal_type))

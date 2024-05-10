@@ -12,60 +12,64 @@ import "lib/main.js" as CalendarBackend
 MouseArea {
     id: daycell
     property bool isCurrentMonth:true
+    property bool isNextMonth:false
     property var holidays:[]
     property var weekends:[]
-    property var is_today:root.currntDate.getMonth()==root.today.getMonth() && modelData==root.today.getDate()
+    property var is_today:root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData==root.today.getDate()
+    property var is_selected:isCurrentMonth && root.selectedDate.getFullYear()==root.currntDate.getFullYear() && root.selectedDate.getMonth()==root.currntDate.getMonth() && modelData==root.selectedDate.getDate()
     hoverEnabled: true
     width: monthGrid.cellWidth
     height: monthGrid.cellHeight
-    // onClicked: root.selectedDate = new persianDate([modelData[0], modelData[1], modelData[2]]) //FIXME:must fix to work
+    onClicked : onClick()
 
+    function onClick(){
+        if (isCurrentMonth){
+            root.selectedDate = CalendarBackend.get_unvirsal_date(first_cal_type,[root.currntDate.getFullYear(),root.currntDate.getMonth(),modelData])
+        }
+        else if(isNextMonth){
+            root.selectedDate = CalendarBackend.get_unvirsal_date(first_cal_type,[monthView.nextMonthDate.getFullYear(),monthView.nextMonthDate.getMonth(),modelData])
+            monthView.nextMonth()
+        }
+        else{
+            root.selectedDate = CalendarBackend.get_unvirsal_date(first_cal_type,[monthView.prevMonthDate.getFullYear(),monthView.prevMonthDate.getMonth(),modelData])
+            monthView.prevMonth()
+        }
+        
+    }
+ 
     Rectangle {
         id: todayRect
         anchors.fill: parent
         // opacity:0
         opacity: {
-            if (is_today){// Today
+            if (is_today && is_selected){// Selected and Today
+                0.6
+            } else if (is_today){// Today  
                 0.4
             } else {
                 0
-            } //else if (
-                // // Selected and Today
-            //        todayDate.year()  == selectedDate.year() 
-            //     && todayDate.month() == selectedDate.month()
-            //     && todayDate.date()  == selectedDate.date()
-            //     && todayDate.year()  == modelData[0]
-            //     && todayDate.month() == modelData[1]
-            //     && todayDate.date()  == modelData[2]
-            // ){
-            //     0.6
-            // } 
+            } 
         }
-        // Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
+        radius: 2
+        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.textColor
     }
 
     Rectangle {
         id: highlightDate
         anchors.fill: todayRect
-        opacity:0
-        // opacity: {
-        //     if (
-        //         // Selected
-        //            selectedDate.year()  == modelData[0]
-        //         && selectedDate.month() == modelData[1]
-        //         && selectedDate.date()  == modelData[2]
-        //     ){
-        //         0.6
-        //     } else if (daycell.containsMouse){
-        //         0.4
-        //     } else {
-        //         0
-        //     }
-        // }
-        
-        // Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
-        color: PlasmaCore.Theme.highlightColor
+        opacity: {
+            if (is_selected){
+                0.6
+            } else if (daycell.containsMouse){
+                0.4
+            } else {
+                0
+            }
+        }
+        radius: 2
+        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
+        color: PlasmaCore.Theme.textColor
         z: todayRect.z - 1
     }
 

@@ -11,13 +11,13 @@ Item{
     id:root
     // property int startOfWeek: Scripts.startOfWeek(screenDate)
     property int startOfWeek: 6 //FIXME:must come from calendar backend
-
      //FIXME:must come from calendar backend
     // day : [year,month,day,is_today,is_holyday:{0:noholyday , 1:weekends,2:holyday}]
     property var first_cal_type : plasmoid.configuration.main_calendar
+    property var weekdaysNames : CalendarBackend.get_weekdays_names(root.first_cal_type)
     property var today : CalendarBackend.get_unvirsal_date(first_cal_type) // WARN:all today usage must change
     property var currntDate : reset_day(CalendarBackend.get_unvirsal_date(first_cal_type))
-    property var selectedDay : CalendarBackend.get_unvirsal_date(first_cal_type)
+    property var selectedDate : CalendarBackend.get_unvirsal_date(first_cal_type)
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.fullRepresentation: Calendar{
         showAgenda:true
