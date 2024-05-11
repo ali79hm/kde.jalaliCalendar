@@ -9,7 +9,6 @@ function convert_month_names_to_fa(string){
 }
 
 function week_days_name(lang='en',startOfWeek=6,short=false) {
-    console.log(short)
     var names = []
     if (lang == 'fa'){
         names =  ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه','شنبه']
@@ -103,20 +102,20 @@ class Gregorian {
             return convert_month_names_to_fa(this.format('MMMM YYYY'))
         }
     }
-    addMonth(){
-        var tmp = new Date(this.date.getFullYear(), this.date.getMonth() + 1, this.date.getDate());
+    addMonth(number=1){
+        var tmp = new Date(this.date.getFullYear(), this.date.getMonth() + number, this.date.getDate());
         return new Gregorian([tmp.getFullYear(),tmp.getMonth(),tmp.getDate()])
     }
-    subtractMonth(){
-        var tmp = new Date(this.date.getFullYear(), this.date.getMonth() - 1, this.date.getDate());
+    subtractMonth(number=1){
+        var tmp = new Date(this.date.getFullYear(), this.date.getMonth() - number, this.date.getDate());
         return new Gregorian([tmp.getFullYear(),tmp.getMonth(),tmp.getDate()])
     }
-    addDate(){
-        var tmp = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate()+1);
+    addDate(number=1){
+        var tmp = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate()+number);
         return new Gregorian([tmp.getFullYear(),tmp.getMonth(),tmp.getDate()])
     }
-    subtractDate(){
-        var tmp = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate()-1);
+    subtractDate(number=1){
+        var tmp = new Date(this.date.getFullYear(), this.date.getMonth(), this.date.getDate()-number);
         return new Gregorian([tmp.getFullYear(),tmp.getMonth(),tmp.getDate()])
     }
     format(args=''){

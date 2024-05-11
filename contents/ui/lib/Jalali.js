@@ -76,22 +76,22 @@ class Jalali {
         }
         return text
     }
-    addMonth(){
-        var tmp = this.date.add('months', 1)
+    addMonth(number=1){
+        var tmp = this.date.add('months', number)
         return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
         // return 
     }
-    subtractMonth(){
-        var tmp = this.date.subtract('months', 1)
+    subtractMonth(number=1){
+        var tmp = this.date.subtract('months', number)
         return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
     }
-    addDate(){
-        var tmp = this.date.add('days', 1)
+    addDate(number=1){
+        var tmp = this.date.add('days', number)
         return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
         // return 
     }
-    subtractDate(){
-        var tmp = this.date.subtract('days', 1)
+    subtractDate(number=1){
+        var tmp = this.date.subtract('days', number)
         return new Jalali([tmp.year(),tmp.month()-1,tmp.date()])
     }
     format(args=''){

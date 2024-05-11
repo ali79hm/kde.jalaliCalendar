@@ -65,7 +65,7 @@ function get_month_weekends(calType, IN_Date){
 }
 
 function convert_calendars(IN_date,InCalType,OutCalType){
-    console.log(IN_date.format(),InCalType,OutCalType)
+    // console.log(IN_date.format(),InCalType,OutCalType)
     if (InCalType==calendar_type.Jalali){
         if (OutCalType==calendar_type.gegorian){
             return Jalali.JalaliToGregorian(IN_date)

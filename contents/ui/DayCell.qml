@@ -34,7 +34,6 @@ MouseArea {
         else{
             return root.selectedDate.getFullYear()==root.prevMonthDate.getFullYear() && root.selectedDate.getMonth()==root.prevMonthDate.getMonth() && modelData==root.selectedDate.getDate()
         }
-        console.log(prevMonthDate.format())
     }
     function onClick(){
         if (isCurrentMonth){
