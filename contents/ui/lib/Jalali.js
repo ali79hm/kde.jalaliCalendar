@@ -106,12 +106,12 @@ class Jalali {
 
 function JalaliToGregorian(JalaliObj){
     var cal2 = JalaliObj.date.toCalendar('gregorian')
-    var tmp = [cal2.year(),cal2.month(),cal2.date()]
+    var tmp = [cal2.year(),cal2.month()-1,cal2.date()]
     JalaliObj.date.toCalendar('persian')
     return tmp
 }
 
 function GregorianToJalali(DateObj){
     var cal2 = new persianDate(DateObj.date)
-    return [cal2.year(),cal2.month(),cal2.date()]
+    return [cal2.year(),cal2.month()-1,cal2.date()]
 }
