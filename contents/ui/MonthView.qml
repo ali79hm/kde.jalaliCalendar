@@ -16,6 +16,11 @@ Item{
 	id:monthView
 	property int rows:7
 	property int columns:7
+
+	// property var prevMonth2 : []
+	// property var currntMonth2 : []
+	// property var nextMonth2 : []
+
 	Item{
 		anchors.fill: parent
 
@@ -127,7 +132,7 @@ Item{
 
 			// before Days offset
             Repeater {
-                model: root.daysBedoreCurrentMonth()
+                model: monthView.daysBedoreCurrentMonth()
                 id: daysBeforeRepeater
                 DayCell{
 					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.prevMonthDate)
@@ -141,7 +146,7 @@ Item{
 			// Days cell
             Repeater {
                 model: Array.from({length: root.currntDate.daysInMonth()}, (_, i) => i + 1)
-                id: daysRepeaterS
+                id: daysRepeater
                 DayCell{
 					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.currntDate)
 					weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.currntDate)
@@ -150,7 +155,7 @@ Item{
 
             // after Days offset
 			Repeater {
-                model: root.daysAfterCurrentMonth()
+                model: monthView.daysAfterCurrentMonth()
                 id: daysAfterRepeater
                 DayCell{
 					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.nextMonthDate)
@@ -174,6 +179,61 @@ Item{
 		root.prevMonthDate = root.currntDate.subtractMonth()
 	}
 	function resetToToday(){
+		// calculateSecondCalendar()
 		root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
 	}
+
+	function daysBedoreCurrentMonth(){
+        var count = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
+        var j = root.currntDate.subtractMonth().daysInMonth()
+        var days_list = []
+        for(let i = j-count;i<j;i++){
+            days_list.push(i+1)
+        }
+        return days_list
+        // return CalendarBackend.daysBedoreCurrentMonth(6,root.currntDate.getDay())
+    }
+
+    function daysAfterCurrentMonth(){
+        var count = 42 - root.currntDate.daysInMonth() - daysBedoreCurrentMonth().length
+        var days_list = []
+        for(let i = 0;i<count;i++){
+            days_list.push(i+1)
+        }
+        return days_list
+        // return 42 - root.currntDate.daysInMonth().length - daysBedoreCurrentMonth() 
+    }
+
+	// function calculateSecondCalendar(){
+	// 	// console.log(daysAfterRepeater.model.length)
+	// 	// console.log(daysBeforeRepeater.model.length)
+	// 	// console.log(root.currntDate.format())
+	// 	var tmp = CalendarBackend.convert_calendars(root.currntDate,root.firstCalType,root.secondCalType)
+	// 	var currntDate2 = CalendarBackend.get_unvirsal_date(root.secondCalType,tmp)
+	// 	currntDate2 = currntDate2.subtractDate(daysBeforeRepeater.model.length)
+		
+	// 	var prevMonth2 = []
+	// 	var currntMonth2 = []
+	// 	var nextMonth2 = []
+	// 	for (let i=0;i<(daysBeforeRepeater.model.length);i++){
+	// 		prevMonth2.push([currntDate2.getDate(),currntDate2.format('MMMM')])
+	// 		currntDate2 = currntDate2.addDate(1)
+	// 	}
+	// 	for (let i=0;i<(daysRepeater.model.length);i++){
+	// 		currntMonth2.push([currntDate2.getDate(),currntDate2.format('MMMM')])
+	// 		currntDate2 = currntDate2.addDate(1)
+	// 	}
+	// 	for (let i=0;i<(daysAfterRepeater.model.length);i++){
+	// 		nextMonth2.push([currntDate2.getDate(),currntDate2.format('MMMM')])
+	// 		currntDate2 = currntDate2.addDate(1)
+	// 	}
+	// 	console.log(prevMonth2,currntMonth2,nextMonth2)
+	// 	// var currntMonth2 = []
+	// 	// for (let i=1;i<10;i++){
+
+	// 	// }
+	// 	// for (let i=currntDate2.date();i<currntDate2.daysInMonth()+1;i++){
+	// 	// 	console.log(i)
+	// 	// }
+	// }
 }

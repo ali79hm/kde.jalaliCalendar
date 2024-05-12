@@ -34,25 +34,6 @@ Item{
         date.setDate(1)
         return date
     }
-    function daysBedoreCurrentMonth(){
-        var count = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
-        var j = currntDate.subtractMonth().daysInMonth()
-        var days_list = []
-        for(let i = j-count;i<j;i++){
-            days_list.push(i+1)
-        }
-        return days_list
-        // return CalendarBackend.daysBedoreCurrentMonth(6,root.currntDate.getDay())
-    }
-    function daysAfterCurrentMonth(){
-        var count = 42 - root.currntDate.daysInMonth() - daysBedoreCurrentMonth().length
-        var days_list = []
-        for(let i = 0;i<count;i++){
-            days_list.push(i+1)
-        }
-        return days_list
-        // return 42 - root.currntDate.daysInMonth().length - daysBedoreCurrentMonth() 
-    }
 
     // Component.onCompleted : {
     //     console.log("===============================")
