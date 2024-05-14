@@ -1,4 +1,5 @@
-.import './Jalali.js' as Jalali
+// .import './Jalali.js' as Jalali
+.import './Jalali2.js' as Jalali
 .import './gregorian.js' as Gregorian
 
 var calendar_type = {
@@ -75,6 +76,15 @@ function convert_calendars(IN_date,InCalType,OutCalType){
         if (OutCalType==calendar_type.Jalali){
             return Jalali.GregorianToJalali(IN_date)
         }
+    } 
+}
+
+function get_tool_tip(IN_date,InCalType){
+    if (InCalType==calendar_type.Jalali){
+        return convertToPersianNumbers(IN_date[0].toString())+' '+IN_date[1].toString()+' '+convertToPersianNumbers(IN_date[2].toString())
+    }
+    else if (InCalType==calendar_type.gegorian){
+        return IN_date[0].toString()+' '+IN_date[1].toString()+' '+IN_date[2].toString()
     } 
 }
 

@@ -212,38 +212,6 @@ Item{
         // return 42 - root.currntDate.daysInMonth().length - daysBedoreCurrentMonth() 
     }
 
-	// function calculateSecondCalendar(){
-	// 	// console.log(daysAfterRepeater.model.length)
-	// 	// console.log(daysBeforeRepeater.model.length)
-	// 	// console.log(root.currntDate.format())
-	// 	var tmp = CalendarBackend.convert_calendars(root.currntDate,root.firstCalType,root.secondCalType)
-	// 	var currntDate2 = CalendarBackend.get_unvirsal_date(root.secondCalType,tmp)
-	// 	currntDate2 = currntDate2.subtractDate(daysBeforeRepeater.model.length)
-		
-	// 	var prevMonth2 = []
-	// 	var currntMonth2 = []
-	// 	var nextMonth2 = []
-	// 	for (let i=0;i<(daysBeforeRepeater.model.length);i++){
-	// 		prevMonth2.push([currntDate2.getDate(),currntDate2.format('MMMM')])
-	// 		currntDate2 = currntDate2.addDate(1)
-	// 	}
-	// 	for (let i=0;i<(daysRepeater.model.length);i++){
-	// 		currntMonth2.push([currntDate2.getDate(),currntDate2.format('MMMM')])
-	// 		currntDate2 = currntDate2.addDate(1)
-	// 	}
-	// 	for (let i=0;i<(daysAfterRepeater.model.length);i++){
-	// 		nextMonth2.push([currntDate2.getDate(),currntDate2.format('MMMM')])
-	// 		currntDate2 = currntDate2.addDate(1)
-	// 	}
-	// 	console.log(prevMonth2,currntMonth2,nextMonth2)
-	// 	// var currntMonth2 = []
-	// 	// for (let i=1;i<10;i++){
-
-	// 	// }
-	// 	// for (let i=currntDate2.date();i<currntDate2.daysInMonth()+1;i++){
-	// 	// 	console.log(i)
-	// 	// }
-	// }
 
 	function calculate_dates(){
 
@@ -252,52 +220,45 @@ Item{
 		var countDaysAfter = 42 - countDays - countDaysBefore
 
 		var tmp = CalendarBackend.convert_calendars(root.currntDate,root.firstCalType,root.secondCalType)
+		var currntDate1 = CalendarBackend.get_unvirsal_date(root.firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),root.currntDate.getDate()])
 		var currntDate2 = CalendarBackend.get_unvirsal_date(root.secondCalType,tmp)
 		currntDate2 = currntDate2.subtractDate(countDaysBefore)
+		currntDate1 = currntDate1.subtractDate(countDaysBefore)
 
 		var prevMonth2 = []
 		var currntMonth2 = []
 		var nextMonth2 = []
 		var prevMonthLastDay = root.currntDate.subtractMonth().daysInMonth()
 		for(let i = prevMonthLastDay-countDaysBefore;i<prevMonthLastDay;i++){
-			prevMonth2.push([i+1,[currntDate2.getDate(),currntDate2.format('MMMM')]])
-            // console.log(i+1)
-			// console.log([currntDate2.getDate(),currntDate2.format('MMMM')])
+			prevMonth2.push([[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]])
 			currntDate2 = currntDate2.addDate(1)
+			currntDate1 = currntDate1.addDate(1)
         }
 
 		// console.log('=======================')
 
 		for (let i=0;i<countDays;i++){
-			currntMonth2.push([i+1,[currntDate2.getDate(),currntDate2.format('MMMM')]])
-			// console.log(i+1)
-			// console.log([currntDate2.getDate(),currntDate2.format('MMMM')])
+			currntMonth2.push([[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]])
 			currntDate2 = currntDate2.addDate(1)
+			currntDate1 = currntDate1.addDate(1)
 		}
 
 		// console.log('=======================')
 
 		for (let i=0;i<(countDaysAfter);i++){
-			nextMonth2.push([i+1,[currntDate2.getDate(),currntDate2.format('MMMM')]])
-			// console.log(i+1)
-			// console.log([currntDate2.getDate(),currntDate2.format('MMMM')])
+			nextMonth2.push([[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]])
 			currntDate2 = currntDate2.addDate(1)
+			currntDate1 = currntDate1.addDate(1)
 		}
 
 		prevMonthDays = prevMonth2
 		currntMonthDays = currntMonth2
 		nextMonthDays =  nextMonth2
-		// var j = root.currntDate.subtractMonth().daysInMonth()
-        // var days_list = []
-        // for(let i = j-count;i<j;i++){
-        //     days_list.push(i+1)
-        // }
-        // return days_list
 	}
 	Component.onCompleted : {
-        console.log("===============================")
+        // console.log("===============================")
 		calculate_dates()
-        console.log("===============================")
+        // console.log("===============================")
     }
 
 }

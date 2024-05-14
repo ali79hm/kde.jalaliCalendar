@@ -15,7 +15,7 @@ MouseArea {
     property bool isNextMonth:false
     property var holidays:[]
     property var weekends:[]
-    property var is_today:root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData[0]==root.today.getDate()
+    property var is_today:root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData[0][0]==root.today.getDate()
     
     property var is_selected:isSelected()
     
@@ -24,30 +24,44 @@ MouseArea {
     height: monthGrid.cellHeight
     onClicked : onClick()
 
+    PlasmaCore.ToolTipArea {
+		anchors.fill: parent
+		active: true
+		visible: true
+		mainText: daycell.containsMouse ? getToolTip1() : ""
+		subText: daycell.containsMouse ? getToolTip2() : ""
+	}
+
+    function getToolTip1(){
+        return CalendarBackend.get_tool_tip(modelData[0],root.firstCalType)
+    }
+    function getToolTip2(){
+        return CalendarBackend.get_tool_tip(modelData[1],root.secondCalType)
+    }
     function isSelected(){
         if (isCurrentMonth){
-            return root.selectedDate.getFullYear()==root.currntDate.getFullYear() && root.selectedDate.getMonth()==root.currntDate.getMonth() && modelData[0]==root.selectedDate.getDate()
+            return root.selectedDate.getFullYear()==root.currntDate.getFullYear() && root.selectedDate.getMonth()==root.currntDate.getMonth() && modelData[0][0]==root.selectedDate.getDate()
         }
         else if(isNextMonth){
-            return root.selectedDate.getFullYear()==root.nextMonthDate.getFullYear() && root.selectedDate.getMonth()==root.nextMonthDate.getMonth() && modelData[0]==root.selectedDate.getDate()
+            return root.selectedDate.getFullYear()==root.nextMonthDate.getFullYear() && root.selectedDate.getMonth()==root.nextMonthDate.getMonth() && modelData[0][0]==root.selectedDate.getDate()
         }
         else{
-            return root.selectedDate.getFullYear()==root.prevMonthDate.getFullYear() && root.selectedDate.getMonth()==root.prevMonthDate.getMonth() && modelData[0]==root.selectedDate.getDate()
+            return root.selectedDate.getFullYear()==root.prevMonthDate.getFullYear() && root.selectedDate.getMonth()==root.prevMonthDate.getMonth() && modelData[0][0]==root.selectedDate.getDate()
         }
     }
     function onClick(){
         if (isCurrentMonth){
-            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),modelData[0]])
+            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),modelData[0][0]])
         }
         else if(isNextMonth){
-            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.nextMonthDate.getFullYear(),root.nextMonthDate.getMonth(),modelData[0]])
+            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.nextMonthDate.getFullYear(),root.nextMonthDate.getMonth(),modelData[0][0]])
         }
         else{
-            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.prevMonthDate.getFullYear(),root.prevMonthDate.getMonth(),modelData[0]])
+            root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.prevMonthDate.getFullYear(),root.prevMonthDate.getMonth(),modelData[0][0]])
         }
         
     }
- 
+
     Rectangle {
         id: todayRect
         anchors.fill: parent
@@ -106,7 +120,7 @@ MouseArea {
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getSecondCalendarFontSize()
             font.pointSize: -1
-            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
         }
 
         PlasmaComponents3.Label {
@@ -119,14 +133,14 @@ MouseArea {
             height:daycell.height/3
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text:CalendarBackend.getLocalNumber(modelData[0],root.firstCalType)
+            text:CalendarBackend.getLocalNumber(modelData[0][0],root.firstCalType)
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getFirstCalendarFontSize()
             font.pointSize: -1
-            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
             Behavior on color {
                 ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
             }
