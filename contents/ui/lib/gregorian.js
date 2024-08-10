@@ -43,9 +43,17 @@ function formatDate(date, format) {
         'D': date.getDate(),
         // 'ww': ('0' + Math.ceil((((date - new Date(date.getFullYear(), 0, 1)) / 86400000) + new Date(date.getFullYear(), 0, 1).getDay() + 1) / 7)).slice(-2),
         // 'w': Math.ceil((((date - new Date(date.getFullYear(), 0, 1)) / 86400000) + new Date(date.getFullYear(), 0, 1).getDay() + 1) / 7),
+        'HH': ('0' + (date.getHours())).slice(-2),
+        'H': date.getHours(),
+        'hh':('0' + (date.getHours() % 12  || 12)).slice(-2),
+        'h':date.getHours()% 12  || 12,
+        'mm': ('0' + (date.getMinutes())).slice(-2),
+        'm':date.getMinutes(),
+        'ss':('0' + (date.getSeconds())).slice(-2),
+        's':date.getSeconds(),
     };
     
-    return format.replace(/YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D/g, function(match) {
+    return format.replace(/YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s/g, function(match) {
         return tokens[match];
     });
 }

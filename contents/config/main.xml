@@ -3,6 +3,17 @@
     <kcfgfile name=""/>
 
     <group name="General">
+        <entry name="rowHeight" type="Int">
+            <default>400</default>
+        </entry>
+        <entry name="rightColumnWidth" type="Int">
+            <default>400</default>
+        </entry>
+        <entry name="leftColumnWidth" type="Int">
+            <default>400</default>
+        </entry>
+    </group>
+    <group name="Calendar">
         <entry name="main_calendar" type="String">
             <default>JA</default>
         </entry>

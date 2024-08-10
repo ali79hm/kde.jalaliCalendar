@@ -36,7 +36,12 @@ MouseArea{
 		}
 	}
 	Layout.preferredWidth: {
-		return (leftColumnWidth + spacing + rightColumnWidth) + padding * 2
+		if(showAgenda){
+			return (leftColumnWidth + spacing + rightColumnWidth) + (padding * 2)
+		}
+		else{
+			return leftColumnWidth + (padding * 2)
+		}
 	}
 	Layout.minimumHeight: PlasmaCore.Units.gridUnit * 20
 	Layout.preferredHeight: {

@@ -13,6 +13,7 @@ MouseArea {
     id: daycell
     property bool isCurrentMonth:true
     property bool isNextMonth:false
+    property bool showSecondCal:false
     property var holidays:[]
     property var weekends:[]
     property var is_today:root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData[0][0]==root.today.getDate()
@@ -29,7 +30,7 @@ MouseArea {
 		active: true
 		visible: true
 		mainText: daycell.containsMouse ? getToolTip1() : ""
-		subText: daycell.containsMouse ? getToolTip2() : ""
+		subText: showSecondCal?(daycell.containsMouse ? getToolTip2() : ""):""
 	}
 
     function getToolTip1(){
@@ -101,26 +102,73 @@ MouseArea {
     }
 
     // Show days number on screen
-    Item{
-		anchors.fill: todayRect
+    // Item{
+	// 	anchors.fill: todayRect
+
+    //     // show second calendar date
+    //     PlasmaComponents3.Label {
+    //         id:secondCalendar
+    //         anchors {
+    //             horizontalCenter: parent.horizontalCenter
+    //             top:parent.top
+    //             topMargin : PlasmaCore.Units.smallSpacing
+    //             margins: PlasmaCore.Units.smallSpacing
+    //         }
+    //         height:daycell.height/4
+    //         text:CalendarBackend.getLocalNumber(modelData[1][0],root.secondCalType)
+    //         opacity: isCurrentMonth ? 1.0 : 0.3
+    //         wrapMode: Text.NoWrap
+    //         fontSizeMode: Text.HorizontalFit
+    //         font.pixelSize: getSecondCalendarFontSize()
+    //         font.pointSize: -1
+    //         color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+    //     }
+
+    //     PlasmaComponents3.Label {
+    //         id: firstCalendar
+    //         anchors {
+    //             horizontalCenter: parent.horizontalCenter
+    //             margins: PlasmaCore.Units.smallSpacing
+    //             top:secondCalendar.bottom
+    //         }
+    //         height:daycell.height/3
+    //         horizontalAlignment: Text.AlignHCenter
+    //         verticalAlignment: Text.AlignVCenter
+    //         text:CalendarBackend.getLocalNumber(modelData[0][0],root.firstCalType)
+    //         opacity: isCurrentMonth ? 1.0 : 0.3
+    //         wrapMode: Text.NoWrap
+    //         elide: Text.ElideRight
+    //         fontSizeMode: Text.HorizontalFit
+    //         font.pixelSize: getFirstCalendarFontSize()
+    //         font.pointSize: -1
+    //         color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+    //         Behavior on color {
+    //             ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
+    //         }
+    //     }
+    // }
+
+    Item {
+        anchors.fill: todayRect
 
         // show second calendar date
         PlasmaComponents3.Label {
-            id:secondCalendar
+            id: secondCalendar
+            visible: daycell.showSecondCal
             anchors {
                 horizontalCenter: parent.horizontalCenter
-                top:parent.top
-                topMargin : PlasmaCore.Units.smallSpacing
+                top: parent.top
+                topMargin: PlasmaCore.Units.smallSpacing
                 margins: PlasmaCore.Units.smallSpacing
             }
-            height:daycell.height/4
-            text:CalendarBackend.getLocalNumber(modelData[1][0],root.secondCalType)
+            height: daycell.height / 4
+            text: daycell.showSecondCal?CalendarBackend.getLocalNumber(modelData[1][0], root.secondCalType):''
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getSecondCalendarFontSize()
             font.pointSize: -1
-            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor)
         }
 
         PlasmaComponents3.Label {
@@ -128,24 +176,25 @@ MouseArea {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 margins: PlasmaCore.Units.smallSpacing
-                top:secondCalendar.bottom
+                top: secondCalendar.visible ? secondCalendar.bottom : parent.top
             }
-            height:daycell.height/3
+            height: daycell.showSecondCal ? daycell.height / 3 : daycell.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text:CalendarBackend.getLocalNumber(modelData[0][0],root.firstCalType)
+            text: CalendarBackend.getLocalNumber(modelData[0][0], root.firstCalType)
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getFirstCalendarFontSize()
             font.pointSize: -1
-            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor) 
+            color: is_today ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor)
             Behavior on color {
                 ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
             }
         }
     }
+
     function getFirstCalendarFontSize(){
         if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
             

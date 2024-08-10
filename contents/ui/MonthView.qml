@@ -16,10 +16,6 @@ Item{
 	id:monthView
 	property int rows:7
 	property int columns:7
-
-	// property var prevMonth2 : []
-	// property var currntMonth2 : []
-	// property var nextMonth2 : []
 	property var prevMonthDays : []
 	property var currntMonthDays : []
 	property var nextMonthDays : []
@@ -142,6 +138,7 @@ Item{
                     weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.prevMonthDate)
 					isCurrentMonth:false
 					isNextMonth:false
+					showSecondCal:root.showSecondCal
                 }
             }
 
@@ -153,6 +150,7 @@ Item{
                 DayCell{
 					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.currntDate)
 					weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.currntDate)
+					showSecondCal:root.showSecondCal
 				}
             }
 
@@ -165,6 +163,7 @@ Item{
 					weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.nextMonthDate)
 					isCurrentMonth:false
 					isNextMonth:true
+					showSecondCal:root.showSecondCal
 				}
             }
         
@@ -191,28 +190,6 @@ Item{
 		root.prevMonthDate = root.currntDate.subtractMonth()
 	}
 
-	function daysBedoreCurrentMonth(){
-        var count = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
-        var j = root.currntDate.subtractMonth().daysInMonth()
-        var days_list = []
-        for(let i = j-count;i<j;i++){
-            days_list.push(i+1)
-        }
-        return days_list
-        // return CalendarBackend.daysBedoreCurrentMonth(6,root.currntDate.getDay())
-    }
-
-    function daysAfterCurrentMonth(){
-        var count = 42 - root.currntDate.daysInMonth() - daysBedoreCurrentMonth().length
-        var days_list = []
-        for(let i = 0;i<count;i++){
-            days_list.push(i+1)
-        }
-        return days_list
-        // return 42 - root.currntDate.daysInMonth().length - daysBedoreCurrentMonth() 
-    }
-
-
 	function calculate_dates(){
 
 		var countDaysBefore = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
@@ -221,39 +198,53 @@ Item{
 
 		var tmp = CalendarBackend.convert_calendars(root.currntDate,root.firstCalType,root.secondCalType)
 		var currntDate1 = CalendarBackend.get_unvirsal_date(root.firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),root.currntDate.getDate()])
-		var currntDate2 = CalendarBackend.get_unvirsal_date(root.secondCalType,tmp)
-		currntDate2 = currntDate2.subtractDate(countDaysBefore)
+		var currntDate2 = undefined
+		if (root.showSecondCal)
+		{
+			var currntDate2 = CalendarBackend.get_unvirsal_date(root.secondCalType,tmp)
+			currntDate2 = currntDate2.subtractDate(countDaysBefore)
+		}
 		currntDate1 = currntDate1.subtractDate(countDaysBefore)
 
-		var prevMonth2 = []
-		var currntMonth2 = []
-		var nextMonth2 = []
+		var prevMonthTmp = []
+		var currntMonthTmp = []
+		var nextMonthTmp = []
 		var prevMonthLastDay = root.currntDate.subtractMonth().daysInMonth()
 		for(let i = prevMonthLastDay-countDaysBefore;i<prevMonthLastDay;i++){
-			prevMonth2.push([[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]])
-			currntDate2 = currntDate2.addDate(1)
+			prevMonthTmp.push([
+								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
+								root.showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
+							])
 			currntDate1 = currntDate1.addDate(1)
+			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
+
         }
 
 		// console.log('=======================')
 
 		for (let i=0;i<countDays;i++){
-			currntMonth2.push([[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]])
-			currntDate2 = currntDate2.addDate(1)
+			currntMonthTmp.push([
+									[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
+									root.showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
+								])
 			currntDate1 = currntDate1.addDate(1)
+			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
 		}
 
 		// console.log('=======================')
 
 		for (let i=0;i<(countDaysAfter);i++){
-			nextMonth2.push([[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]])
-			currntDate2 = currntDate2.addDate(1)
+			nextMonthTmp.push([
+								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
+								showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
+							])
 			currntDate1 = currntDate1.addDate(1)
+			if (showSecondCal){currntDate2 = currntDate2.addDate(1)}
 		}
 
-		prevMonthDays = prevMonth2
-		currntMonthDays = currntMonth2
-		nextMonthDays =  nextMonth2
+		prevMonthDays = prevMonthTmp
+		currntMonthDays = currntMonthTmp
+		nextMonthDays =  nextMonthTmp
 	}
 	Component.onCompleted : {
         // console.log("===============================")
