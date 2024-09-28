@@ -31,7 +31,7 @@ Item{
     }
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
-    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
+    // Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.fullRepresentation: Calendar{
         showAgenda:plasmoid.configuration.show_events
     }
