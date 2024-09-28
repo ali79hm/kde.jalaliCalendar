@@ -16,7 +16,7 @@ MouseArea {
     property bool showSecondCal:false
     property var holidays:[]
     property var weekends:[]
-    property var is_today:root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData[0][0]==root.today.getDate()
+    property var is_today:isCurrentMonth&&root.currntDate.getFullYear()==root.today.getFullYear() && root.currntDate.getMonth()==root.today.getMonth() && modelData[0][0]==root.today.getDate()
     
     property var is_selected:isSelected()
     
