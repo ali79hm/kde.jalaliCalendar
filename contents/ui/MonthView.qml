@@ -196,7 +196,7 @@ Item{
         var countDays = root.currntDate.daysInMonth()
 		var countDaysAfter = 42 - countDays - countDaysBefore
 
-		var tmp = CalendarBackend.convert_calendars(root.currntDate,root.firstCalType,root.secondCalType)
+		var tmp = CalendarBackend.convert_calendars_light(root.currntDate,root.firstCalType,root.secondCalType)
 		var currntDate1 = CalendarBackend.get_unvirsal_date(root.firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),root.currntDate.getDate()])
 		var currntDate2 = undefined
 		if (root.showSecondCal)
