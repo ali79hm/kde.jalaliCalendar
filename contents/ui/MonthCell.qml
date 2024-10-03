@@ -11,9 +11,10 @@ import "lib/main.js" as CalendarBackend
 
 MouseArea {
     id: monthcell
-    property bool isCurrentMonth:true
-    property var is_this_month:isCurrentMonth
-        
+    // property bool isCurrentMonth:true
+    property var is_this_month:root.currntDate.getFullYear()==root.today.getFullYear() && modelData[0] == root.today.getMonth()+1
+
+
     hoverEnabled: true
     width: monthGrid.cellWidth
     height: monthGrid.cellHeight
@@ -53,16 +54,13 @@ MouseArea {
     Rectangle {
         id: todayRect
         anchors.fill: parent
-        opacity:0
-        // opacity: {
-        //     if (is_this_month && is_selected){// Selected and Today
-        //         0.6
-        //     } else if (is_this_month){// Today  
-        //         0.3
-        //     } else {
-        //         0
-        //     } 
-        // }
+        opacity: {
+            if (is_this_month){
+                0.6
+            } else {
+                0
+            } 
+        }
         radius: 2
         Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.textColor

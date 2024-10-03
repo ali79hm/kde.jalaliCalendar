@@ -116,8 +116,8 @@ Item{
 			layoutDirection: root.layoutDirection=='R'? Qt.RightToLeft :Qt.LeftToRight  
             spacing: 1
             columns: monthPage.columns
-            readonly property int cellWidth : Math.floor(monthPage.width / monthPage.columns - 2)
-            readonly property int cellHeight :  Math.floor(monthPage.height / monthPage.rows - 6)
+            readonly property int cellWidth : Math.floor(monthPage.width / monthPage.columns - 6)
+            readonly property int cellHeight :  Math.floor(monthPage.height / monthPage.rows - 9)
 
 			anchors {
 				horizontalCenter: parent.horizontalCenter
