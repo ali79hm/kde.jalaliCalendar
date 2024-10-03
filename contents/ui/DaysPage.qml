@@ -194,6 +194,8 @@ Item{
 		root.nextMonthDate = root.currntDate.addMonth()
 		root.prevMonthDate = root.currntDate.subtractMonth()
 		calculate_dates()
+		root.selectedDate = root.today
+
 	}
 	function goToMonth(index){
 		var tmp_date = root.currntDate
