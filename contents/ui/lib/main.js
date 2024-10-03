@@ -41,12 +41,32 @@ function get_title(calType, IN_Date){
     }
 }
 
+function get_month_names(calType){
+    // IN_Date = date obj
+    if (calType==calendar_type.Jalali){
+        return Jalali.month_names('fa')
+    }
+    if (calType==calendar_type.gegorian){
+        return Gregorian.month_names('en')
+    }
+}
+
+function get_month_name(calType,index){
+    // IN_Date = date obj
+    if (calType==calendar_type.Jalali){
+        return Jalali.month_names('fa')[index]
+    }
+    if (calType==calendar_type.gegorian){
+        return Gregorian.month_names('en')[index]
+    }
+}
+
 function get_weekdays_names(calType){
     if (calType==calendar_type.Jalali){
-        return Jalali.week_days_name('fa',6)// better lang='fa',startOfWeek=6
+        return Jalali.week_days_names('fa',6)// better lang='fa',startOfWeek=6
     }
     else if (calType==calendar_type.gegorian){
-        return Gregorian.week_days_name('en',6,true)// better lang='fa',startOfWeek=6
+        return Gregorian.week_days_names('en',6,true)// better lang='fa',startOfWeek=6
     }
 }
 

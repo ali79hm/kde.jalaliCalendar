@@ -8,7 +8,18 @@ function convert_month_names_to_fa(string){
     return string
 }
 
-function week_days_name(lang='en',startOfWeek=6,short=false) {
+function month_names(lang='fa'){
+    var names = []
+    if (lang == 'fa'){
+        names =  ["ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن", "جولای", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"];
+    }
+    else{
+        names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    }
+    return names
+}
+
+function week_days_names(lang='en',startOfWeek=6,short=false) {
     var names = []
     if (lang == 'fa'){
         names =  ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه','شنبه']
@@ -98,7 +109,7 @@ class Gregorian {
         this.date.setMonth(Number)
     }
     daysInMonth(){
-        return new Date(this.date.getFullYear(), this.date.getMonth(), 0).getDate();
+        return new Date(this.date.getFullYear(), this.date.getMonth()+1, 0).getDate();
     }
 
     getTitle(lang='en'){

@@ -17,7 +17,18 @@ function convert_month_names_to_en(string){
     return string
 }
 
-function week_days_name(lang='fa',startOfWeek=6) {
+function month_names(lang='fa'){
+    var names = []
+    if (lang == 'fa'){
+        names =  ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+    }
+    else{
+        names = ['Farvardin', 'Ordibehesht', 'Khordād', 'Tir', 'Mordād', 'Shahrivar', 'Mehr', 'Abān', 'Azar', 'Dey', 'Bahman', 'Esfand'];
+    }
+    return names
+}
+
+function week_days_names(lang='fa',startOfWeek=6) {
     var names = []
     if (lang == 'fa'){
         names =  ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه','شنبه']
@@ -39,7 +50,7 @@ function formatDate(date, format) {
         'M': date.month(),
         'ddd': date.date('jdddd'),
         'dd': date.date('jdd'),
-        'd': date.date('jd'),
+        'd': rotateAndWrap(date.date('jd')),
         // 'DDD': Math.ceil((date - new Date(date.getFullYear(), 0, 1)) / 86400000)+1,
         'DD': ('0' + date.date()).slice(-2),
         'D': date.date(),
@@ -86,7 +97,7 @@ class Jalali {
         return this.date.date()
     }
     getDay(){
-        return this.date.date('jd')
+        return rotateAndWrap(this.date.date('jd'))
     }
     getFullYear(){
         return this.date.year()
@@ -163,4 +174,9 @@ function JalaliToGregorian(JalaliObj){
 function GregorianToJalali(DateObj){
     var cal2 = new PersianDate.PersianDate(DateObj.date)
     return [cal2.year(),cal2.month()-1,cal2.date()]
+}
+
+function rotateAndWrap(num) {
+    let rotation = [6, 0, 1, 2, 3, 4, 5];
+    return (rotation[num] + 7) % 7;
 }
