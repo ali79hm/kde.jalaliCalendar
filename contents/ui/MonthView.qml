@@ -14,242 +14,123 @@ import "lib/main.js" as CalendarBackend
 
 Item{
 	id:monthView
-	property int rows:7
-	property int columns:7
-	property var prevMonthDays : []
-	property var currntMonthDays : []
-	property var nextMonthDays : []
+	
 
-	Item{
+	ListModel {
+		id: monthModel
+		Component.onCompleted: {
+			for (var i = 0; i < 12; ++i) {
+				append({
+					label: CalendarBackend.get_month_name(root.firstCalType,i),
+					monthNumber: i + 1,
+					isCurrent: true,
+				})
+			}
+			// print_list()
+			// updateYearOverview()
+		}
+	}
+	
+	QQC2.StackView {
+		id: stack
 		anchors.fill: parent
 
-		//header controls
-		RowLayout {
-			id:controls
-			spacing: PlasmaCore.Units.smallSpacing
-			// layoutDirection :Qt.RightToLeft
-			anchors {
-				top: parent.top
-				left: parent.left
-				right: parent.right
+		pushEnter: Transition {
+			NumberAnimation {
+				duration: units.shortDuration
+				property: "opacity"
+				from: 0
+				to: 1
 			}
-
-			//month selector
-			PlasmaComponents3.ToolButton { 
-				Layout.fillWidth:true
-				hoverEnabled: false
-				PlasmaComponents3.Label{
-					anchors {
-						left: parent.left
-						leftMargin:20
-						margins:0
-					}
-
-					// fontSizeMode: Text.HorizontalFit
-                    font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, parent.height)
-					y: layoutDirection=='R'?-font.pixelSize*0.6:-font.pixelSize*0.2
-					horizontalAlignment: Text.AlignLeft
-					text:CalendarBackend.get_title(root.firstCalType, root.currntDate)
-					}
-				onClicked: {
-					if (!stack.busy) {
-						monthView.headerClicked() //FIXME not defined
-					}
-				}
-				
-			}
-
-			PlasmaComponents3.ToolButton {
-				id: previousButton
-				icon.name: "go-previous"
-				onClicked: root.layoutDirection=='L'? monthView.prevMonth() : monthView.nextMonth()
-				property string tooltip: root.layoutDirection=='L'? i18nd("libplasma5", "Previous Month"):i18nd("libplasma5", "Next Month")
-				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
-				QQC2.ToolTip.text: tooltip
-				QQC2.ToolTip.visible: hovered
-				Accessible.name: tooltip
-				//SEE QTBUG-58307
-				Layout.preferredHeight: implicitHeight + implicitHeight%2 //TODO:what is this
-			}
-
-			PlasmaComponents3.ToolButton {
-				icon.name: "go-jump-today"
-				onClicked: monthView.resetToToday()
-				property string tooltip: i18ndc("libplasma5", "Reset calendar to today", "Today")
-				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
-				QQC2.ToolTip.text: tooltip
-				QQC2.ToolTip.visible: hovered
-				Accessible.name: tooltip
-				Accessible.description: i18nd("libplasma5", "Reset calendar to today")
-				//SEE QTBUG-58307
-				Layout.preferredHeight: implicitHeight + implicitHeight%2 //TODO:what is this
-			}
-
-			PlasmaComponents3.ToolButton {
-				id: nextButton
-				icon.name: "go-next"
-				onClicked: root.layoutDirection=='L'? monthView.nextMonth() : monthView.prevMonth()
-				property string tooltip: root.layoutDirection=='L'?i18nd("libplasma5", "Next Month"):i18nd("libplasma5", "Previous Month")
-				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
-				QQC2.ToolTip.text: tooltip
-				QQC2.ToolTip.visible: hovered
-				Accessible.name: tooltip
-				//SEE QTBUG-58307
-				Layout.preferredHeight: implicitHeight + implicitHeight%2 //TODO:what is this
+			ScaleAnimator {
+				duration: units.longDuration
+				from: 1.5
+				to: 1
 			}
 		}
-		Grid {
-            id: monthGrid
-			layoutDirection: root.layoutDirection=='R'? Qt.RightToLeft :Qt.LeftToRight  
-            spacing: 1
-            columns: monthView.columns
-            readonly property int cellWidth : Math.floor(monthView.width / monthView.columns - 2)
-            readonly property int cellHeight :  Math.floor(monthView.height / monthView.rows - 6)
-
-			anchors {
-				horizontalCenter: parent.horizontalCenter
-                bottomMargin: cellHeight/3
-				bottom: parent.bottom
+		pushExit: Transition {
+			NumberAnimation {
+				duration: units.shortDuration
+				property: "opacity"
+				from: 1
+				to: 0
 			}
-
-            // day names
-            Repeater {
-				model : root.weekdaysNames
-                PlasmaComponents3.Label {
-                    width: monthGrid.cellWidth
-                    height: monthGrid.cellHeight*2/3
-                    text: modelData
-                    font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, monthGrid.cellHeight / 3)
-                    opacity: 0.4
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                    fontSizeMode: Text.HorizontalFit
-                }
-
-            }
-
-			// before Days offset
-            Repeater {
-                model: prevMonthDays
-                id: daysBeforeRepeater
-                DayCell{
-					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.prevMonthDate)
-                    weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.prevMonthDate)
-					isCurrentMonth:false
-					isNextMonth:false
-					showSecondCal:root.showSecondCal
-                }
-            }
-
-
-			// Days cell
-            Repeater {
-                model: currntMonthDays
-                id: daysRepeater
-                DayCell{
-					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.currntDate)
-					weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.currntDate)
-					showSecondCal:root.showSecondCal
-				}
-            }
-
-            // after Days offset
-			Repeater {
-                model: nextMonthDays
-                id: daysAfterRepeater
-                DayCell{
-					holidays:CalendarBackend.get_month_holidays(root.firstCalType,root.nextMonthDate)
-					weekends : CalendarBackend.get_month_weekends(root.firstCalType,root.nextMonthDate)
-					isCurrentMonth:false
-					isNextMonth:true
-					showSecondCal:root.showSecondCal
-				}
-            }
-        
 		}
 
-	}
-	function nextMonth() {
-		root.currntDate = root.nextMonthDate
-		root.nextMonthDate = root.currntDate.addMonth()
-		root.prevMonthDate = root.currntDate.subtractMonth()
-		calculate_dates()
-	}
-	function prevMonth() {
-		root.currntDate = root.prevMonthDate
-		root.nextMonthDate = root.currntDate.addMonth()
-		root.prevMonthDate = root.currntDate.subtractMonth()
-		calculate_dates()
-	}
-	function resetToToday(){
-		// calculateSecondCalendar()
-		root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
-		calculate_dates()
-		root.nextMonthDate = root.currntDate.addMonth()
-		root.prevMonthDate = root.currntDate.subtractMonth()
-	}
-
-	function calculate_dates(){
-
-		var countDaysBefore = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
-        var countDays = root.currntDate.daysInMonth()
-		var countDaysAfter = 42 - countDays - countDaysBefore
-
-		var tmp = CalendarBackend.convert_calendars_light(root.currntDate,root.firstCalType,root.secondCalType)
-		var currntDate1 = CalendarBackend.get_unvirsal_date(root.firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),root.currntDate.getDate()])
-		var currntDate2 = undefined
-		if (root.showSecondCal)
-		{
-			var currntDate2 = CalendarBackend.get_unvirsal_date(root.secondCalType,tmp)
-			currntDate2 = currntDate2.subtractDate(countDaysBefore)
+		popEnter: Transition {
+			NumberAnimation {
+				duration: units.shortDuration
+				property: "opacity"
+				from: 0
+				to: 1
+			}
 		}
-		currntDate1 = currntDate1.subtractDate(countDaysBefore)
-
-		var prevMonthTmp = []
-		var currntMonthTmp = []
-		var nextMonthTmp = []
-		var prevMonthLastDay = root.currntDate.subtractMonth().daysInMonth()
-		for(let i = prevMonthLastDay-countDaysBefore;i<prevMonthLastDay;i++){
-			prevMonthTmp.push([
-								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
-								root.showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
-							])
-			currntDate1 = currntDate1.addDate(1)
-			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
-
-        }
-
-		// console.log('=======================')
-
-		for (let i=0;i<countDays;i++){
-			currntMonthTmp.push([
-									[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
-									root.showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
-								])
-			currntDate1 = currntDate1.addDate(1)
-			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
+		popExit: Transition {
+			id: popExit
+			NumberAnimation {
+				duration: units.shortDuration
+				property: "opacity"
+				from: 0.5
+				to: 0
+			}
+			ScaleAnimator {
+				duration: units.longDuration
+				from : 1
+				// so no matter how much you scaled, it would still fly towards you
+				to: 1.5
+			}
 		}
 
-		// console.log('=======================')
-
-		for (let i=0;i<(countDaysAfter);i++){
-			nextMonthTmp.push([
-								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
-								showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
-							])
-			currntDate1 = currntDate1.addDate(1)
-			if (showSecondCal){currntDate2 = currntDate2.addDate(1)}
+		initialItem: DaysPage {
+			id: daysPage
+			firstCalType : root.firstCalType
+			onHeaderClicked: {
+				// console.log('clicekd!!!!!!')
+				stack.push(monthPage)
+			}
 		}
-
-		prevMonthDays = prevMonthTmp
-		currntMonthDays = currntMonthTmp
-		nextMonthDays =  nextMonthTmp
 	}
+
+	Component {
+		id: monthPage
+		MonthPage{
+			onHeaderClicked: {
+				console.log('clicekd on year!!!!!!')
+				// stack.push(yearOverview)
+			}
+			onActivated: {
+				// console.log(date)
+				selectMonth(index,date)
+				// calendarBackend.goToMonth(date.monthNumber+3)
+				stack.pop()
+			}
+			onResetToToday:{
+				daysPage.resetToToday()
+				stack.pop()
+			}
+		}
+	}
+
 	Component.onCompleted : {
         // console.log("===============================")
-		calculate_dates()
+		console.log('')
         // console.log("===============================")
-    }
+	}
 
+	function selectMonth(index,model){
+		// root.currntDate.getDay()
+		
+		var selectedMonth = model[index]
+		// console.log('=========')
+		// console.log(model[index])
+		// console.log('=========')
+		daysPage.goToMonth(index)
+	}
+
+	// function print_list(){
+	// 	console.log("===============================")
+	// 	console.log(JSON.stringify(monthModel.get(11)))
+	// 	console.log(monthModel.count)
+    //     console.log("===============================")
+	// }
 }

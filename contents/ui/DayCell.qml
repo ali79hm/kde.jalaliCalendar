@@ -11,7 +11,7 @@ import "lib/main.js" as CalendarBackend
 
 MouseArea {
     id: daycell
-    property bool isCurrentMonth:true
+    property bool isCurrentMonth:false
     property bool isNextMonth:false
     property bool showSecondCal:false
     property var holidays:[]
@@ -175,7 +175,7 @@ MouseArea {
             id: firstCalendar
             anchors {
                 horizontalCenter: parent.horizontalCenter
-                margins: PlasmaCore.Units.smallSpacing
+                margins: secondCalendar.visible ? PlasmaCore.Units.smallSpacing : 0
                 top: secondCalendar.visible ? secondCalendar.bottom : parent.top
             }
             height: daycell.showSecondCal ? daycell.height / 3 : daycell.height

@@ -4,7 +4,7 @@ import org.kde.plasma.plasmoid 2.0
 import QtQuick.Layouts 1.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 
-import "lib/PersianDate.js" as PersianDate
+// import "lib/PersianDate.js" as PersianDate
 import "lib/main.js" as CalendarBackend
 
 Item{
@@ -15,6 +15,7 @@ Item{
     property bool showSecondCal : secondCalType!='NO'
     property var layoutDirection : CalendarBackend.get_layout_direction(firstCalType)
     property var weekdaysNames : CalendarBackend.get_weekdays_names(firstCalType)
+    property var monthNames : CalendarBackend.get_month_names(firstCalType)
     property var today : CalendarBackend.get_unvirsal_date(firstCalType)
     property var currntDate : reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
     property var nextMonthDate : root.currntDate.addMonth()
@@ -27,7 +28,7 @@ Item{
     }
 
     onSecondCalTypeChanged: {
-        console.log("!!!!!!!!!")
+        console.log("SecondCalTypeChanged")
     }
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
@@ -55,7 +56,7 @@ Item{
    }
     // Component.onCompleted : {
     //     console.log("===============================")
-    //     console.log(new PersianDate.PersianDate())
+    //     console.log(today.format('ddd'))
     //     console.log("===============================")
     // }
 }
