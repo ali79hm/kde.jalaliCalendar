@@ -25,7 +25,8 @@ MouseArea {
         textFormat: Text.RichText
         font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, 16)
         // text: root.today.format('HH:mm:ss')
-        text:get_calendar_text(root.today,'YYYY MMMM D , HH:mm , SYYYY SMMMM SD')
+        // text:get_calendar_text(root.today,'YYYY MMMM D , HH:mm , SYYYY SMMMM SD')
+        text:get_calendar_text(root.today,'SD SMMMM SYYYY , HH:mm , MMMM D ddd')
     }
     
 // if date = 2024,september,5 12:05:06 PM
@@ -93,9 +94,15 @@ MouseArea {
         mystr = mystr.split(' ')
         var mystr2 = ''
         for (let i = 0; i < mystr.length; i++) {
-            mystr2 +='<span>&#x2066;'+mystr[i]+'&#x2069; </span>'
+            if (i ==4){
+                mystr2 +='<strong style="font-size: 16px;">&#x2066;'+mystr[i]+'&#x2069; </strong>'
+            }
+            else{
+                mystr2 +='<span style="font-size: 14px;">&#x2066;'+mystr[i]+'&#x2069; </span>'
+            }
         }
         //text:get_calendar_text(root.today,'MMM YYYY MMMM d , HH:mm , SYYYY SMMMM Sd')
-        return '<p dir="ltr" style="color:red;">'+mystr2+'</p>'
+        return '<p dir="ltr">'+mystr2+'</p>'
+        // return '<p dir="ltr" style="color:red;">'+mystr2+'</p>'
     }
 }
