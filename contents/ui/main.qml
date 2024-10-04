@@ -25,6 +25,7 @@ Item{
         root.currntDate = reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
         root.nextMonthDate = root.currntDate.addMonth()
 	    root.prevMonthDate = root.currntDate.subtractMonth()
+        root.today = CalendarBackend.get_unvirsal_date(firstCalType)
     }
 
     onSecondCalTypeChanged: {

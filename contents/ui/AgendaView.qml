@@ -11,25 +11,35 @@ import QtGraphicalEffects 1.15
 import "lib/main.js" as CalendarBackend
 
 PinchArea {
-	id: agendaview
+	id: agendaView
     // anchors.fill: parent
     // anchors.margins: 5
 
-    // property var myagendaList: []
-    property var myagendaList:[['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])],
-        ['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])],
-        ['arbaeen hossseini','google-calendar','red','https://www.google.com',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,2])],
-        ['dayly scram','google-calendar','blue','https://www.google.com',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,3])],
-        ['mother day','','green','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,4])],
-        ['روز مادر','','green','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,5])],
-        ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,6])],
-        ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,7])],
-        ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,8])],
-        ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,9])],
-        ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,10])],
-    ]
-    property var stringsList: ["text 1 : test test test", "text2: test test tes", "text3 : test test test", "text4 : test test test","text 1 : test test test", "text2: test test tes", "text3 : test test test", "text4 : test test test","text 1 : test test test", "text2: test test tes", "text3 : test test test", "text4 : test test test"]
+    property var selectedDate: root.selectedDate
+    property var firstCalType: root.firstCalType
+	property var secondCalType : root.secondCalType
+
+    property var myagendaList: []
+    // property var myagendaList:[['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])],
+    //     ['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])],
+    //     ['arbaeen hossseini','google-calendar','red','https://www.google.com',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,2])],
+    //     ['dayly scram','google-calendar','blue','https://www.google.com',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,3])],
+    //     ['mother day','','green','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,4])],
+    //     ['روز مادر','','green','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,5])],
+    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,6])],
+    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,7])],
+    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,8])],
+    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,9])],
+    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,10])],
+    // ]
     
+    property var firstTitle:""
+    property var secondTitle:""
+
+    Component.onCompleted : {
+       setTitles()
+	}
+
     ColumnLayout {
 			id:information
 			spacing: PlasmaCore.Units.smallSpacing
@@ -44,7 +54,9 @@ PinchArea {
                 anchors.horizontalCenter: parent.horizontalCenter
                 // horizontalAlignment: Text.AlignHCenter
                 // verticalAlignment: Text.AlignVCenter
-                text:'جمعه ۱۳ مهر ۱۴۰۳'
+                // text:'جمعه ۱۳ مهر ۱۴۰۳'
+                // text:agendaView.getFirstTitle()
+                text: agendaView.firstTitle
                 // wrapMode: Text.NoWrap
                 // elide: Text.ElideRight
                 // fontSizeMode: Text.HorizontalFit
@@ -56,7 +68,8 @@ PinchArea {
                 anchors.horizontalCenter: parent.horizontalCenter
                 // horizontalAlignment: Text.AlignHCenter
                 // verticalAlignment: Text.AlignVCenter
-                text:'4 october 2024'
+                // text:getSecondTitle()
+                text:agendaView.secondTitle
                 // wrapMode: Text.NoWrap
                 // elide: Text.ElideRight
                 // fontSizeMode: Text.HorizontalFit
@@ -64,6 +77,35 @@ PinchArea {
                 // font.pointSize: -1
             }
 	}
+
+    onSelectedDateChanged:{
+        console.log('=========================')
+        console.log(firstCalType,agendaView.selectedDate.format('YYYY MMMM DD'))
+        setTitles()
+        console.log('=========================')
+
+    }
+    
+    function setTitles(){
+        agendaView.firstTitle = getFirstTitle()
+        agendaView.secondTitle = getSecondTitle()
+    }
+    function getFirstTitle(){
+        return CalendarBackend.get_agenda_tool_tip(agendaView.selectedDate,firstCalType,true)
+    }
+    function getSecondTitle(){
+        var tmp = CalendarBackend.convert_calendars_light(selectedDate,firstCalType,secondCalType)
+		
+        return CalendarBackend.get_agenda_tool_tip(CalendarBackend.get_unvirsal_date(secondCalType,tmp),secondCalType)
+    }
+    
+    // onFirstCalTypeChanged: {
+	// 	setTitles()
+    // }
+	// onSecondCalTypeChanged: {
+	// 	setTitles()
+    // }
+
     //end info
     // Add a gray line as a separator
     Rectangle {
@@ -97,7 +139,7 @@ PinchArea {
             width: scrollarea.width
             spacing: 5 
             Repeater {
-                model: agendaview.myagendaList
+                model: agendaView.myagendaList
                 AgendaCell{
                     eventTitle:modelData[0]
                     eventColor:modelData[2]
@@ -115,7 +157,7 @@ PinchArea {
     PlasmaComponents3.Label {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        text: "no event found"
+        text: "today has no events :)"
         color: "grey"
         font.pixelSize: 15
         visible: myagendaList.length === 0  // Visible only if the list is empty
