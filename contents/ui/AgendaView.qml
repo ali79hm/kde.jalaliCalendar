@@ -6,6 +6,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents3
 
 import org.kde.plasma.calendar 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
+import QtGraphicalEffects 1.15
 
 import "lib/main.js" as CalendarBackend
 
@@ -94,57 +95,16 @@ PinchArea {
 			}
         Column{
             width: scrollarea.width
+            spacing: 5 
             Repeater {
                 model: agendaview.myagendaList
-                
-                Column{
-                    Rectangle {
-                        width: scrollarea.width
-                        height: 50
-                        radius: 10
-                        // border.color: "black"
-                        color : 'transparent'
-                        // color: modelData[2]
-                        Label {
-                            anchors.centerIn: parent
-                            text: modelData[0]
-                            // text: 'test'
-                            color: "white"
-                        }
-                        // Bottom-right gray text
-                        Label {
-                            anchors {
-                                right: parent.right
-                                bottom: parent.bottom
-                                margins: 5  // Optional margin to give some space from the edges
-                            }
-                            text: modelData[1]  // Add your desired text or model data here
-                            color: "grey"
-                            font.pixelSize: 10  // Adjust size to fit the design
-                            visible: modelData[1] !== "" 
-                        }
-                        MouseArea {
-                            visible: modelData[3] !== "" 
-                            anchors.fill: parent  // Make the entire rectangle clickable
-                            onClicked: {
-                                Qt.openUrlExternally(modelData[3])  // Replace with your desired URL
-                            }
-                            cursorShape: Qt.PointingHandCursor  // Change cursor on hover to indicate it's clickable
-                        }
-                    }
-                    Rectangle {
-                        id : seperatorLine
-                        width: parent.width
-                        height: 1
-                        opacity:0.4
-                        color: "grey"
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                            top: information.bottom
-                            topMargin: 10
-                        }
-                    }
+                AgendaCell{
+                    eventTitle:modelData[0]
+                    eventColor:modelData[2]
+                    eventBackgroudColor:modelData[2]
+                    eventSourceName:modelData[1]
+                    eventLink:modelData[3]
+
                 }
             }
         }
