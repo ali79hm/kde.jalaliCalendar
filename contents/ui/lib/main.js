@@ -107,6 +107,31 @@ function get_tool_tip(IN_date,InCalType){
         return IN_date[0].toString()+' '+IN_date[1].toString()+' '+IN_date[2].toString()
     } 
 }
+function get_agenda_tool_tip(date,InCalType,isReturnDay=false){
+    
+    var myformat = ''
+    if (isReturnDay){
+        myformat = 'ddd D MMMM YYYY'
+    }
+    else{
+        myformat = 'D MMMM YYYY'
+    }
+    if (InCalType==calendar_type.Jalali){
+        return convertToPersianNumbers(date.format(myformat))
+    }
+    else if (InCalType==calendar_type.gegorian){
+        return date.format(myformat)
+    } 
+    // IN_date[0].toString()+' '+IN_date[1].toString()+' '+convertToPersianNumbers(IN_date[2].toString()
+    
+    // if (InCalType==calendar_type.Jalali){
+    //     return convertToPersianNumbers(IN_date[0].toString())+' '+IN_date[1].toString()+' '+convertToPersianNumbers(IN_date[2].toString())
+    // }
+    // else if (InCalType==calendar_type.gegorian){
+    //     return IN_date[0].toString()+' '+IN_date[1].toString()+' '+IN_date[2].toString()
+    // } 
+    
+}
 
 function getLocalNumber(instr,InCalType){
     if(InCalType==calendar_type.Jalali){
