@@ -9,7 +9,7 @@
 		"Category": "Date and Time",
 		"Description": "Plasmoid for a calendar+agenda that syncs to Google Calendar.",
 		"Icon": "view-calendar",
-		"Id": "mycal2", 
+		"Id": "kde.jalaliCalendar",
 		"License": "GPL",
 		"Name": "aliJalaliCalendar",
 		"ServiceTypes": [
