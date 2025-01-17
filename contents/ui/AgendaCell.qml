@@ -53,10 +53,10 @@ MouseArea {
 
         }
 
-        Column {
-            id: eventContent
-            anchors.fill: parent
-            spacing: 2
+        Rectangle {
+            width: agendaCell.width - 5 - 10  // Remaining width (parent's width minus first rectangle and spacing)
+            height: agendaCell.height
+            color: "transparent"  // Set a color for the remaining rectangle
 
             Label {
                 horizontalAlignment: Text.AlignHCenter
@@ -70,13 +70,13 @@ MouseArea {
                 font.pixelSize: 14
             }
             Label {
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                anchors.centerIn: parent
+                // horizontalAlignment: Text.AlignHCenter
+                // verticalAlignment: Text.AlignVCenter
+                // anchors.centerIn: parent
                 anchors {
                     right: parent.right
                     bottom: parent.bottom
-                    margins: 5  // Optional margin to give some space from the edges
+                    margins: 0  // Optional margin to give some space from the edges
                 }
                 text: agendaCell.eventSourceName  // Add your desired text or model data here
                 color: "grey"

@@ -103,7 +103,7 @@ PinchArea {
                     var is_holiday = tmpevents[key][1]
                     var color = is_holiday ? 'red' : 'gray';
                     var link = ''
-                    var sub_text = ''
+                    var sub_text = eventSource.name
                     var event = [text,sub_text,color,link];
                     tmpAgendaList.push(event);
                 }
