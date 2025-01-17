@@ -23,6 +23,7 @@ Item{
 	property var prevMonthDate : root.currntDate.subtractMonth()
     property var eventsTypes : plasmoid.configuration.holiday_json_files.split(",").filter(item => item !== "")
     property var allEventFiles : EventManager.loadEvents2(eventsTypes)
+    property var allHolidaysFiles : EventManager.loadhlolidays2(eventsTypes)
 
     onFirstCalTypeChanged: {
         root.currntDate = reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
@@ -33,6 +34,7 @@ Item{
 
     onEventsTypesChanged: {
         allEventFiles = EventManager.loadEvents2(eventsTypes)
+        allHolidaysFiles = EventManager.loadhlolidays2(eventsTypes)
     }
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
@@ -60,6 +62,7 @@ Item{
    }
     // Component.onCompleted : {
     //     console.log("===============================")
+    //     console.log(JSON.stringify(allHolidaysFiles[1]))
     //     console.log("===============================")
     // }
 }

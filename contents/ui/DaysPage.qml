@@ -24,6 +24,10 @@ Item{
 	property var currntMonthDays : []
 	property var nextMonthDays : []
 
+	property var prevMonthHolidays : []
+	property var currntMonthHolidays : []
+	property var nextMonthHolidays : []
+
 	Item{
 		anchors.fill: parent
 
@@ -138,7 +142,7 @@ Item{
                 model: prevMonthDays
                 id: daysBeforeRepeater
                 DayCell{
-					holidays:CalendarBackend.get_month_holidays(firstCalType,root.prevMonthDate)
+					holidays:prevMonthHolidays
                     weekends : CalendarBackend.get_month_weekends(firstCalType,root.prevMonthDate)
 					isCurrentMonth:false
 					isNextMonth:false
@@ -152,7 +156,7 @@ Item{
                 model: currntMonthDays
                 id: daysRepeater
                 DayCell{
-					holidays:CalendarBackend.get_month_holidays(firstCalType,root.currntDate)
+					holidays:currntMonthHolidays
 					weekends : CalendarBackend.get_month_weekends(firstCalType,root.currntDate)
 					isCurrentMonth:true
 					isNextMonth:false
@@ -165,7 +169,7 @@ Item{
                 model: nextMonthDays
                 id: daysAfterRepeater
                 DayCell{
-					holidays:CalendarBackend.get_month_holidays(firstCalType,root.nextMonthDate)
+					holidays:nextMonthHolidays
 					weekends : CalendarBackend.get_month_weekends(firstCalType,root.nextMonthDate)
 					isCurrentMonth:false
 					isNextMonth:true
@@ -237,10 +241,14 @@ Item{
 		// console.log(CalendarBackend.get_unvirsal_date(secondCalType,tmp).getDay())
 		// console.log('=======================')
 
+		var monthIndexes = []
+		var yearIndexes = []
 		var prevMonthTmp = []
 		var currntMonthTmp = []
 		var nextMonthTmp = []
 		var prevMonthLastDay = root.currntDate.subtractMonth().daysInMonth()
+		monthIndexes.push(currntDate1.getMonth())
+		yearIndexes.push(currntDate1.getFullYear())
 		for(let i = prevMonthLastDay-countDaysBefore;i<prevMonthLastDay;i++){
 			prevMonthTmp.push([
 								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
@@ -250,7 +258,9 @@ Item{
 			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
 
         }
-
+				
+		monthIndexes.push(currntDate1.getMonth())
+		yearIndexes.push(currntDate1.getFullYear())
 		for (let i=0;i<countDays;i++){
 			currntMonthTmp.push([
 									[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
@@ -262,6 +272,8 @@ Item{
 
 		// console.log('=======================')
 
+		monthIndexes.push(currntDate1.getMonth())
+		yearIndexes.push(currntDate1.getFullYear())
 		for (let i=0;i<(countDaysAfter);i++){
 			nextMonthTmp.push([
 								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
@@ -274,12 +286,62 @@ Item{
 		prevMonthDays = prevMonthTmp
 		currntMonthDays = currntMonthTmp
 		nextMonthDays =  nextMonthTmp
+		
+		var prevMonthHolidaysTmp = []
+		var currntMonthHolidaysTmp = []
+		var nextMonthHolidaysTmp = []
+		root.allHolidaysFiles.forEach(eventSource => {
+
+			var prev_event_month = monthIndexes[0]
+			var prev_event_year = yearIndexes[0]
+			var prev_sidx = prevMonthDays[0][0][0]
+			var prev_eidx = prevMonthDays[prevMonthDays.length-1][0][0]
+			var current_event_month = monthIndexes[1]
+			var current_event_year = yearIndexes[1]
+			var current_sidx = currntMonthDays[0][0][0]
+			var current_eidx = currntMonthDays[currntMonthDays.length-1][0][0]
+			var next_event_month = monthIndexes[2]
+			var next_event_year = yearIndexes[2]
+			var next_sidx = nextMonthDays[0][0][0]
+			var next_eidx = nextMonthDays[nextMonthDays.length-1][0][0]
+			if (CalendarBackend.calendar_type[eventSource.type] != root.firstCalType){
+				console.log('********* this calendar need convertion ********')
+				
+			}
+
+			for (let event_date = prev_sidx; event_date <= prev_eidx; event_date++) {
+				var tmpevents = eventSource.events[prev_event_month][event_date] || []
+				if (tmpevents.length > 0){
+					prevMonthHolidaysTmp.push(event_date)
+				}
+			}
+
+			
+			for (let event_date = current_sidx; event_date <= current_eidx; event_date++) {
+				var tmpevents = eventSource.events[current_event_month][event_date] || []
+				if (tmpevents.length > 0){
+					currntMonthHolidaysTmp.push(event_date)
+				}
+			}
+
+			
+			for (let event_date = next_sidx; event_date <= next_eidx; event_date++) {
+				var tmpevents = eventSource.events[next_event_month][event_date] || []
+				if (tmpevents.length > 0){
+					nextMonthHolidaysTmp.push(event_date)
+				}
+			}
+		});
+
 		// console.log('=======================')
 		// console.log('prevMonthDays',prevMonthDays)
 		// console.log('currntMonthDays',currntMonthDays)
 		// console.log('nextMonthDays',nextMonthDays)
 		// console.log('=======================')
 
+		prevMonthHolidays = prevMonthHolidaysTmp
+		currntMonthHolidays = currntMonthHolidaysTmp
+		nextMonthHolidays = nextMonthHolidaysTmp
 	}
 	Component.onCompleted : {
         // console.log("===============================")
