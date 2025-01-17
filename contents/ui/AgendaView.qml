@@ -9,6 +9,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import QtGraphicalEffects 1.15
 
 import "lib/main.js" as CalendarBackend
+import "lib/EventManager.js" as EventManager
 
 PinchArea {
 	id: agendaView
@@ -19,19 +20,10 @@ PinchArea {
     property var firstCalType: root.firstCalType
 	property var secondCalType : root.secondCalType
 
+    property var eventFiles : root.allEventFiles
+
     property var myagendaList: []
-    // property var myagendaList:[['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])],
-    //     ['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])],
-    //     ['arbaeen hossseini','google-calendar','red','https://www.google.com',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,2])],
-    //     ['dayly scram','google-calendar','blue','https://www.google.com',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,3])],
-    //     ['mother day','','green','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,4])],
-    //     ['روز مادر','','green','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,5])],
-    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,6])],
-    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,7])],
-    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,8])],
-    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,9])],
-    //     ['عید نوروز','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,10])],
-    // ]
+    // property var myagendaList:[['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])] ]
     
     property var firstTitle:""
     property var secondTitle:""
@@ -51,7 +43,8 @@ PinchArea {
 
             PlasmaComponents3.Label {
                 // id: firstCalendar
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.alignment: Qt.AlignCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
                 // horizontalAlignment: Text.AlignHCenter
                 // verticalAlignment: Text.AlignVCenter
                 // text:'جمعه ۱۳ مهر ۱۴۰۳'
@@ -65,7 +58,8 @@ PinchArea {
             }
             PlasmaComponents3.Label {
                 // id: firstCalendar
-                anchors.horizontalCenter: parent.horizontalCenter
+                Layout.alignment: Qt.AlignCenter
+                // anchors.horizontalCenter: parent.horizontalCenter
                 // horizontalAlignment: Text.AlignHCenter
                 // verticalAlignment: Text.AlignVCenter
                 // text:getSecondTitle()
@@ -79,16 +73,42 @@ PinchArea {
 	}
 
     onSelectedDateChanged:{
-        console.log('=========================')
-        console.log(firstCalType,agendaView.selectedDate.format('YYYY MMMM DD'))
+        // console.log('=========================')
+        // console.log(firstCalType,agendaView.selectedDate.format('YYYY MMMM DD'))
         setTitles()
-        console.log('=========================')
+        getEvents()
+        // console.log('=========================')
 
     }
     
     function setTitles(){
         agendaView.firstTitle = getFirstTitle()
         agendaView.secondTitle = getSecondTitle()
+    }
+    function getEvents(){
+        var tmpAgendaList = [];
+        agendaView.eventFiles.forEach(eventSource => {
+            if (CalendarBackend.calendar_type[eventSource.type] == root.firstCalType){
+                var event_month = agendaView.selectedDate.getMonth()
+                var event_date = agendaView.selectedDate.getDate()
+            }
+            else{
+                var converted_date = CalendarBackend.convert_calendars_light(agendaView.selectedDate,root.firstCalType,CalendarBackend.calendar_type[eventSource.type])
+                var event_month = converted_date[1]
+                var event_date = converted_date[2]
+            }
+            var tmpevents = eventSource.events[event_month][event_date]
+            for (let key in tmpevents) {
+                    var text = tmpevents[key][0]
+                    var is_holiday = tmpevents[key][1]
+                    var color = is_holiday ? 'red' : 'gray';
+                    var link = ''
+                    var sub_text = ''
+                    var event = [text,sub_text,color,link];
+                    tmpAgendaList.push(event);
+                }
+        });
+        agendaView.myagendaList = tmpAgendaList
     }
     function getFirstTitle(){
         return CalendarBackend.get_agenda_tool_tip(agendaView.selectedDate,firstCalType,true)
@@ -126,6 +146,7 @@ PinchArea {
         anchors.margins: 5
         id:scrollarea
         // contentWidth: -1
+        ScrollBar.vertical.visible: contentHeight > height
 
         height:parent.height-information.height
         width:parent.width

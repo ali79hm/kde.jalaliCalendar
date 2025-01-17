@@ -23,5 +23,8 @@
         <entry name="show_events" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="holiday_json_files" type="String">
+            <default></default> <!-- Store serialized JSON as a string -->
+        </entry>
     </group>
 </kcfg>

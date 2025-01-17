@@ -6,6 +6,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 // import "lib/PersianDate.js" as PersianDate
 import "lib/main.js" as CalendarBackend
+import "lib/EventManager.js" as EventManager
 
 Item{
     id:root
@@ -20,7 +21,9 @@ Item{
     property var currntDate : reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
     property var nextMonthDate : root.currntDate.addMonth()
 	property var prevMonthDate : root.currntDate.subtractMonth()
-    
+    property var eventsTypes : plasmoid.configuration.holiday_json_files.split(",").filter(item => item !== "")
+    property var allEventFiles : EventManager.loadEvents2(eventsTypes)
+
     onFirstCalTypeChanged: {
         root.currntDate = reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
         root.nextMonthDate = root.currntDate.addMonth()
@@ -28,8 +31,8 @@ Item{
         root.today = CalendarBackend.get_unvirsal_date(firstCalType)
     }
 
-    onSecondCalTypeChanged: {
-        console.log("SecondCalTypeChanged")
+    onEventsTypesChanged: {
+        allEventFiles = EventManager.loadEvents2(eventsTypes)
     }
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
@@ -57,7 +60,6 @@ Item{
    }
     // Component.onCompleted : {
     //     console.log("===============================")
-    //     console.log(today.format('ddd'))
     //     console.log("===============================")
     // }
 }

@@ -20,11 +20,7 @@ MouseArea {
     hoverEnabled: true
 
     width: scrollarea.width
-    height: 50
-    // border.color: "black"
-    // color : 'transparent'
-    // color : 'blue'
-    // color: modelData[2]
+    implicitHeight: Math.max(eventTitleLabel.height + 20, 50) // Adjust height dynamically based on content
 
     Rectangle {
         id: backgroundRect
@@ -38,20 +34,14 @@ MouseArea {
     Rectangle {
         id: highlightRect
         anchors.fill: agendaCell
-        opacity: {
-            if (agendaCell.containsMouse){
-                0.4
-            } else {
-                0
-            }
-        }
+        opacity: agendaCell.containsMouse ? 0.4 : 0
         radius: 2
         Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.highlightColor
-        z: todayRect.z - 1
     }
     Row{
         anchors.fill: parent
+        spacing: 5
 
         Rectangle { //evnet color line
             id: roundRect
@@ -62,18 +52,27 @@ MouseArea {
             color: agendaCell.eventColor
 
         }
-        
-        Rectangle {
-            width: agendaCell.width - 5 - 10  // Remaining width (parent's width minus first rectangle and spacing)
-            height: agendaCell.height
-            color: "transparent"  // Set a color for the remaining rectangle
+
+        Column {
+            id: eventContent
+            anchors.fill: parent
+            spacing: 2
 
             Label {
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
                 anchors.centerIn: parent
+                id: eventTitleLabel
                 text: agendaCell.eventTitle
                 color: PlasmaCore.Theme.textColor
+                wrapMode: Text.WordWrap // Enable text wrapping
+                width: agendaCell.width - 15 // Adjust to fit within the available space
+                font.pixelSize: 14
             }
             Label {
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                anchors.centerIn: parent
                 anchors {
                     right: parent.right
                     bottom: parent.bottom
@@ -94,5 +93,4 @@ MouseArea {
             }
         }
     }
-    
 }
