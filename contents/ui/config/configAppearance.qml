@@ -189,20 +189,17 @@ Item {
             text: "Save Order"
             Layout.fillWidth: true
             onClicked: {
-                console.log("Current box order:", root.boxOrder.join(", "))
             }
         }
     }
 
     //Reorder function to update the box order when dragging
     function reorderBoxes() {
-        console.log('!!!!')
         let order = [];
         for (let i = 0; i < rowLayout.children.length; i++) {
             order.push(rowLayout.children[i].label);
         }
         root.boxOrder = order;
-        console.log("Updated order: " + root.boxOrder.join(", "));
     }
 
 }

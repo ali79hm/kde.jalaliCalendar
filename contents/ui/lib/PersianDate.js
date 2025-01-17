@@ -3220,85 +3220,85 @@ var PersianDate = function PersianDate(dateVal, calendarVal) {
   } else this.now();
 }; ////////////////////--------- statics  ---------/////////////////////
 
-/**
- * receives year and determined that is leap year or not
- * @static
- * @since 2.3.0
- * @param {"jalali"|"gregorian"} calendar - the calendar
- * @param {Number} year - the year to be determined is a leap or not
- * @returns {Boolean} if is leap year, returns true
- */
+// /**
+//  * receives year and determined that is leap year or not
+//  * @static
+//  * @since 2.3.0
+//  * @param {"jalali"|"gregorian"} calendar - the calendar
+//  * @param {Number} year - the year to be determined is a leap or not
+//  * @returns {Boolean} if is leap year, returns true
+//  */
 
 
-PersianDate.isLeapYear = isLeapYear;
-/**
- * checks date is a native js Date object
- * @static
- * @since 2.3.0
- * @param {*} date date that must be checked
- * @returns {Boolean} if date is a native js Date, return true
- */
+// PersianDate.isLeapYear = isLeapYear;
+// /**
+//  * checks date is a native js Date object
+//  * @static
+//  * @since 2.3.0
+//  * @param {*} date date that must be checked
+//  * @returns {Boolean} if date is a native js Date, return true
+//  */
 
-PersianDate.isDate = isDate;
-/**
- * checks date is a PersianDate object
- * @static
- * @since 2.3.0
- * @param {*} date date that must be checked
- * @returns {Boolean} if date is a PersianDate, return true
- */
+// PersianDate.isDate = isDate;
+// /**
+//  * checks date is a PersianDate object
+//  * @static
+//  * @since 2.3.0
+//  * @param {*} date date that must be checked
+//  * @returns {Boolean} if date is a PersianDate, return true
+//  */
 
-PersianDate.isPersianDate = isPersianDate;
-/**
- * checks the date and time
- * @static
- * @since 2.4.0
- * @param {"jalali"|"gregorian"} calendar - the calendar
- * @param {?Number} year - year of date that will be checked
- * @param {?Number} month - month of date that will be checked
- * @param {?Number} day - day of date that will be checked
- * @param {?Number} hour - hour of date that will be checked
- * @param {?Number} minute - minute of date that will be checked
- * @param {?Number} second - second of date that will be checked
- * @param {?Number} millisecond - millisecond of date that will be checked
- * @returns {Boolean} if is valid, returns true
- */
+// PersianDate.isPersianDate = isPersianDate;
+// /**
+//  * checks the date and time
+//  * @static
+//  * @since 2.4.0
+//  * @param {"jalali"|"gregorian"} calendar - the calendar
+//  * @param {?Number} year - year of date that will be checked
+//  * @param {?Number} month - month of date that will be checked
+//  * @param {?Number} day - day of date that will be checked
+//  * @param {?Number} hour - hour of date that will be checked
+//  * @param {?Number} minute - minute of date that will be checked
+//  * @param {?Number} second - second of date that will be checked
+//  * @param {?Number} millisecond - millisecond of date that will be checked
+//  * @returns {Boolean} if is valid, returns true
+//  */
 
-PersianDate.isValid = isValid;
-/**
- * checks the date
- * @static
- * @since 2.4.0
- * @param {"jalali"|"gregorian"} calendar - the calendar
- * @param {?Number} year - year of date that will be checked
- * @param {?Number} month - month of date that will be checked
- * @param {?Number} day - day of date that will be checked
- * @returns {Boolean} if is valid date, returns true
- */
+// PersianDate.isValid = isValid;
+// /**
+//  * checks the date
+//  * @static
+//  * @since 2.4.0
+//  * @param {"jalali"|"gregorian"} calendar - the calendar
+//  * @param {?Number} year - year of date that will be checked
+//  * @param {?Number} month - month of date that will be checked
+//  * @param {?Number} day - day of date that will be checked
+//  * @returns {Boolean} if is valid date, returns true
+//  */
 
-PersianDate.isValidDate = isValidDate;
-/**
- * checks the time
- * @static
- * @since 2.4.0
- * @param {?Number} hour - hour of date that will be checked
- * @param {?Number} minute - minute of date that will be checked
- * @param {?Number} second - second of date that will be checked
- * @param {?Number} millisecond - millisecond of date that will be checked
- * @returns {Boolean} if is valid time, returns true
- */
+// PersianDate.isValidDate = isValidDate;
+// /**
+//  * checks the time
+//  * @static
+//  * @since 2.4.0
+//  * @param {?Number} hour - hour of date that will be checked
+//  * @param {?Number} minute - minute of date that will be checked
+//  * @param {?Number} second - second of date that will be checked
+//  * @param {?Number} millisecond - millisecond of date that will be checked
+//  * @returns {Boolean} if is valid time, returns true
+//  */
 
-PersianDate.isValidTime = isValidTime;
-/**
- * returns number of days in month
- * @param {"jalali"|"gregorian"} calendar - the calendar
- * @param {?Number} year - year of date that returns number of days in month
- * @param {?Number} month - month of date that returns number of days in month
- * @returns {Number} number of days in month
- * @throws {String} if date invalid return error message
- */
+// PersianDate.isValidTime = isValidTime;
+// /**
+//  * returns number of days in month
+//  * @param {"jalali"|"gregorian"} calendar - the calendar
+//  * @param {?Number} year - year of date that returns number of days in month
+//  * @param {?Number} month - month of date that returns number of days in month
+//  * @returns {Number} number of days in month
+//  * @throws {String} if date invalid return error message
+//  */
 
-PersianDate.getDaysInMonth = getDaysInMonth; //TODO: add localization
-////////////////////--------- Have A Good Day ---------/////////////////////
+// PersianDate.getDaysInMonth = getDaysInMonth; //TODO: add localization
+// ////////////////////--------- Have A Good Day ---------/////////////////////
 
-module.exports = PersianDate;
+// module.exports = PersianDate;

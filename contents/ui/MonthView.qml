@@ -113,7 +113,7 @@ Item{
 
 	Component.onCompleted : {
         // console.log("===============================")
-		console.log('')
+		// console.log('')
         // console.log("===============================")
 	}
 
