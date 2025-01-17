@@ -7,11 +7,11 @@ ConfigModel {
     //     icon: "configure"
     //     source: "config/configGeneral.qml"
     // }
-    ConfigCategory {
-        name: i18n("Appearance")
-        icon: "preferences-desktop-color"
-        source: "config/configAppearance.qml"
-    }
+    // ConfigCategory {
+    //     name: i18n("Appearance")
+    //     icon: "preferences-desktop-color"
+    //     source: "config/configAppearance.qml"
+    // }
     ConfigCategory {
         name: i18n("Calendar")
         icon: "office-calendar"
