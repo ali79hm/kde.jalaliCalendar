@@ -20,35 +20,10 @@ MouseArea {
     height: monthGrid.cellHeight
     onClicked : onClick()
     
-    // PlasmaCore.ToolTipArea {
-	// 	anchors.fill: parent
-	// 	active: true
-	// 	visible: true
-	// 	mainText: monthcell.containsMouse ? getToolTip1() : ""
-	// 	subText: showSecondCal?(monthcell.containsMouse ? getToolTip2() : ""):""
-	// }
-
-    // function getToolTip1(){
-    //     return CalendarBackend.get_tool_tip(modelData[0],root.firstCalType)
-    // }
-    // function getToolTip2(){
-    //     return CalendarBackend.get_tool_tip(modelData[1],root.secondCalType)
-    // }
 
     function onClick(){
         //will set from outside
-        // console.log(modelData)
         return
-        // if (isCurrentMonth){
-        //     root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),modelData[0][0]])
-        // }
-        // else if(isNextMonth){
-        //     root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.nextMonthDate.getFullYear(),root.nextMonthDate.getMonth(),modelData[0][0]])
-        // }
-        // else{
-        //     root.selectedDate = CalendarBackend.get_unvirsal_date(firstCalType,[root.prevMonthDate.getFullYear(),root.prevMonthDate.getMonth(),modelData[0][0]])
-        // }
-        
     }
 
     Rectangle {
@@ -77,8 +52,6 @@ MouseArea {
             }
         }
         radius: 2
-        // border.color: PlasmaCore.Theme.highlightColor
-        // border.width: 2
         Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.textColor
         z: todayRect.z - 1
@@ -87,31 +60,10 @@ MouseArea {
     Item {
         anchors.fill: todayRect
 
-        // show second calendar date
-        // PlasmaComponents3.Label {
-        //     id: secondCalendar
-        //     visible: monthcell.showSecondCal
-        //     anchors {
-        //         horizontalCenter: parent.horizontalCenter
-        //         top: parent.top
-        //         topMargin: PlasmaCore.Units.smallSpacing
-        //         margins: PlasmaCore.Units.smallSpacing
-        //     }
-        //     height: monthcell.height / 4
-        //     text: monthcell.showSecondCal?CalendarBackend.getLocalNumber(modelData[1][0], root.secondCalType):''
-        //     opacity: isCurrentMonth ? 1.0 : 0.3
-        //     wrapMode: Text.NoWrap
-        //     fontSizeMode: Text.HorizontalFit
-        //     font.pixelSize: getSecondCalendarFontSize()
-        //     font.pointSize: -1
-        //     color: is_this_month ? PlasmaCore.Theme.backgroundColor : (weekends.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor)
-        // }
-
         PlasmaComponents3.Label {
             id: firstCalendar
             anchors {
                 horizontalCenter: parent.horizontalCenter
-                // margins: PlasmaCore.Units.smallSpacing
                 top: parent.top
             }
             height: monthcell.height
@@ -142,13 +94,4 @@ MouseArea {
             return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(monthcell.height / 32 *13), Math.floor(monthcell.width * 7/8)))
         }
     }
-    // function getSecondCalendarFontSize(){
-    //     if (CalendarBackend.isFarsiNumbers(root.secondCalType)){
-            
-    //         return Math.floor(Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(monthcell.height / 2), Math.floor(monthcell.width * 7/8)))/8*5)
-    //     }
-    //     else{
-    //         return Math.floor( Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(monthcell.height / 8 *3), Math.floor(monthcell.width * 7/8)))/2)
-    //     }
-    // }
 }

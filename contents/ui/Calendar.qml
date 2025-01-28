@@ -48,9 +48,6 @@ MouseArea{
 		return rowHeight + padding * 2
 	}
 
-	// property alias today: monthView.today
-	// property alias selectedDate: monthView.currentDate
-	// property alias monthViewDate: monthView.displayedDate
 
 	GridLayout {
 		id: widgetGrid

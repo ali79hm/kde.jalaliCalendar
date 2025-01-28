@@ -220,7 +220,6 @@ Item{
 	function calculate_dates(){
 		var countDaysBefore = CalendarBackend.daysBedoreCurrentMonth(root.startOfWeek,root.currntDate.getDay())
         var countDays = root.currntDate.daysInMonth()
-		// console.log('@@',root.currntDate.daysInMonth(),root.currntDate.format('YYYY,MMMM,DD'))
 		var countDaysAfter = 42 - countDays - countDaysBefore
 		var currntDate1 = CalendarBackend.get_unvirsal_date(firstCalType,[root.currntDate.getFullYear(),root.currntDate.getMonth(),root.currntDate.getDate()])
 		var tmp = CalendarBackend.convert_calendars_light(root.currntDate,firstCalType,secondCalType)
@@ -231,15 +230,6 @@ Item{
 			currntDate2 = currntDate2.subtractDate(countDaysBefore)
 		}
 		currntDate1 = currntDate1.subtractDate(countDaysBefore)
-
-		// console.log('=======================')
-		// console.log('firstCalType',firstCalType,'secondCalType',secondCalType)
-		// console.log('countDaysBefore',countDaysBefore,'countDays',countDays,'countDaysAfter',countDaysAfter)
-		// console.log('currntDate',root.currntDate.format('YYYY,MMMM,DD'))
-		// console.log('currntDate1',currntDate1.format('YYYY,MMMM,DD'))
-		// console.log(root.startOfWeek,root.currntDate.getDay(),countDaysBefore)
-		// console.log(CalendarBackend.get_unvirsal_date(secondCalType,tmp).getDay())
-		// console.log('=======================')
 
 		var monthIndexes = []
 		var yearIndexes = []
@@ -269,8 +259,6 @@ Item{
 			currntDate1 = currntDate1.addDate(1)
 			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
 		}
-
-		// console.log('=======================')
 
 		monthIndexes.push(currntDate1.getMonth())
 		yearIndexes.push(currntDate1.getFullYear())
@@ -350,12 +338,6 @@ Item{
 				dateObj = dateObj.addDate(1)
 			}
 		});
-
-		// console.log('=======================')
-		// console.log('prevMonthDays',prevMonthDays)
-		// console.log('currntMonthDays',currntMonthDays)
-		// console.log('nextMonthDays',nextMonthDays)
-		// console.log('=======================')
 
 		prevMonthHolidays = prevMonthHolidaysTmp
 		currntMonthHolidays = currntMonthHolidaysTmp

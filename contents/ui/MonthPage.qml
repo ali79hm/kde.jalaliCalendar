@@ -61,7 +61,6 @@ Item{
                     font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, parent.height)
 					y: layoutDirection=='R'?-font.pixelSize*0.6:-font.pixelSize*0.2
 					horizontalAlignment: Text.AlignLeft
-					// text:CalendarBackend.get_title(firstCalType, root.currntDate)
 					text:currentYear
 					}
 				onClicked: {
@@ -137,19 +136,6 @@ Item{
 
 	}
 
-	// function selectMonth(index,model){
-	// 	var selectedMonth = model[index]
-	// 	console.log('=========')
-	// 	console.log(model[index])
-	// 	console.log('=========')
-	// 	// calculateSecondCalendar()
-	// 	root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(firstCalType,[root.currntDate.getFullYear(),selectedMonth]))
-	// 	calculate_dates()
-	// 	root.nextMonthDate = root.currntDate.addMonth()
-	// 	root.prevMonthDate = root.currntDate.subtractMonth()
-	// 	monthPage.activated(index,model)
-	// }
-
 	function nextYear() {
 		root.currntDate.setFullYear(parseInt(root.currntDate.getFullYear())+1)
 		refresh_current_year()
@@ -165,13 +151,6 @@ Item{
 		monthPage.resetToToday()
 		monthPage.refresh_current_year()
 	}
-	// function resetToToday(){
-	// 	// calculateSecondCalendar()
-	// 	root.currntDate = root.reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
-	// 	calculate_dates()
-	// 	root.nextMonthDate = root.currntDate.addMonth()
-	// 	root.prevMonthDate = root.currntDate.subtractMonth()
-	// }
 
 	function make_month_list(){
 
@@ -187,14 +166,10 @@ Item{
 	onFirstCalTypeChanged: {
 		make_month_list()
     }
-	// onSecondCalTypeChanged: {
-	// 	resetToToday()
-    // }
 
 	Component.onCompleted : {
         // console.log("===============================")
 		make_month_list()
-		// console.log()
         // console.log("===============================")
 	}
 }

@@ -12,9 +12,7 @@ import "lib/main.js" as CalendarBackend
 
 PinchArea {
 	id: agendaView
-    // anchors.fill: parent
-    // anchors.margins: 5
-
+    
     property var selectedDate: root.selectedDate
     property var firstCalType: root.firstCalType
 	property var secondCalType : root.secondCalType
@@ -41,39 +39,19 @@ PinchArea {
 			}
 
             PlasmaComponents3.Label {
-                // id: firstCalendar
                 Layout.alignment: Qt.AlignCenter
-                // anchors.horizontalCenter: parent.horizontalCenter
-                // horizontalAlignment: Text.AlignHCenter
-                // verticalAlignment: Text.AlignVCenter
-                // text:'جمعه ۱۳ مهر ۱۴۰۳'
-                // text:agendaView.getFirstTitle()
                 text: agendaView.firstTitle
-                // wrapMode: Text.NoWrap
-                // elide: Text.ElideRight
-                // fontSizeMode: Text.HorizontalFit
                 font.pixelSize: 20
-                // font.pointSize: -1
             }
             PlasmaComponents3.Label {
-                // id: firstCalendar
                 Layout.alignment: Qt.AlignCenter
-                // anchors.horizontalCenter: parent.horizontalCenter
-                // horizontalAlignment: Text.AlignHCenter
-                // verticalAlignment: Text.AlignVCenter
-                // text:getSecondTitle()
                 text:agendaView.secondTitle
-                // wrapMode: Text.NoWrap
-                // elide: Text.ElideRight
-                // fontSizeMode: Text.HorizontalFit
                 font.pixelSize: 15
-                // font.pointSize: -1
             }
 	}
 
     onSelectedDateChanged:{
         // console.log('=========================')
-        // console.log(firstCalType,agendaView.selectedDate.format('YYYY MMMM DD'))
         setTitles()
         getEvents()
         // console.log('=========================')
@@ -117,13 +95,6 @@ PinchArea {
 		
         return CalendarBackend.get_agenda_tool_tip(CalendarBackend.get_unvirsal_date(secondCalType,tmp),secondCalType)
     }
-    
-    // onFirstCalTypeChanged: {
-	// 	setTitles()
-    // }
-	// onSecondCalTypeChanged: {
-	// 	setTitles()
-    // }
 
     //end info
     // Add a gray line as a separator

@@ -118,19 +118,8 @@ Item{
 	}
 
 	function selectMonth(index,model){
-		// root.currntDate.getDay()
-		
 		var selectedMonth = model[index]
-		// console.log('=========')
-		// console.log(model[index])
-		// console.log('=========')
 		daysPage.goToMonth(index)
 	}
 
-	// function print_list(){
-	// 	console.log("===============================")
-	// 	console.log(JSON.stringify(monthModel.get(11)))
-	// 	console.log(monthModel.count)
-    //     console.log("===============================")
-	// }
 }

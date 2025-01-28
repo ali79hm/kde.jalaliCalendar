@@ -70,9 +70,6 @@ MouseArea {
                 font.pixelSize: 14
             }
             Label {
-                // horizontalAlignment: Text.AlignHCenter
-                // verticalAlignment: Text.AlignVCenter
-                // anchors.centerIn: parent
                 anchors {
                     right: parent.right
                     bottom: parent.bottom
