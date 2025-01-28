@@ -18,12 +18,12 @@ Kirigami.FormLayout {
     property alias cfg_second_calendar: page.secondCalendarDropdownValue
     property alias cfg_show_events: showEvents.checked
 
-    property var calendar_type_list_old : ["gregorian", "Jalali(shamsi)",'ghamari']
+    property var calendar_type_list_old : ["gregorian", "Jalali(shamsi)",'hijri(islamic)']
     
     property var calendar_type_list : ListModel {
         ListElement { key: "GE"; value: 'gegorian' ; enabled1: true }
         ListElement { key: "JA"; value: 'Jalali(shamsi)' ; enabled1: true }
-        ListElement { key: "GA"; value: 'ghamari' ; enabled1: true}
+        ListElement { key: "GA"; value: 'hijri(islamic)' ; enabled1: true}
     }
     property var calendar_type_list2 : ListModel{}
     
