@@ -7,15 +7,16 @@ ConfigModel {
     //     icon: "configure"
     //     source: "config/configGeneral.qml"
     // }
-    // ConfigCategory {
-    //     name: i18n("Appearance")
-    //     icon: "preferences-desktop-color"
-    //     source: "config/configAppearance.qml"
-    // }
+    
     ConfigCategory {
         name: i18n("Calendar")
-        icon: "office-calendar"
+        icon: "view-calendar"
         source: "config/configCalendar.qml"
+    }
+    ConfigCategory {
+        name: i18n("Events")
+        icon: "view-calendar-list"
+        source: "config/configEvents.qml"
     }
     // ConfigCategory {
     //     name: i18n("Another Tab")

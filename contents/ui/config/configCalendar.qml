@@ -11,9 +11,6 @@ Kirigami.FormLayout {
 
     property var firstCalendarDropdownValue : plasmoid.configuration.main_calendar
     property var secondCalendarDropdownValue : plasmoid.configuration.second_calendar
-    property var holidayJsonFilesStr: plasmoid.configuration.holiday_json_files
-    property var holidayJsonFiles: holidayJsonFilesStr.split(",").filter(item => item !== "") // Deserialize as array
-    property alias cfg_holiday_json_files: page.holidayJsonFilesStr
     property alias cfg_main_calendar: page.firstCalendarDropdownValue
     property alias cfg_second_calendar: page.secondCalendarDropdownValue
     property alias cfg_show_events: showEvents.checked
@@ -26,10 +23,6 @@ Kirigami.FormLayout {
         ListElement { key: "GA"; value: 'hijri(islamic)' ; enabled1: true}
     }
     property var calendar_type_list2 : ListModel{}
-    
-    ListModel {
-        id: eventList2
-    }
 
     QQC2.ComboBox {
         id: firstCalendarDropdown
@@ -75,44 +68,6 @@ Kirigami.FormLayout {
         text: i18n("Show event pane")
     }
 
-    QQC2.GroupBox {
-        Kirigami.FormData.label: i18n("Visible Events:")
-        width: parent.width
-        QQC2.ScrollView {
-            width: parent.width
-            height: 150
-
-            Column {
-                id: eventCheckboxContainer
-                spacing: 8
-                width: parent.width
-
-                Repeater {
-                    model: eventList2
-                    delegate: QQC2.CheckBox {
-                        text: value
-                        checked: holidayJsonFiles.includes(key) // Restore state from string
-                        onCheckedChanged: {
-                            if (checked) {
-                                // Add to the list if not already present
-                                if (!holidayJsonFiles.includes(key)) {
-                                    holidayJsonFiles.push(key);
-                                }
-                            } else {
-                                // Remove from the list if present
-                                const index = holidayJsonFiles.indexOf(key);
-                                if (index !== -1) {
-                                    holidayJsonFiles.splice(index, 1);
-                                }
-                            }
-                            // Save the updated list as a comma-separated string
-                            cfg_holiday_json_files = holidayJsonFiles.join(",");
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     function calendar_type_list2Init(){
         calendar_type_list2.insert(0, { 'key': "NO", 'value': '--' , 'enabled1': true })
@@ -161,6 +116,5 @@ Kirigami.FormLayout {
 
     Component.onCompleted : {
         calendar_type_list2Init()
-        set_event_list()
     }
 }

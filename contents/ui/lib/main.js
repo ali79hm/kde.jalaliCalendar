@@ -2,6 +2,7 @@
 .import './Jalali2.js' as Jalali
 .import './gregorian.js' as Gregorian
 .import "./HijriInterface.js" as Hijri
+.import "./EventManager.js" as EventManager
 
 var calendar_type = {
     'Jalali': "JA",
@@ -182,4 +183,12 @@ function isFarsiNumbers(InCalType){
     else{
         return false
     } 
+}
+
+function loadEvents2(eventSources){
+    return EventManager.loadEvents2(eventSources)
+}
+
+function loadhlolidays2(eventSources){
+    return EventManager.loadhlolidays2(eventSources)
 }

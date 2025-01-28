@@ -87,7 +87,6 @@ function formatDate(date, format,day_number) {
 
 class Hijri {
     constructor(IN_Date=null) {
-        console.log(JSON.stringify(IN_Date))
         // IN_Date = [year,month,day] or [year,month] or [year]
         if (Object.is( IN_Date, null )){
             var tmpDate = new Date();

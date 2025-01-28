@@ -9,7 +9,6 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import QtGraphicalEffects 1.15
 
 import "lib/main.js" as CalendarBackend
-import "lib/EventManager.js" as EventManager
 
 PinchArea {
 	id: agendaView

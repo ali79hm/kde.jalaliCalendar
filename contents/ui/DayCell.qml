@@ -125,7 +125,7 @@ MouseArea {
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getSecondCalendarFontSize()
             font.pointSize: -1
-            color: is_today ? PlasmaCore.Theme.backgroundColor : (holidays.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor)
+            color: holidays.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : (is_today ? PlasmaCore.Theme.backgroundColor : PlasmaCore.Theme.textColor)
         }
 
         PlasmaComponents3.Label {
@@ -145,7 +145,7 @@ MouseArea {
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getFirstCalendarFontSize()
             font.pointSize: -1
-            color: is_today ? PlasmaCore.Theme.backgroundColor : (holidays.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : PlasmaCore.Theme.textColor)
+            color: holidays.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : (is_today ? PlasmaCore.Theme.backgroundColor : PlasmaCore.Theme.textColor)
             Behavior on color {
                 ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
             }

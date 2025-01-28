@@ -292,44 +292,62 @@ Item{
 		var nextMonthHolidaysTmp = []
 		root.allHolidaysFiles.forEach(eventSource => {
 
-			var prev_event_month = monthIndexes[0]
-			var prev_event_year = yearIndexes[0]
-			var prev_sidx = prevMonthDays[0][0][0]
-			var prev_eidx = prevMonthDays[prevMonthDays.length-1][0][0]
-			var current_event_month = monthIndexes[1]
-			var current_event_year = yearIndexes[1]
-			var current_sidx = currntMonthDays[0][0][0]
-			var current_eidx = currntMonthDays[currntMonthDays.length-1][0][0]
-			var next_event_month = monthIndexes[2]
-			var next_event_year = yearIndexes[2]
-			var next_sidx = nextMonthDays[0][0][0]
-			var next_eidx = nextMonthDays[nextMonthDays.length-1][0][0]
+			var prev_year = yearIndexes[0]
+			var prev_month = monthIndexes[0]
+			var prev_start_day = prevMonthDays[0][0][0]
+			var dateObj = CalendarBackend.get_unvirsal_date(
+				root.firstCalType,
+				[prev_year,prev_month,prev_start_day]
+			)
+
 			if (CalendarBackend.calendar_type[eventSource.type] != root.firstCalType){
-				console.log('********* this calendar need convertion ********')
-				
+				var tmp = CalendarBackend.convert_calendars_light(
+					dateObj,
+					root.firstCalType,
+					CalendarBackend.calendar_type[eventSource.type]
+				)
+				prev_year = tmp[0]
+				prev_month = tmp[1]
+				prev_start_day = tmp[2]
+				var dateObj = CalendarBackend.get_unvirsal_date(
+					CalendarBackend.calendar_type[eventSource.type],
+					[prev_year,prev_month,prev_start_day]
+				)
 			}
 
+			var prev_sidx = prevMonthDays[0][0][0]
+			var prev_eidx = prevMonthDays[prevMonthDays.length-1][0][0]
+
 			for (let event_date = prev_sidx; event_date <= prev_eidx; event_date++) {
-				var tmpevents = eventSource.events[prev_event_month][event_date] || []
+				let this_month = dateObj.getMonth(),this_day = dateObj.getDate()
+				var tmpevents = eventSource.events[this_month][this_day] || []
 				if (tmpevents.length > 0){
 					prevMonthHolidaysTmp.push(event_date)
 				}
+				dateObj = dateObj.addDate(1)
 			}
 
 			
+			var current_sidx = currntMonthDays[0][0][0]
+			var current_eidx = currntMonthDays[currntMonthDays.length-1][0][0]
 			for (let event_date = current_sidx; event_date <= current_eidx; event_date++) {
-				var tmpevents = eventSource.events[current_event_month][event_date] || []
+				let this_month = dateObj.getMonth(),this_day = dateObj.getDate()
+				var tmpevents = eventSource.events[this_month][this_day] || []
 				if (tmpevents.length > 0){
 					currntMonthHolidaysTmp.push(event_date)
 				}
+				dateObj = dateObj.addDate(1)
 			}
 
-			
+			var next_sidx = nextMonthDays[0][0][0]
+			var next_eidx = nextMonthDays[nextMonthDays.length-1][0][0]
 			for (let event_date = next_sidx; event_date <= next_eidx; event_date++) {
-				var tmpevents = eventSource.events[next_event_month][event_date] || []
+				let this_month = dateObj.getMonth(),this_day = dateObj.getDate()
+				var tmpevents = eventSource.events[this_month][this_day] || []
 				if (tmpevents.length > 0){
 					nextMonthHolidaysTmp.push(event_date)
 				}
+				dateObj = dateObj.addDate(1)
 			}
 		});
 
