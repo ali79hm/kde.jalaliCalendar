@@ -1,8 +1,8 @@
 import QtQuick 2.2
 import QtQuick.Controls 2.5 as QQC2
 import org.kde.kirigami 2.4 as Kirigami
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.plasmoid 2.0
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.plasmoid
 
 import "../lib/yearly_events.js" as EventsModule
 
@@ -13,7 +13,7 @@ Kirigami.FormLayout {
     property var secondCalendarDropdownValue : plasmoid.configuration.second_calendar
     property alias cfg_main_calendar: page.firstCalendarDropdownValue
     property alias cfg_second_calendar: page.secondCalendarDropdownValue
-    property alias cfg_show_events: showEvents.checked
+    // property alias cfg_show_events: showEvents.checked
 
     property var calendar_type_list_old : ["gregorian", "Jalali(shamsi)",'hijri(islamic)']
     
@@ -63,10 +63,10 @@ Kirigami.FormLayout {
             cfg_second_calendar = secondCalendarDropdown.model.get(currentIndex).key
         }
     }
-    QQC2.CheckBox {
-        id: showEvents
-        text: i18n("Show event pane")
-    }
+    // QQC2.CheckBox {
+    //     id: showEvents
+    //     text: i18n("Show event pane")
+    // }
 
 
     function calendar_type_list2Init(){

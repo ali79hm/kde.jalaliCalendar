@@ -1,8 +1,7 @@
 import QtQuick 2.2
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.1
-// import org.kde.plasma.calendar 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.core as PlasmaCore
 import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 // import org.kde.plasma.extras 2.0 as PlasmaExtras
@@ -37,7 +36,7 @@ MouseArea {
             } 
         }
         radius: 2
-        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
+        Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.textColor
     }
 
@@ -52,7 +51,7 @@ MouseArea {
             }
         }
         radius: 2
-        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
+        Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.textColor
         z: todayRect.z - 1
     }
@@ -78,7 +77,7 @@ MouseArea {
             font.pointSize: -1
             color: PlasmaCore.Theme.textColor
             Behavior on color {
-                ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
+                ColorAnimation { duration: Kirigami.Units.shortDuration * 2 }
             }
         }
     }

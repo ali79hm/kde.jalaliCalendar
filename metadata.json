@@ -6,20 +6,18 @@
 				"Name": "seyed ali hosseini"
 			}
 		],
+    	"BugReportUrl": "https://github.com",
 		"Category": "Date and Time",
-		"Description": "Plasmoid for a calendar+agenda that syncs to Google Calendar.",
 		"Icon": "view-calendar",
 		"Id": "kde.jalaliCalendar",
-		"License": "GPL",
 		"Name": "aliJalaliCalendar",
-		"ServiceTypes": [
-			"Plasma/Applet"
-		],
+		"Description": "Plasmoid for a calendar+agenda that syncs to Google Calendar.",
+		"KPackageStructure": "Plasma/Applet",
 		"Version": "76",
-		"Website": "https://github.com/"
+		"Website": "https://github.com/",
+		"License": "GPLv3"
 	},
-	"X-Plasma-API": "declarativeappletscript",
-	"X-Plasma-MainScript": "ui/main.qml",
+	"X-Plasma-API-Minimum-Version": "6.0",
 	"X-Plasma-Provides": [
 		"org.kde.plasma.time",
 		"org.kde.plasma.date"

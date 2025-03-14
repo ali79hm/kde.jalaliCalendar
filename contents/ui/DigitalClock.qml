@@ -9,8 +9,9 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.1
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as Components // Date label height breaks on vertical panel with PC3 version
+import org.kde.kirigami 2.0 as Kirigami
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.components as Components // Date label height breaks on vertical panel with PC3 version
 import org.kde.plasma.private.digitalclock 1.0
 
 Item {
@@ -124,7 +125,7 @@ Item {
 
                 height: timeLabel.height + (main.showDate || timezoneLabel.visible ? 0.8 * timeLabel.height : 0)
                 width: Math.max(timeLabel.paintedWidth + (main.showDate ? timezoneLabel.paintedWidth : 0), 
-                                timezoneLabel.paintedWidth, dateLabel.paintedWidth) + PlasmaCore.Units.smallSpacing * 2
+                                timezoneLabel.paintedWidth, dateLabel.paintedWidth) + Kirigami.Units.smallSpacing * 2
             }
 
             PropertyChanges {
@@ -222,7 +223,7 @@ Item {
                 target: dateLabel
 
                 height: timeLabel.height
-                width: dateLabel.paintedWidth + PlasmaCore.Units.smallSpacing
+                width: dateLabel.paintedWidth + Kirigami.Units.smallSpacing
 
                 font.pixelSize: 1024
                 verticalAlignment: Text.AlignVCenter
@@ -318,7 +319,7 @@ Item {
 
                 width: main.width
                 //NOTE: in order for Text.Fit to work as intended, the actual height needs to be quite big, in order for the font to enlarge as much it needs for the available width, and then request a sensible height, for which contentHeight will need to be considered as opposed to height
-                height: PlasmaCore.Units.gridUnit * 10
+                height: Kirigami.Units.gridUnit * 10
 
                 fontSizeMode: Text.Fit
                 verticalAlignment: Text.AlignTop
@@ -354,8 +355,8 @@ Item {
                 target: main
                 Layout.fillHeight: false
                 Layout.fillWidth: false
-                Layout.minimumWidth: PlasmaCore.Units.gridUnit * 3
-                Layout.minimumHeight: PlasmaCore.Units.gridUnit * 3
+                Layout.minimumWidth: Kirigami.Units.gridUnit * 3
+                Layout.minimumHeight: Kirigami.Units.gridUnit * 3
             }
 
             PropertyChanges {
@@ -395,7 +396,7 @@ Item {
 
                 height: 0.7 * timeLabel.height
                 font.pixelSize: 1024
-                width: Math.max(timeLabel.contentWidth, PlasmaCore.Units.gridUnit * 3)
+                width: Math.max(timeLabel.contentWidth, Kirigami.Units.gridUnit * 3)
                 verticalAlignment: Text.AlignVCenter
 
                 fontSizeMode: Text.Fit
@@ -491,7 +492,7 @@ Item {
             verticalItemAlignment: Grid.AlignVCenter
 
             flow: Grid.TopToBottom
-            columnSpacing: PlasmaCore.Units.smallSpacing
+            columnSpacing: Kirigami.Units.smallSpacing
 
             Components.Label  {
                 id: timeLabel

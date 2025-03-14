@@ -4,8 +4,8 @@ import QtQuick.Layouts 1.1
 
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 
-import org.kde.plasma.calendar 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.core as PlasmaCore
+import org.kde.kirigami as Kirigami
 
 import "lib/main.js" as CalendarBackend
 
@@ -27,7 +27,7 @@ MouseArea {
         anchors.fill: agendaCell
         opacity:0.1
         radius: 2
-        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
+        Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration*2 } }
         color: agendaCell.eventBackgroudColor
     }
 
@@ -36,7 +36,7 @@ MouseArea {
         anchors.fill: agendaCell
         opacity: agendaCell.containsMouse ? 0.4 : 0
         radius: 2
-        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
+        Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.highlightColor
     }
     Row{

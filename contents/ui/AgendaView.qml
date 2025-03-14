@@ -4,9 +4,8 @@ import QtQuick.Layouts 1.1
 
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 
-import org.kde.plasma.calendar 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-import QtGraphicalEffects 1.15
+import org.kde.kirigami 2.0 as Kirigami
+import org.kde.plasma.core as PlasmaCore
 
 import "lib/main.js" as CalendarBackend
 
@@ -31,7 +30,7 @@ PinchArea {
 
     ColumnLayout {
 			id:information
-			spacing: PlasmaCore.Units.smallSpacing
+			spacing: Kirigami.Units.smallSpacing
 			anchors {
 				top: parent.top
 				left: parent.left
