@@ -54,7 +54,7 @@ Item{
 
 					// fontSizeMode: Text.HorizontalFit
                     font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, parent.height)
-					y: layoutDirection=='R'?-font.pixelSize*0.6:-font.pixelSize*0.2
+					y: layoutDirection=='R'?-font.pixelSize*0.2:-font.pixelSize*0.2
 					horizontalAlignment: Text.AlignLeft
 					text:CalendarBackend.get_title(firstCalType, root.currntDate)
 					}
