@@ -17,13 +17,14 @@ PinchArea {
     property var firstCalType: root.firstCalType
 	property var secondCalType : root.secondCalType
 
-    property var eventFiles : root.allEventFiles
-
     property var myagendaList: []
     // property var myagendaList:[['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])] ]
     
     property var firstTitle:""
     property var secondTitle:""
+
+    property var month_events_cache : []
+    property int month_events_cache_index : -1
 
     Component.onCompleted : {
        setTitles()
@@ -57,35 +58,50 @@ PinchArea {
         // console.log('=========================')
 
     }
+    Connections {
+        target: root
+        function onEventsTypesChanged() {
+            updateEvents(agendaView.selectedDate)
+            getEvents();
+        }
+    }
     
     function setTitles(){
         agendaView.firstTitle = getFirstTitle()
         agendaView.secondTitle = getSecondTitle()
     }
+    function updateEvents(Date){
+        var month_events =  CalendarBackend.get_month_events(
+            root.firstCalType,
+            Date,
+            root.eventsTypes
+        )
+
+        month_events_cache = {};
+        for (let i = 1; i <= 31; i++) {
+            month_events_cache[i] = [];
+        }
+
+		for (let key in month_events) {
+			for (let idx = 0; idx < month_events[key].length; idx++) {
+                var text = month_events[key][idx]['text']
+                var is_holiday = month_events[key][idx]['is_holiday']
+                var color = is_holiday ? 'red' : 'gray';
+                var link = month_events[key][idx]['link']
+                var sub_text = month_events[key][idx]['event_source']
+                var event = [text,sub_text,color,link];
+                month_events_cache[Number(key)].push(event);
+			}
+		}
+        month_events_cache_index = Date.getMonth()
+    }
+
     function getEvents(){
-        var tmpAgendaList = [];
-        agendaView.eventFiles.forEach(eventSource => {
-            if (CalendarBackend.calendar_type[eventSource.type] == root.firstCalType){
-                var event_month = agendaView.selectedDate.getMonth()
-                var event_date = agendaView.selectedDate.getDate()
-            }
-            else{
-                var converted_date = CalendarBackend.convert_calendars_light(agendaView.selectedDate,root.firstCalType,CalendarBackend.calendar_type[eventSource.type])
-                var event_month = converted_date[1]
-                var event_date = converted_date[2]
-            }
-            var tmpevents = eventSource.events[event_month][event_date]
-            for (let key in tmpevents) {
-                    var text = tmpevents[key][0]
-                    var is_holiday = tmpevents[key][1]
-                    var color = is_holiday ? 'red' : 'gray';
-                    var link = ''
-                    var sub_text = eventSource.name
-                    var event = [text,sub_text,color,link];
-                    tmpAgendaList.push(event);
-                }
-        });
-        agendaView.myagendaList = tmpAgendaList
+        if (month_events_cache_index != agendaView.selectedDate.getMonth()){
+            updateEvents(agendaView.selectedDate)
+            // console.log('events updated')
+        }
+        agendaView.myagendaList = month_events_cache[agendaView.selectedDate.getDate()]
     }
     function getFirstTitle(){
         return CalendarBackend.get_agenda_tool_tip(agendaView.selectedDate,firstCalType,true)

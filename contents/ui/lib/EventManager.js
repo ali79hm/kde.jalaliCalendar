@@ -1,5 +1,8 @@
 .import './yearly_events.js' as HOLYDAYS
 
+function get_events(eventSourceName){
+    return HOLYDAYS[eventSourceName]
+}
 
 function loadEvents2(eventSources){
     var all_event_files = []

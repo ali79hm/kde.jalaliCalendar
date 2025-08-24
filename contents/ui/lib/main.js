@@ -185,6 +185,41 @@ function isFarsiNumbers(InCalType){
     } 
 }
 
+function get_month_events(InCalType,IN_Date,eventSources){
+    
+    const month_events = {};
+    for (let i = 1; i <= 31; i++) {
+        month_events[i] = [];
+    }
+
+    for (let idx = 0; idx < eventSources.length; idx++) { // loop through all event sources
+        var eventSource = EventManager.get_events(eventSources[idx])
+
+        var currntDate = get_unvirsal_date(InCalType,[IN_Date.getFullYear(),IN_Date.getMonth(),IN_Date.getDate()])
+        currntDate.setDate(1)
+        var days_in_month = currntDate.daysInMonth()
+        if (calendar_type[eventSource.type] != InCalType){
+            currntDate = convert_calendars_light(currntDate,InCalType,calendar_type[eventSource.type]);
+            currntDate = get_unvirsal_date(calendar_type[eventSource.type],currntDate);
+        }
+
+        for (let idx = 1; idx <= days_in_month; idx++) {
+            var tmpevents = eventSource.events[currntDate.getMonth()][currntDate.getDate()] || []
+            for (let key in tmpevents) {
+                var text = tmpevents[key][0]
+                var is_holiday = tmpevents[key][1]
+                var link = ''
+                var event_source = eventSource.name
+                var event = {'text':text,'is_holiday':is_holiday,'event_source':event_source,'link':link}
+                month_events[idx].push(event);
+            }
+			currntDate = currntDate.addDate(1)
+        }
+    }
+
+    return month_events
+}
+
 function loadEvents2(eventSources){
     return EventManager.loadEvents2(eventSources)
 }

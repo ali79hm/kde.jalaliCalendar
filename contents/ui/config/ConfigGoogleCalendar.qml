@@ -127,6 +127,8 @@ Item {
                             plasmoid.configuration.accessToken = "";
                             plasmoid.configuration.accessTokenType = "";
                             plasmoid.configuration.accessTokenExpiresAt = 0;
+                            plasmoid.configuration.refreshToken = "";
+                            plasmoid.configuration.refreshTokenIssuedAt = 0;
                         }
                     }
                     Button {
