@@ -46,5 +46,11 @@
 		<entry name="accessTokenExpiresAt" type="UInt">
 			<default>0</default>
 		</entry>
+        <entry name="refreshToken" type="String">
+            <default></default>
+        </entry>
+        <entry name="refreshTokenIssuedAt" type="UInt">
+            <default>0</default>
+        </entry>
     </group>
 </kcfg>
