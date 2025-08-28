@@ -9,6 +9,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import QtGraphicalEffects 1.15
 
 import "lib/main.js" as CalendarBackend
+import "lib/GoogleEventManager.js" as GoogleEventManager
 
 PinchArea {
 	id: agendaView
@@ -26,8 +27,10 @@ PinchArea {
     property var month_events_cache : []
     property int month_events_cache_index : -1
 
+    property var month_google_events_cache: ({})
+
     Component.onCompleted : {
-       setTitles()
+        setTitles()
 	}
 
     ColumnLayout {
@@ -63,6 +66,7 @@ PinchArea {
         function onEventsTypesChanged() {
             updateEvents(agendaView.selectedDate)
             getEvents();
+            updateGoogleEvents(agendaView.selectedDate)
         }
     }
     
@@ -70,7 +74,42 @@ PinchArea {
         agendaView.firstTitle = getFirstTitle()
         agendaView.secondTitle = getSecondTitle()
     }
+
+    function translate_event(event,colors=['gray','red']){
+        var text = event['text']
+        var is_holiday = event['is_holiday']
+        var color = is_holiday ? colors[1] : colors[0];
+        var link = event['link']
+        var sub_text = event['event_source']
+        return [text,sub_text,color,link];
+    }
+
+    function updateGoogleEvents(Date) {
+        console.log("updateGoogleEvents")
+
+        CalendarBackend.get_month_google_events(
+            root.firstCalType,Date,
+        ).then(function(googleEvents){
+
+            month_google_events_cache = {};
+            for (let i = 1; i <= 31; i++) {
+                month_google_events_cache[i] = [];
+            }
+            for (let key in googleEvents) {
+                for (let idx = 0; idx < googleEvents[key].length; idx++) {
+                    var event = translate_event(googleEvents[key][idx],['#004d39','#004d39'])
+                    month_google_events_cache[Number(key)].push(event);
+                }
+            }
+
+            getEvents() // This time includes Google events
+        }).catch(function(err){
+            console.log("Google event fetch failed:", err)
+        })
+    }
+
     function updateEvents(Date){
+        console.log("updateEvents")
         var month_events =  CalendarBackend.get_month_events(
             root.firstCalType,
             Date,
@@ -84,24 +123,27 @@ PinchArea {
 
 		for (let key in month_events) {
 			for (let idx = 0; idx < month_events[key].length; idx++) {
-                var text = month_events[key][idx]['text']
-                var is_holiday = month_events[key][idx]['is_holiday']
-                var color = is_holiday ? 'red' : 'gray';
-                var link = month_events[key][idx]['link']
-                var sub_text = month_events[key][idx]['event_source']
-                var event = [text,sub_text,color,link];
+                var event = translate_event(month_events[key][idx])
                 month_events_cache[Number(key)].push(event);
 			}
 		}
-        month_events_cache_index = Date.getMonth()
+        month_events_cache_index = Date.getFullYear()*100+Date.getMonth()
     }
 
     function getEvents(){
-        if (month_events_cache_index != agendaView.selectedDate.getMonth()){
+        var is_update_google_events = false
+        if (month_events_cache_index != agendaView.selectedDate.getFullYear()*100+agendaView.selectedDate.getMonth()){
             updateEvents(agendaView.selectedDate)
-            // console.log('events updated')
+            is_update_google_events = true
+            month_google_events_cache = []
         }
         agendaView.myagendaList = month_events_cache[agendaView.selectedDate.getDate()]
+        if (is_update_google_events){
+            updateGoogleEvents(agendaView.selectedDate)
+        }
+        if ("1" in month_google_events_cache)
+            agendaView.myagendaList = month_google_events_cache[agendaView.selectedDate.getDate()].concat(agendaView.myagendaList)
+        
     }
     function getFirstTitle(){
         return CalendarBackend.get_agenda_tool_tip(agendaView.selectedDate,firstCalType,true)

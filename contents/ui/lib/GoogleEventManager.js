@@ -148,9 +148,14 @@ function fetchAllEventsFromConfig(calendarId, opts){
     return fetchAllEvents(calendarId || "primary", opts || {});
 }
 
+function manualRefreshToken(){
+    return _refreshToken()
+}
+
 // Export
 var GoogleEventManager = {
     fetchEventsPage: fetchEventsPage,
     fetchAllEvents: fetchAllEvents,
-    fetchAllEventsFromConfig: fetchAllEventsFromConfig
+    fetchAllEventsFromConfig: fetchAllEventsFromConfig,
+    manualRefreshToken: manualRefreshToken
 };

@@ -3,6 +3,7 @@
 .import './gregorian.js' as Gregorian
 .import "./HijriInterface.js" as Hijri
 .import "./EventManager.js" as EventManager
+.import "./GoogleEventManager.js" as GoogleEventManager
 
 var calendar_type = {
     'Jalali': "JA",
@@ -186,7 +187,7 @@ function isFarsiNumbers(InCalType){
 }
 
 function get_month_events(InCalType,IN_Date,eventSources){
-    
+
     const month_events = {};
     for (let i = 1; i <= 31; i++) {
         month_events[i] = [];
@@ -195,6 +196,7 @@ function get_month_events(InCalType,IN_Date,eventSources){
     for (let idx = 0; idx < eventSources.length; idx++) { // loop through all event sources
         var eventSource = EventManager.get_events(eventSources[idx])
 
+        // must make new object from IN_Date so changes on it doesn not affect IN_Date outside of function
         var currntDate = get_unvirsal_date(InCalType,[IN_Date.getFullYear(),IN_Date.getMonth(),IN_Date.getDate()])
         currntDate.setDate(1)
         var days_in_month = currntDate.daysInMonth()
@@ -218,6 +220,49 @@ function get_month_events(InCalType,IN_Date,eventSources){
     }
 
     return month_events
+}
+
+function get_month_google_events(InCalType, IN_Date){
+    
+    // need to convert
+    var currntDate = get_unvirsal_date(InCalType,[IN_Date.getFullYear(),IN_Date.getMonth(),1])
+    var IN_Date_converted = convert_calendars_light(currntDate,InCalType,calendar_type.gegorian)
+    var start = new Date(IN_Date_converted[0],IN_Date_converted[1], IN_Date_converted[2]);
+    currntDate = currntDate.addMonth(1)
+    var IN_Date_converted = convert_calendars_light(currntDate,InCalType,calendar_type.gegorian)
+    var end = new Date(IN_Date_converted[0],IN_Date_converted[1], IN_Date_converted[2]);
+    var diffMs = end - start; // milliseconds
+    var daysInMonth = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    var out = {}; for (var d = 1; d <= daysInMonth; d++) out[d] = [];
+
+    return GoogleEventManager.fetchAllEventsFromConfig("primary", {
+        timeMin: start,
+        timeMax: end
+    }).then(function(items){
+        for (var i = 0; i < items.length; i++){
+            var ev = items[i];
+            var s  = ev._start || (ev._startISO ? new Date(ev._startISO) : null);
+            if (!s) continue;
+
+            var today_date = get_unvirsal_date(calendar_type.gegorian,[s.getFullYear(),s.getMonth(),s.getDate()])
+            var IN_Date_converted = convert_calendars_light(today_date,calendar_type.gegorian,InCalType)
+            var day = IN_Date_converted[2];
+
+            if (day < 1 || day > daysInMonth) continue;
+            
+            out[day].push({
+                text: ev.summary || "(no title)",
+                is_holiday: false,
+                event_source: "Google Calendar",
+                link: ev.htmlLink || ""
+            });
+        }
+        return out;
+    }).catch(function(err){
+        console.log("Calendar fetch error:", err.message);
+        return out; // return empty map on error
+    });
 }
 
 function loadEvents2(eventSources){

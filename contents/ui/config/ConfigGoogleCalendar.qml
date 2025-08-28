@@ -2,6 +2,8 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 
+import "../lib/GoogleEventManager.js" as GoogleEventManager
+
 Item {
     id: root
     width: 560
@@ -10,9 +12,9 @@ Item {
     // ---- helpers ----
     function nowSec() { return Math.floor(Date.now() / 1000); }
     function isAuthorized() {
-        return (plasmoid.configuration.accessToken || "").length > 0
-               && (plasmoid.configuration.accessTokenExpiresAt || 0) > nowSec();
+        return (plasmoid.configuration.accessToken || "").length > 0;
     }
+
     function mask(tok) {
         if (!tok || tok.length < 12) return tok || "";
         return tok.slice(0, 6) + "…" + tok.slice(-6);
@@ -132,11 +134,15 @@ Item {
                         }
                     }
                     Button {
-                        text: "Re-authorize"
+                        text: "Refresh Token"
+                        visible: plasmoid.configuration.refreshToken !== ""
                         onClicked: {
-                            plasmoid.configuration.accessToken = "";
-                            plasmoid.configuration.accessTokenType = "";
-                            plasmoid.configuration.accessTokenExpiresAt = 0;
+                            // trigger refresh manually
+                            GoogleEventManager.manualRefreshToken().then(function(token){
+                                console.log("Refreshed successfully")
+                            }).catch(function(err){
+                                console.log("Refresh failed: " + err)
+                            })
                         }
                     }
                 }
