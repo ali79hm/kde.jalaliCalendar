@@ -102,11 +102,8 @@ Kirigami.FormLayout {
 
     QQC2.Label {
         id: previewLabel
-        // text: i18n("Preview: %1", previewText())
         text: i18n(previewText())
-        // wrapMode: Text.WordWrap
         opacity: 0.85
-        anchors.centerIn: parent
         wrapMode: Text.NoWrap
         textFormat: Text.RichText
         // smooth: true
@@ -117,7 +114,6 @@ Kirigami.FormLayout {
                     previewHelper.item &&
                     typeof previewHelper.item.get_calendar_text === "function") {
 
-                    // Recreate 'today' in the same format your applet uses
                     var today = MainJS.get_unvirsal_date(
                         plasmoid.configuration.main_calendar
                     )
@@ -142,35 +138,40 @@ Kirigami.FormLayout {
 
     QQC2.Label {
         Kirigami.FormData.isSection: true
-        text: i18n("Common presets")
+        text: i18n("Common presets:")
     }
     RowLayout{
         
     }
-    Flow {
-        width: parent.width
-        spacing: Kirigami.Units.smallSpacing
+
+    GridLayout {
+        id: presetGrid
+        columns: 3
+        rowSpacing: Kirigami.Units.smallSpacing
+        columnSpacing: Kirigami.Units.smallSpacing
+
         Repeater {
             model: [
                 "YYYY-MM-DD",
                 "MMMM D ddd",
+                "D",
                 "HH:mm",
                 "*HH:mm*",
+                "MMM D",
+                "HH:mm:ss"
             ]
             delegate: QQC2.Button {
                 text: modelData
+                Layout.fillWidth: true
                 onClicked: _formatField.text = modelData
             }
         }
-    }
 
-    RowLayout {
-        spacing: Kirigami.Units.smallSpacing
         QQC2.Button {
             text: i18n("Reset to default")
-            onClicked: _formatField.text = 'SD SMMMM SYYYY , *HH:mm* , MMMM D ddd'
+            Layout.columnSpan: 3
+            onClicked: _formatField.text = "SD SMMMM SYYYY , *HH:mm* , MMMM D ddd"
         }
-        Item { Layout.fillWidth: true }
     }
 
     // QQC2.Label { //TODO:fix it 
