@@ -8,8 +8,8 @@ MouseArea {
     onClicked: plasmoid.expanded = !plasmoid.expanded
     id: compactRepresentation
 
-    // property string compactRepresentationFormat: plasmoid.configuration.compactRepresentationFormat
-    property string compactRepresentationFormat: 'dddd D MMMM'
+    property string compactRepresentationFormat: plasmoid.configuration.compactRepresentationFormat
+    // property string compactRepresentationFormat: 'dddd D MMMM'
 
     // property int compactRepresentationHorizontalExtraSpace: plasmoid.configuration.compactRepresentationHorizontalExtraSpace
     property int compactRepresentationHorizontalExtraSpace: 5
@@ -25,8 +25,9 @@ MouseArea {
         textFormat: Text.RichText
         font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, 16)
         // text: root.today.format('HH:mm:ss')
-        // text:get_calendar_text(root.today,'YYYY MMMM D , HH:mm , SYYYY SMMMM SD')
-        text:get_calendar_text(root.today,'SD SMMMM SYYYY , HH:mm , MMMM D ddd')
+        text:CalendarBackend.calendar_formated_text(root.today,compactRepresentationFormat,root.firstCalType,root.secondCalType)
+        // text:get_calendar_text(root.today,compactRepresentationFormat)
+        // text:get_calendar_text(root.today,'SD SMMMM SYYYY , HH:mm , MMMM D ddd')
     }
     
 // if date = 2024,september,5 12:05:06 PM

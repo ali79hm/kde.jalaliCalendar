@@ -29,6 +29,9 @@
         <entry name="holiday_json_files" type="String">
             <default></default> <!-- Store serialized JSON as a string -->
         </entry>
+        <entry name="compactRepresentationFormat" type="String">
+            <default>SD SMMMM SYYYY , *HH:mm* , MMMM D ddd</default>
+        </entry>
     </group>
     <group name="Google Calendar">
         <entry name="latestClientId" type="String">
