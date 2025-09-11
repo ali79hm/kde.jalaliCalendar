@@ -263,7 +263,13 @@ function get_month_events(InCalType,IN_Date,eventSources){
             currntDate = convert_calendars_light(currntDate,InCalType,calendar_type[eventSource.type]);
             currntDate = get_unvirsal_date(calendar_type[eventSource.type],currntDate);
         }
-
+ 
+        var month_number_holder = currntDate.getMonth()
+        var month_number_irregular_events = {};
+        for (let i = 1; i <= 31; i++) {month_number_irregular_events[i] = [];}
+        if (eventSource.irregular_events){
+            month_number_irregular_events = get_month_irregular_events(currntDate,eventSource.irregular_events[currntDate.getMonth()])
+        }
         for (let idx = 1; idx <= days_in_month; idx++) {
             var tmpevents = eventSource.events[currntDate.getMonth()][currntDate.getDate()] || []
             for (let key in tmpevents) {
@@ -274,11 +280,64 @@ function get_month_events(InCalType,IN_Date,eventSources){
                 var event = {'text':text,'is_holiday':is_holiday,'event_source':event_source,'link':link}
                 month_events[idx].push(event);
             }
+            
+            if (eventSource.irregular_events){
+                if (month_number_holder != currntDate.getMonth()){
+                    month_number_holder = currntDate.getMonth()
+                    month_number_irregular_events = get_month_irregular_events(currntDate,eventSource.irregular_events[currntDate.getMonth()])
+                }
+                for (let irregular_event of month_number_irregular_events[currntDate.getDate()]){
+                    var text = irregular_event[0]
+                    var is_holiday = irregular_event[1]
+                    var link = ''
+                    var event_source = eventSource.name
+                    var event = {'text':text,'is_holiday':is_holiday,'event_source':event_source,'link':link}
+                    month_events[idx].push(event);
+                }
+            }
+            
 			currntDate = currntDate.addDate(1)
         }
     }
 
     return month_events
+}
+
+function get_month_irregular_events(date,irregular_events){
+    var days_in_month = date.daysInMonth()
+    const events = {};
+    for (let i = 1; i <= 31; i++) {
+        events[i] = [];
+    }
+
+    for (let idx in irregular_events) {
+        var text = irregular_events[idx]['name']
+        var event_type = irregular_events[idx]['type']
+        var is_holiday = irregular_events[idx]['holiday']
+        if (event_type == 'end_of_month'){
+            events[days_in_month].push([text,is_holiday]) 
+        }
+        else if (event_type == 'nth_weekday_of_month'){
+            var weekday = irregular_events[idx]['weekday']
+            var diff = date.getDay()+1-weekday
+            var tmp_date_number = date.getDate()-35-diff
+            var weekday_dates = []
+            for (let i = tmp_date_number; i <= 35; i+=7) {
+                if (i <= days_in_month && i > 0){
+                    weekday_dates.push(i)
+                }
+            }
+            var nth = irregular_events[idx]['nth']
+            if (nth == -1){
+                nth = weekday_dates.length-1
+                events[weekday_dates[nth]].push([text,is_holiday])
+            } 
+            else if (nth <= weekday_dates.length){
+                events[weekday_dates[nth-1]].push([text,is_holiday])
+            }
+        }
+    }
+    return events
 }
 
 function get_month_google_events(InCalType, IN_Date){
