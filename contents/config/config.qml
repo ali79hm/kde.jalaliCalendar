@@ -19,7 +19,7 @@ ConfigModel {
         source: "config/configEvents.qml"
     }
     ConfigCategory {
-		name: i18n("Google Calendar")
+		name: i18n("Google Events")
         icon: "configure"
 		// icon: plasmoid.file("", "icons/Google_Calendar_2020.svg")
 		source: "config/ConfigGoogleCalendar.qml"

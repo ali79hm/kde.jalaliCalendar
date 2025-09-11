@@ -74,16 +74,16 @@ Kirigami.FormLayout {
 
     Kirigami.Separator { Kirigami.FormData.isSection: true }
 
-    QQC2.Label {
-        Kirigami.FormData.label: i18n("Clock & Date Format")
-        text: i18n("Pattern used in the calendar (Qt format)")
-        wrapMode: Text.WordWrap
-    }
+    // QQC2.Label {
+    //     Kirigami.FormData.label: i18n("Clock & Date Format")
+    //     text: i18n("Pattern used in the calendar (Qt format)")
+    //     wrapMode: Text.WordWrap
+    // }
 
     // 2) The format input
     QQC2.TextField {
         id: _formatField
-        Kirigami.FormData.label: i18n("format:")
+        Kirigami.FormData.label: i18n("Clock & Date Format:")
         placeholderText: "'SD SMMMM SYYYY , *HH:mm* , MMMM D ddd'"
         selectByMouse: true
         // clearButtonEnabled: true
