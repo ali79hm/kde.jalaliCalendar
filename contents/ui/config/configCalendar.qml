@@ -3,8 +3,10 @@ import QtQuick.Controls 2.5 as QQC2
 import org.kde.kirigami 2.4 as Kirigami
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.plasmoid 2.0
+import QtQuick.Layouts 1.0
 
 import "../lib/yearly_events.js" as EventsModule
+import "../lib/main.js" as MainJS
 
 Kirigami.FormLayout {
     id: page
@@ -14,6 +16,8 @@ Kirigami.FormLayout {
     property alias cfg_main_calendar: page.firstCalendarDropdownValue
     property alias cfg_second_calendar: page.secondCalendarDropdownValue
     property alias cfg_show_events: showEvents.checked
+
+    property alias cfg_compactRepresentationFormat: _formatField.text
 
     property var calendar_type_list_old : ["gregorian", "Jalali(shamsi)",'hijri(islamic)']
     
@@ -68,6 +72,113 @@ Kirigami.FormLayout {
         text: i18n("Show event pane")
     }
 
+    Kirigami.Separator { Kirigami.FormData.isSection: true }
+
+    // QQC2.Label {
+    //     Kirigami.FormData.label: i18n("Clock & Date Format")
+    //     text: i18n("Pattern used in the calendar (Qt format)")
+    //     wrapMode: Text.WordWrap
+    // }
+
+    // 2) The format input
+    QQC2.TextField {
+        id: _formatField
+        Kirigami.FormData.label: i18n("Clock & Date Format:")
+        placeholderText: "'SD SMMMM SYYYY , *HH:mm* , MMMM D ddd'"
+        selectByMouse: true
+        // clearButtonEnabled: true
+        onTextChanged: previewTimer.restart()
+    }
+
+    Loader {
+        id: previewHelper
+        source: Qt.resolvedUrl("../CompactRepresentation.qml")
+        active: true
+        visible: false
+        asynchronous: true
+        onLoaded: previewTimer.restart()
+    }
+
+
+    QQC2.Label {
+        id: previewLabel
+        text: i18n(previewText())
+        opacity: 0.85
+        wrapMode: Text.NoWrap
+        textFormat: Text.RichText
+        // smooth: true
+
+        function previewText() {
+            try {
+                if (previewHelper.status === Loader.Ready &&
+                    previewHelper.item &&
+                    typeof previewHelper.item.get_calendar_text === "function") {
+
+                    var today = MainJS.get_unvirsal_date(
+                        plasmoid.configuration.main_calendar
+                    )
+                    return MainJS.calendar_formated_text(today, _formatField.text, plasmoid.configuration.main_calendar, plasmoid.configuration.second_calendar)
+                }
+            } catch (e) {
+                console.log("Preview error:", e)
+            }
+
+            return ""
+        }
+    }
+
+    // Avoid hammering the helper while typing
+    Timer {
+        id: previewTimer
+        interval: 150
+        repeat: false
+        // onTriggered: previewLabel.text = i18n("Preview: %1", previewLabel.previewText())
+        onTriggered: previewLabel.text = i18n(previewLabel.previewText())
+    }
+
+    QQC2.Label {
+        Kirigami.FormData.isSection: true
+        text: i18n("Common presets:")
+    }
+    RowLayout{
+        
+    }
+
+    GridLayout {
+        id: presetGrid
+        columns: 3
+        rowSpacing: Kirigami.Units.smallSpacing
+        columnSpacing: Kirigami.Units.smallSpacing
+
+        Repeater {
+            model: [
+                "YYYY-MM-DD",
+                "MMMM D ddd",
+                "D",
+                "HH:mm",
+                "*HH:mm*",
+                "MMM D",
+                "HH:mm:ss"
+            ]
+            delegate: QQC2.Button {
+                text: modelData
+                Layout.fillWidth: true
+                onClicked: _formatField.text = modelData
+            }
+        }
+
+        QQC2.Button {
+            text: i18n("Reset to default")
+            Layout.columnSpan: 3
+            onClicked: _formatField.text = "SD SMMMM SYYYY , *HH:mm* , MMMM D ddd"
+        }
+    }
+
+    // QQC2.Label { //TODO:fix it 
+    //     text: i18n("Tokens: yyyy=year, MM=month, dd=day, hh/HH=hour(12/24), mm=minute, ss=second, EEE=weekday.")
+    //     wrapMode: Text.WordWrap
+    //     opacity: 0.7
+    // }
 
     function calendar_type_list2Init(){
         calendar_type_list2.insert(0, { 'key': "NO", 'value': '--' , 'enabled1': true })

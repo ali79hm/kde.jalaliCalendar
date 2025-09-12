@@ -29,5 +29,31 @@
         <entry name="holiday_json_files" type="String">
             <default></default> <!-- Store serialized JSON as a string -->
         </entry>
+        <entry name="compactRepresentationFormat" type="String">
+            <default>SD SMMMM SYYYY , *HH:mm* , MMMM D ddd</default>
+        </entry>
+    </group>
+    <group name="Google Calendar">
+        <entry name="latestClientId" type="String">
+			<default>431326325703-n0fk9t2cqp42ghdlbk4ejaujt87qvqli.apps.googleusercontent.com</default>
+		</entry>
+		<entry name="latestClientSecret" type="String">
+			<default>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</default>
+		</entry>
+        <entry name="accessToken" type="String">
+			<default></default>
+		</entry>
+		<entry name="accessTokenType" type="String">
+			<default></default>
+		</entry>
+		<entry name="accessTokenExpiresAt" type="UInt">
+			<default>0</default>
+		</entry>
+        <entry name="refreshToken" type="String">
+            <default></default>
+        </entry>
+        <entry name="refreshTokenIssuedAt" type="UInt">
+            <default>0</default>
+        </entry>
     </group>
 </kcfg>

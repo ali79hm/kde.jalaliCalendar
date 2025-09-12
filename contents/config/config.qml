@@ -18,6 +18,12 @@ ConfigModel {
         icon: "view-calendar-list"
         source: "config/configEvents.qml"
     }
+    ConfigCategory {
+		name: i18n("Google Events")
+        icon: "configure"
+		// icon: plasmoid.file("", "icons/Google_Calendar_2020.svg")
+		source: "config/ConfigGoogleCalendar.qml"
+	}
     // ConfigCategory {
     //     name: i18n("Another Tab")
     //     icon: "color-management"
