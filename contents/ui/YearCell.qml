@@ -10,15 +10,16 @@ import org.kde.plasma.components 3.0 as PlasmaComponents3
 import "lib/main.js" as CalendarBackend
 
 MouseArea {
-    id: monthcell
+    id: yearcell
+    // property bool isCurrentMonth:true
+    property var is_this_year : modelData[1] == root.today.getFullYear()
 
-    property int displayedMonth: modelData[0]
-    property int selectedYear : -1
-    property bool is_this_month:selectedYear==root.today.getFullYear() && modelData[0] == root.today.getMonth()+1
+    // property var is_this_year:root.currntDate.getFullYear()==root.today.getFullYear()
+
 
     hoverEnabled: true
-    width: monthGrid.cellWidth
-    height: monthGrid.cellHeight
+    width: yearsGrid.cellWidth
+    height: yearsGrid.cellHeight
     onClicked : onClick()
     
 
@@ -31,7 +32,7 @@ MouseArea {
         id: todayRect
         anchors.fill: parent
         opacity: {
-            if (is_this_month){
+            if (is_this_year){
                 0.6
             } else {
                 0
@@ -46,7 +47,7 @@ MouseArea {
         id: highlightDate
         anchors.fill: todayRect
         opacity: {
-            if (monthcell.containsMouse){
+            if (yearcell.containsMouse){
                 0.6
             } else {
                 0
@@ -67,10 +68,10 @@ MouseArea {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top
             }
-            height: monthcell.height
+            height: yearcell.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text: modelData[1]
+            text: CalendarBackend.getLocalNumber(modelData[1],firstCalType)
             opacity: 1.0
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
@@ -85,14 +86,14 @@ MouseArea {
     }
 
     function getFirstCalendarFontSize(){
-        return Math.min(Math.floor(monthcell.height / 3), Math.floor(monthcell.width * 0.2))
+        return Math.min(Math.floor(yearcell.height / 3), Math.floor(yearcell.width * 0.2))
         //TODO : need change
         if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
             
-            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(monthcell.height / 2), Math.floor(monthcell.width * 7/8)))
+            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(yearcell.height / 2), Math.floor(yearcell.width * 7/8)))
         }
         else{
-            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(monthcell.height / 32 *13), Math.floor(monthcell.width * 7/8)))
+            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(yearcell.height / 32 *13), Math.floor(yearcell.width * 7/8)))
         }
     }
 }

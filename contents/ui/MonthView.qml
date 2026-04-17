@@ -15,6 +15,7 @@ import "lib/main.js" as CalendarBackend
 Item{
 	id:monthView
 	
+	property var month_selector_page_ref
 
 	ListModel {
 		id: monthModel
@@ -86,7 +87,7 @@ Item{
 			firstCalType : root.firstCalType
 			onHeaderClicked: {
 				// console.log('clicekd!!!!!!')
-				stack.push(monthPage)
+				monthView.month_selector_page_ref = stack.push(monthPage)
 			}
 		}
 	}
@@ -94,9 +95,10 @@ Item{
 	Component {
 		id: monthPage
 		MonthPage{
+			id:monthPageItem
 			onHeaderClicked: {
-				console.log('clicekd on year!!!!!!')
-				// stack.push(yearOverview)
+				// console.log('clicekd on year!!!!!!')
+				stack.push(yearsPage)
 			}
 			onActivated: {
 				// console.log(date)
@@ -111,6 +113,25 @@ Item{
 		}
 	}
 
+	Component {
+		id: yearsPage
+		YearsPage {
+
+			onActivated: {
+				root.currntDate.setFullYear(yearList[index][1])
+				monthView.month_selector_page_ref.refresh_current_year()
+				stack.pop()
+
+			}
+
+			onResetToToday: {
+				daysPage.resetToToday()
+				stack.pop()
+				stack.pop()
+			}
+		}
+	}
+
 	Component.onCompleted : {
         // console.log("===============================")
 		// console.log('')
@@ -118,7 +139,6 @@ Item{
 	}
 
 	function selectMonth(index,model){
-		var selectedMonth = model[index]
 		daysPage.goToMonth(index)
 	}
 
