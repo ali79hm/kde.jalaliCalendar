@@ -11,12 +11,12 @@
 		"Icon": "view-calendar",
 		"Id": "kde.jalaliCalendar",
 		"License": "GPL",
-		"Name": "aliJalaliCalendar",
+		"Name": "kdeJalaliCalendar",
 		"ServiceTypes": [
 			"Plasma/Applet"
 		],
-		"Version": "76",
-		"Website": "https://github.com/"
+		"Version": "0.1.0",
+		"Website": "https://github.com/ali79hm/kde.jalaliCalendar"
 	},
 	"X-Plasma-API": "declarativeappletscript",
 	"X-Plasma-MainScript": "ui/main.qml",
