@@ -1,6 +1,6 @@
 # KDE Jalali Calendar
 
-[فارسی](README.md) | [English]()
+[فارسی](README.md) | [English](README.en.md)
 
 This Plasma widget is a calendar and agenda for KDE Plasma. It supports three date systems:
 
