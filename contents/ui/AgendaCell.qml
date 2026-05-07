@@ -34,7 +34,7 @@ MouseArea {
     Rectangle {
         id: highlightRect
         anchors.fill: agendaCell
-        opacity: agendaCell.containsMouse ? 0.4 : 0
+        opacity: agendaCell.containsMouse && !agendaCell.pressed ? 0.4 : 0
         radius: 2
         Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
         color: PlasmaCore.Theme.highlightColor
