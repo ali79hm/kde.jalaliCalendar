@@ -2,6 +2,8 @@ import QtQuick 2.2
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.15 as QQC2
+import org.kde.kirigami 2.20 as Kirigami
 
 // import "lib/PersianDate.js" as PersianDate
 import "lib/main.js" as CalendarBackend
@@ -43,8 +45,27 @@ PlasmoidItem{
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
     preferredRepresentation: compactRepresentation
-    fullRepresentation: Calendar{
-       showAgenda:plasmoid.configuration.show_events
+    fullRepresentation: Item {
+        id: fullRoot
+
+        // implicitWidth: 720
+        // implicitHeight: 420
+
+        // implicitWidth: plasmoid.configuration.onboarding_completed ? calendarView.implicitWidth : Kirigami.Units.gridUnit * 34
+        // implicitHeight: plasmoid.configuration.onboarding_completed ? calendarView.implicitHeight : Kirigami.Units.gridUnit * 30
+
+        Calendar {
+            id: calendarView
+            anchors.fill: parent
+            showAgenda: plasmoid.configuration.show_events
+            visible: plasmoid.configuration.onboarding_completed
+        }
+
+        OnboardingFlow {
+            anchors.fill: parent
+            visible: !plasmoid.configuration.onboarding_completed
+            onFinished: plasmoid.configuration.onboarding_completed = true
+        }
     }
 
     compactRepresentation: CompactRepresentation { }

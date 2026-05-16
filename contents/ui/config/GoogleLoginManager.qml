@@ -66,7 +66,9 @@ Item {
     }
     function urlToLocalPath(u) {
         if (!u) return "";
-        return u.startsWith("file://") ? u.replace("file://", "") : u;
+        console.log("Resolving URL to local path:", u);
+        var s = String(u);
+        return s.startsWith("file://") ? s.replace("file://", "") : s;
     }
     function pickPort() {
         // try a non-standard range to reduce collisions
