@@ -14,6 +14,11 @@ ConfigModel {
         source: "config/configCalendar.qml"
     }
     ConfigCategory {
+        name: i18n("Popup Settings")
+        icon: "window"
+        source: "config/configPopup.qml"
+    }
+    ConfigCategory {
         name: i18n("Events")
         icon: "view-calendar-list"
         source: "config/configEvents.qml"

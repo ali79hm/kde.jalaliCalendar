@@ -137,7 +137,7 @@ Kirigami.Page {
 
                     model: ListModel {
                         ListElement { key: "en"; label: "English" }
-                        ListElement { key: "fa"; label: "فارسی" }
+                        // ListElement { key: "fa"; label: "فارسی" }
                     }
 
                     currentIndex: {

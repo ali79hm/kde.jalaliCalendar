@@ -48,11 +48,14 @@ PlasmoidItem{
     fullRepresentation: Item {
         id: fullRoot
 
-        // implicitWidth: 720
-        // implicitHeight: 420
-
-        // implicitWidth: plasmoid.configuration.onboarding_completed ? calendarView.implicitWidth : Kirigami.Units.gridUnit * 34
-        // implicitHeight: plasmoid.configuration.onboarding_completed ? calendarView.implicitHeight : Kirigami.Units.gridUnit * 30
+        implicitWidth: plasmoid.configuration.onboarding_completed
+            ? (plasmoid.configuration.show_events
+                ? plasmoid.configuration.popupWidth
+                : Math.max(1, Math.floor(plasmoid.configuration.popupWidth / 2)))
+            : 620
+        implicitHeight: plasmoid.configuration.onboarding_completed
+            ? plasmoid.configuration.popupHeight
+            : 400
 
         Calendar {
             id: calendarView
