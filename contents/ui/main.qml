@@ -1,14 +1,24 @@
 import QtQuick 2.2
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import QtQuick.Layouts 1.0
-import org.kde.plasma.core 2.0 as PlasmaCore
 
 // import "lib/PersianDate.js" as PersianDate
 import "lib/main.js" as CalendarBackend
 
-Item{
+PlasmoidItem{
     id:root
+
+    // Layout.minimumWidth: 200
+    // Layout.minimumHeight: 200
+
+    // Layout.preferredWidth: 200
+    // Layout.preferredHeight: 200
+
+    // implicitWidth: 800
+    // implicitHeight: 400
+
+
     property int startOfWeek: 6 //FIXME:must come from calendar backend
     property var firstCalType : plasmoid.configuration.main_calendar
     property var secondCalType : plasmoid.configuration.second_calendar
@@ -32,13 +42,13 @@ Item{
 
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
-    // Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.fullRepresentation: Calendar{
-        showAgenda:plasmoid.configuration.show_events
+    preferredRepresentation: compactRepresentation
+    fullRepresentation: Calendar{
+       showAgenda:plasmoid.configuration.show_events
     }
 
-    Plasmoid.compactRepresentation: CompactRepresentation { }
-    // Plasmoid.fullRepresentation: CompactRepresentation { }
+    compactRepresentation: CompactRepresentation { }
+    // fullRepresentation: CompactRepresentation { }
 
 
     function reset_day(date){

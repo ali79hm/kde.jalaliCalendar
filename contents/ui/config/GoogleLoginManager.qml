@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQml 2.15
 import QtQuick.Window 2.15
-import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasma5support 2.0 as Plasma5Support
 
 Item {
     id: root
@@ -18,7 +18,7 @@ Item {
     property string tokenEndpoint: "https://oauth2.googleapis.com/token"
 
     // --- Run external commands and capture stdout using Plasma's Executable engine ---
-    PlasmaCore.DataSource {
+    Plasma5Support.DataSource {
         id: exec
         engine: "executable"
 

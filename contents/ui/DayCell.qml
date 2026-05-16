@@ -1,11 +1,9 @@
 import QtQuick 2.2
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.1
-// import org.kde.plasma.calendar 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents3
-// import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 import "lib/main.js" as CalendarBackend
 
@@ -80,8 +78,8 @@ MouseArea {
             } 
         }
         radius: 2
-        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
-        color: PlasmaCore.Theme.textColor
+        Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration*2 } }
+        color: Kirigami.Theme.textColor
     }
 
     Rectangle {
@@ -97,10 +95,10 @@ MouseArea {
             }
         }
         radius: 2
-        // border.color: PlasmaCore.Theme.highlightColor
+        // border.color: Kirigami.Theme.highlightColor
         // border.width: 2
-        Behavior on opacity { NumberAnimation { duration: PlasmaCore.Units.shortDuration*2 } }
-        color: PlasmaCore.Theme.highlightColor
+        Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration*2 } }
+        color: Kirigami.Theme.highlightColor
         z: todayRect.z - 1
     }
 
@@ -115,8 +113,8 @@ MouseArea {
             anchors {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top
-                topMargin: PlasmaCore.Units.smallSpacing
-                margins: PlasmaCore.Units.smallSpacing
+                topMargin: Kirigami.Units.smallSpacing
+                margins: Kirigami.Units.smallSpacing
             }
             height: daycell.height / 4
             text: daycell.showSecondCal?CalendarBackend.getLocalNumber(modelData[1][0], root.secondCalType):''
@@ -125,14 +123,14 @@ MouseArea {
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getSecondCalendarFontSize()
             font.pointSize: -1
-            color: holidays.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : (is_today ? PlasmaCore.Theme.backgroundColor : PlasmaCore.Theme.textColor)
+            color: holidays.includes(modelData[0][0]) ? Kirigami.Theme.negativeTextColor : (is_today ? Kirigami.Theme.backgroundColor : Kirigami.Theme.textColor)
         }
 
         PlasmaComponents3.Label {
             id: firstCalendar
             anchors {
                 horizontalCenter: parent.horizontalCenter
-                margins: secondCalendar.visible ? PlasmaCore.Units.smallSpacing : 0
+                margins: secondCalendar.visible ? Kirigami.Units.smallSpacing : 0
                 top: secondCalendar.visible ? secondCalendar.bottom : parent.top
             }
             height: daycell.showSecondCal ? daycell.height / 3 : daycell.height
@@ -145,9 +143,9 @@ MouseArea {
             fontSizeMode: Text.HorizontalFit
             font.pixelSize: getFirstCalendarFontSize()
             font.pointSize: -1
-            color: holidays.includes(modelData[0][0]) ? PlasmaCore.Theme.negativeTextColor : (is_today ? PlasmaCore.Theme.backgroundColor : PlasmaCore.Theme.textColor)
+            color: holidays.includes(modelData[0][0]) ? Kirigami.Theme.negativeTextColor : (is_today ? Kirigami.Theme.backgroundColor : Kirigami.Theme.textColor)
             Behavior on color {
-                ColorAnimation { duration: PlasmaCore.Units.shortDuration * 2 }
+                ColorAnimation { duration: Kirigami.Units.shortDuration * 2 }
             }
         }
     }
@@ -155,19 +153,19 @@ MouseArea {
     function getFirstCalendarFontSize(){
         if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
             
-            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))
+            return Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))
         }
         else{
-            return Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 32 *13), Math.floor(daycell.width * 7/8)))
+            return Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(daycell.height / 32 *13), Math.floor(daycell.width * 7/8)))
         }
     }
     function getSecondCalendarFontSize(){
         if (CalendarBackend.isFarsiNumbers(root.secondCalType)){
             
-            return Math.floor(Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))/8*5)
+            return Math.floor(Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))/8*4)
         }
         else{
-            return Math.floor( Math.max(PlasmaCore.Theme.smallestFont.pixelSize, Math.min(Math.floor(daycell.height / 8 *3), Math.floor(daycell.width * 7/8)))/2)
+            return Math.floor( Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(daycell.height / 8 *3), Math.floor(daycell.width * 7/8)))/2)
         }
     }
 }

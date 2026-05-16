@@ -2,10 +2,6 @@ import QtQuick 2.2
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.1
 
-
-import org.kde.plasma.calendar 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-
 import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.extras 2.0 as PlasmaExtras
@@ -38,20 +34,20 @@ Item{
 
 		pushEnter: Transition {
 			NumberAnimation {
-				duration: units.shortDuration
+				duration: Kirigami.Units.shortDuration
 				property: "opacity"
 				from: 0
 				to: 1
 			}
 			ScaleAnimator {
-				duration: units.longDuration
+				duration: Kirigami.Units.longDuration
 				from: 1.5
 				to: 1
 			}
 		}
 		pushExit: Transition {
 			NumberAnimation {
-				duration: units.shortDuration
+				duration: Kirigami.Units.shortDuration
 				property: "opacity"
 				from: 1
 				to: 0
@@ -60,7 +56,7 @@ Item{
 
 		popEnter: Transition {
 			NumberAnimation {
-				duration: units.shortDuration
+				duration: Kirigami.Units.shortDuration
 				property: "opacity"
 				from: 0
 				to: 1
@@ -69,13 +65,13 @@ Item{
 		popExit: Transition {
 			id: popExit
 			NumberAnimation {
-				duration: units.shortDuration
+				duration: Kirigami.Units.shortDuration
 				property: "opacity"
 				from: 0.5
 				to: 0
 			}
 			ScaleAnimator {
-				duration: units.longDuration
+				duration: Kirigami.Units.longDuration
 				from : 1
 				// so no matter how much you scaled, it would still fly towards you
 				to: 1.5

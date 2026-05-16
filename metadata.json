@@ -1,27 +1,27 @@
 {
-	"KPlugin": {
-		"Authors": [
-			{
-				"Email": "ali79hm@gmail.com",
-				"Name": "seyed ali hosseini"
-			}
-		],
-		"Category": "Date and Time",
-		"Description": "Plasmoid for a calendar+agenda that syncs to Google Calendar.",
-		"Icon": "view-calendar",
-		"Id": "kde.jalaliCalendar",
-		"License": "GPL",
-		"Name": "kdeJalaliCalendar",
-		"ServiceTypes": [
-			"Plasma/Applet"
-		],
-		"Version": "0.1.0",
-		"Website": "https://github.com/ali79hm/kde.jalaliCalendar"
-	},
-	"X-Plasma-API": "declarativeappletscript",
-	"X-Plasma-MainScript": "ui/main.qml",
-	"X-Plasma-Provides": [
-		"org.kde.plasma.time",
-		"org.kde.plasma.date"
-	]
+    "KPackageStructure": "Plasma/Applet",
+
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "ali79hm@gmail.com",
+                "Name": "seyed ali hosseini"
+            }
+        ],
+        "Category": "Date and Time",
+        "Icon": "view-calendar",
+        "Id": "kde.jalaliCalendar",
+        "Name": "kdeJalaliCalendar",
+        "Description": "Plasmoid for a calendar+agenda that syncs to Google Calendar.",
+        "Version": "0.1.1",
+        "Website": "https://github.com/ali79hm/kde.jalaliCalendar",
+        "License": "GPLv3"
+    },
+
+    "X-Plasma-API-Minimum-Version": "6.0",
+
+    "X-Plasma-Provides": [
+        "org.kde.plasma.time",
+        "org.kde.plasma.date"
+    ]
 }
