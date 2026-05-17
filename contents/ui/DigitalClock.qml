@@ -11,6 +11,7 @@ import QtQuick 2.6
 import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as Components // Date label height breaks on vertical panel with PC3 version
+import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.private.digitalclock 1.0
 
 Item {
@@ -55,7 +56,7 @@ Item {
         } else {
             // Adaptive
             return plasmoid.formFactor === PlasmaCore.Types.Horizontal &&
-                main.height <= 2 * PlasmaCore.Theme.smallestFont.pixelSize &&
+                main.height <= 2 * ((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12) &&
                 (main.showDate || timezoneLabel.visible);
         }
     }
@@ -124,7 +125,7 @@ Item {
 
                 height: timeLabel.height + (main.showDate || timezoneLabel.visible ? 0.8 * timeLabel.height : 0)
                 width: Math.max(timeLabel.paintedWidth + (main.showDate ? timezoneLabel.paintedWidth : 0), 
-                                timezoneLabel.paintedWidth, dateLabel.paintedWidth) + PlasmaCore.Units.smallSpacing * 2
+                                timezoneLabel.paintedWidth, dateLabel.paintedWidth) + Kirigami.Units.smallSpacing * 2
             }
 
             PropertyChanges {
@@ -185,7 +186,7 @@ Item {
                  * and still fits well into the panel with all the applied margins.
                  */
                 height: Math.min(main.showDate || timezoneLabel.visible ? main.height * 0.56 : main.height * 0.71,
-                                 3 * PlasmaCore.Theme.defaultFont.pixelSize)
+                                 3 * Kirigami.Theme.defaultFont.pixelSize)
 
                 font.pixelSize: sizehelper.height
             }
@@ -222,7 +223,7 @@ Item {
                 target: dateLabel
 
                 height: timeLabel.height
-                width: dateLabel.paintedWidth + PlasmaCore.Units.smallSpacing
+                width: dateLabel.paintedWidth + Kirigami.Units.smallSpacing
 
                 font.pixelSize: 1024
                 verticalAlignment: Text.AlignVCenter
@@ -260,10 +261,10 @@ Item {
             PropertyChanges {
                 target: sizehelper
 
-                height: Math.min(main.height, 3 * PlasmaCore.Theme.defaultFont.pixelSize)
+                height: Math.min(main.height, 3 * Kirigami.Theme.defaultFont.pixelSize)
 
                 fontSizeMode: Text.VerticalFit
-                font.pixelSize: 3 * PlasmaCore.Theme.defaultFont.pixelSize
+                font.pixelSize: 3 * Kirigami.Theme.defaultFont.pixelSize
             }
         },
 
@@ -298,7 +299,7 @@ Item {
                 height: sizehelper.contentHeight
                 width: main.width
 
-                font.pixelSize: Math.min(timeLabel.height, 3 * PlasmaCore.Theme.defaultFont.pixelSize)
+                font.pixelSize: Math.min(timeLabel.height, 3 * Kirigami.Theme.defaultFont.pixelSize)
                 fontSizeMode: Text.HorizontalFit
             }
 
@@ -318,13 +319,13 @@ Item {
 
                 width: main.width
                 //NOTE: in order for Text.Fit to work as intended, the actual height needs to be quite big, in order for the font to enlarge as much it needs for the available width, and then request a sensible height, for which contentHeight will need to be considered as opposed to height
-                height: PlasmaCore.Units.gridUnit * 10
+                height: Kirigami.Units.gridUnit * 10
 
                 fontSizeMode: Text.Fit
                 verticalAlignment: Text.AlignTop
                 // Those magic numbers are purely what looks nice as maximum size, here we have it the smallest
                 // between slightly bigger than the default font (1.4 times) and a bit smaller than the time font
-                font.pixelSize: Math.min(0.7 * timeLabel.height, PlasmaCore.Theme.defaultFont.pixelSize * 1.4)
+                font.pixelSize: Math.min(0.7 * timeLabel.height, Kirigami.Theme.defaultFont.pixelSize * 1.4)
                 elide: Text.ElideRight
                 wrapMode: Text.WordWrap
             }
@@ -342,7 +343,7 @@ Item {
                 width: main.width
 
                 fontSizeMode: Text.HorizontalFit
-                font.pixelSize: 3 * PlasmaCore.Theme.defaultFont.pixelSize
+                font.pixelSize: 3 * Kirigami.Theme.defaultFont.pixelSize
             }
         },
 
@@ -354,8 +355,8 @@ Item {
                 target: main
                 Layout.fillHeight: false
                 Layout.fillWidth: false
-                Layout.minimumWidth: PlasmaCore.Units.gridUnit * 3
-                Layout.minimumHeight: PlasmaCore.Units.gridUnit * 3
+                Layout.minimumWidth: Kirigami.Units.gridUnit * 3
+                Layout.minimumHeight: Kirigami.Units.gridUnit * 3
             }
 
             PropertyChanges {
@@ -395,7 +396,7 @@ Item {
 
                 height: 0.7 * timeLabel.height
                 font.pixelSize: 1024
-                width: Math.max(timeLabel.contentWidth, PlasmaCore.Units.gridUnit * 3)
+                width: Math.max(timeLabel.contentWidth, Kirigami.Units.gridUnit * 3)
                 verticalAlignment: Text.AlignVCenter
 
                 fontSizeMode: Text.Fit
@@ -491,14 +492,14 @@ Item {
             verticalItemAlignment: Grid.AlignVCenter
 
             flow: Grid.TopToBottom
-            columnSpacing: PlasmaCore.Units.smallSpacing
+            columnSpacing: Kirigami.Units.smallSpacing
 
             Components.Label  {
                 id: timeLabel
 
                 font {
-                    family: plasmoid.configuration.fontFamily || PlasmaCore.Theme.defaultFont.family
-                    weight: plasmoid.configuration.boldText ? Font.Bold : PlasmaCore.Theme.defaultFont.weight
+                    family: plasmoid.configuration.fontFamily || Kirigami.Theme.defaultFont.family
+                    weight: plasmoid.configuration.boldText ? Font.Bold : Kirigami.Theme.defaultFont.weight
                     italic: plasmoid.configuration.italicText
                     pixelSize: 1024
                     pointSize: -1 // Because we're setting the pixel size instead

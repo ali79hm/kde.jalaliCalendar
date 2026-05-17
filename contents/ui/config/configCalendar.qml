@@ -1,7 +1,6 @@
 import QtQuick 2.2
 import QtQuick.Controls 2.5 as QQC2
 import org.kde.kirigami 2.4 as Kirigami
-import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.plasmoid 2.0
 import QtQuick.Layouts 1.0
 
@@ -13,6 +12,9 @@ Kirigami.FormLayout {
 
     property var firstCalendarDropdownValue : plasmoid.configuration.main_calendar
     property var secondCalendarDropdownValue : plasmoid.configuration.second_calendar
+    property var is_event_pane_visible : plasmoid.configuration.show_events
+    property var compactRepresentationFormat : plasmoid.configuration.compactRepresentationFormat
+
     property alias cfg_main_calendar: page.firstCalendarDropdownValue
     property alias cfg_second_calendar: page.secondCalendarDropdownValue
     property alias cfg_show_events: showEvents.checked
@@ -69,6 +71,7 @@ Kirigami.FormLayout {
     }
     QQC2.CheckBox {
         id: showEvents
+        checked: page.is_event_pane_visible
         text: i18n("Show event pane")
     }
 
@@ -87,6 +90,7 @@ Kirigami.FormLayout {
         placeholderText: "'SD SMMMM SYYYY , *HH:mm* , MMMM D ddd'"
         selectByMouse: true
         // clearButtonEnabled: true
+        text: page.compactRepresentationFormat
         onTextChanged: previewTimer.restart()
     }
 

@@ -1,14 +1,26 @@
 import QtQuick 2.2
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 import QtQuick.Layouts 1.0
-import org.kde.plasma.core 2.0 as PlasmaCore
+import QtQuick.Controls 2.15 as QQC2
+import org.kde.kirigami 2.20 as Kirigami
 
 // import "lib/PersianDate.js" as PersianDate
 import "lib/main.js" as CalendarBackend
 
-Item{
+PlasmoidItem{
     id:root
+
+    // Layout.minimumWidth: 200
+    // Layout.minimumHeight: 200
+
+    // Layout.preferredWidth: 200
+    // Layout.preferredHeight: 200
+
+    // implicitWidth: 800
+    // implicitHeight: 400
+
+
     property int startOfWeek: 6 //FIXME:must come from calendar backend
     property var firstCalType : plasmoid.configuration.main_calendar
     property var secondCalType : plasmoid.configuration.second_calendar
@@ -32,13 +44,35 @@ Item{
 
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
-    // Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.fullRepresentation: Calendar{
-        showAgenda:plasmoid.configuration.show_events
+    preferredRepresentation: compactRepresentation
+    fullRepresentation: Item {
+        id: fullRoot
+
+        implicitWidth: plasmoid.configuration.onboarding_completed
+            ? (plasmoid.configuration.show_events
+                ? plasmoid.configuration.popupWidth
+                : Math.max(1, Math.floor(plasmoid.configuration.popupWidth / 2)))
+            : 620
+        implicitHeight: plasmoid.configuration.onboarding_completed
+            ? plasmoid.configuration.popupHeight
+            : 400
+
+        Calendar {
+            id: calendarView
+            anchors.fill: parent
+            showAgenda: plasmoid.configuration.show_events
+            visible: plasmoid.configuration.onboarding_completed
+        }
+
+        OnboardingFlow {
+            anchors.fill: parent
+            visible: !plasmoid.configuration.onboarding_completed
+            onFinished: plasmoid.configuration.onboarding_completed = true
+        }
     }
 
-    Plasmoid.compactRepresentation: CompactRepresentation { }
-    // Plasmoid.fullRepresentation: CompactRepresentation { }
+    compactRepresentation: CompactRepresentation { }
+    // fullRepresentation: CompactRepresentation { }
 
 
     function reset_day(date){

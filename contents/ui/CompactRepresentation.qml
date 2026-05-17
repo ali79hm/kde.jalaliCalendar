@@ -1,12 +1,13 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.1
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.components 3.0 as PlasmaComponents
+import org.kde.kirigami 2.0 as Kirigami
 import "lib/main.js" as CalendarBackend
 
 MouseArea {
-    onClicked: plasmoid.expanded = !plasmoid.expanded
     id: compactRepresentation
+
+    acceptedButtons: Qt.LeftButton
 
     property string compactRepresentationFormat: plasmoid.configuration.compactRepresentationFormat
     // property string compactRepresentationFormat: 'dddd D MMMM'
@@ -14,8 +15,19 @@ MouseArea {
     // property int compactRepresentationHorizontalExtraSpace: plasmoid.configuration.compactRepresentationHorizontalExtraSpace
     property int compactRepresentationHorizontalExtraSpace: 5
     
-    Layout.preferredWidth: compactLabel.width + compactRepresentationHorizontalExtraSpace *2
-    Layout.maximumWidth: compactLabel.width + compactRepresentationHorizontalExtraSpace *2
+    property bool wasExpanded: false
+
+    implicitWidth: compactLabel.implicitWidth + compactRepresentationHorizontalExtraSpace * 2
+    implicitHeight: compactLabel.implicitHeight + compactRepresentationHorizontalExtraSpace * 2
+    width: implicitWidth
+    height: implicitHeight
+    Layout.preferredWidth: implicitWidth
+    Layout.preferredHeight: implicitHeight
+    Layout.maximumWidth: implicitWidth
+    Layout.maximumHeight: implicitHeight
+
+    onPressed: wasExpanded = root.expanded
+    onClicked: root.expanded = !wasExpanded
 
     PlasmaComponents.Label {
         id: compactLabel
@@ -23,7 +35,7 @@ MouseArea {
         wrapMode: Text.NoWrap
         smooth: true
         textFormat: Text.RichText
-        font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, 16)
+        font.pixelSize: Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, 16)
         // text: root.today.format('HH:mm:ss')
         text:CalendarBackend.calendar_formated_text(root.today,compactRepresentationFormat,root.firstCalType,root.secondCalType)
         // text:get_calendar_text(root.today,compactRepresentationFormat)

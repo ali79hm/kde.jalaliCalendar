@@ -2,10 +2,6 @@ import QtQuick 2.2
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.1
 
-
-import org.kde.plasma.calendar 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-
 import org.kde.kirigami 2.0 as Kirigami
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.extras 2.0 as PlasmaExtras
@@ -34,7 +30,7 @@ Item{
 		//header controls
 		RowLayout {
 			id:controls
-			spacing: PlasmaCore.Units.smallSpacing
+			spacing: Kirigami.Units.smallSpacing
 			// layoutDirection :Qt.RightToLeft
 			anchors {
 				top: parent.top
@@ -54,8 +50,8 @@ Item{
 					}
 
 					// fontSizeMode: Text.HorizontalFit
-                    font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, parent.height)
-					y: layoutDirection=='R'?-font.pixelSize*0.6:-font.pixelSize*0.2
+					font.pixelSize: Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, parent.height)
+					y: layoutDirection=='R'?-font.pixelSize*0.3:-font.pixelSize*0.3
 					horizontalAlignment: Text.AlignLeft
 					text:CalendarBackend.get_title(firstCalType, root.currntDate)
 					}
@@ -127,7 +123,7 @@ Item{
                     width: monthGrid.cellWidth
                     height: monthGrid.cellHeight*2/3
                     text: modelData
-                    font.pixelSize: Math.max(PlasmaCore.Theme.smallestFont.pixelSize, monthGrid.cellHeight / 3)
+					font.pixelSize: Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, monthGrid.cellHeight / 3)
                     opacity: 0.4
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
