@@ -198,9 +198,10 @@ Item{
 
 	}
 	function goToMonth(index){
-		var tmp_date = root.currntDate
-		tmp_date.setMonth(index)
-		root.currntDate = tmp_date
+		root.currntDate = CalendarBackend.get_unvirsal_date(
+			firstCalType,
+			[root.currntDate.getFullYear(), index, 1]
+		)
 		root.nextMonthDate = root.currntDate.addMonth()
 		root.prevMonthDate = root.currntDate.subtractMonth()
 		calculate_dates()

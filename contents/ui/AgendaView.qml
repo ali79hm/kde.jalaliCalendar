@@ -28,8 +28,20 @@ PinchArea {
 
     property var month_google_events_cache: ({})
 
+    // Supported values: "disconnected", "loading", or "" to hide the row.
+    property string googleConnectionState: ""
+
     Component.onCompleted: {
         setTitles()
+        // setConnectionStatus('disconnected')
+    }
+
+    function setConnectionStatus(status) {
+        if (status === "disconnected" || status === "loading") {
+            googleConnectionState = status
+        } else {
+            googleConnectionState = ""
+        }
     }
 
     ColumnLayout {
@@ -226,6 +238,55 @@ PinchArea {
                 width: flick.width
                 spacing: 5
                 height: implicitHeight   // ensure height follows children
+
+                Item {
+                    id: googleConnectionStatus
+
+                    readonly property string tooltipText: agendaView.googleConnectionState === "loading"
+                        ? i18n("Loading Google Calendar events")
+                        : i18n("Google Calendar unavailable")
+
+                    width: contentColumn.width
+                    height: visible ? 18 : 0
+                    visible: agendaView.googleConnectionState !== ""
+
+                    Kirigami.Icon {
+                        id: connectionIcon
+
+                        anchors {
+                            right: parent.right
+                            rightMargin: Kirigami.Units.smallSpacing
+                            verticalCenter: parent.verticalCenter
+                        }
+                        width: 16
+                        height: 16
+                        source: agendaView.googleConnectionState === "loading"
+                            ? "view-refresh"
+                            : "network-disconnect"
+
+                        RotationAnimator on rotation {
+                            from: 0
+                            to: 360
+                            duration: 1200
+                            loops: Animation.Infinite
+                            running: agendaView.googleConnectionState === "loading"
+                        }
+
+                        MouseArea {
+                            id: connectionHoverArea
+
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            acceptedButtons: Qt.NoButton
+
+                            ToolTip.delay: Kirigami.Units.toolTipDelay
+                            ToolTip.text: googleConnectionStatus.tooltipText
+                            ToolTip.visible: containsMouse
+                        }
+
+                        Accessible.name: googleConnectionStatus.tooltipText
+                    }
+                }
 
                 Repeater {
                     model: agendaView.myagendaList
