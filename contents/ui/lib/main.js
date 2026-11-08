@@ -289,7 +289,7 @@ function get_month_google_events(InCalType, IN_Date){
         return out;
     }).catch(function(err){
         console.log("Calendar fetch error:", err.message);
-        return out; // return empty map on error
+        throw err; // Let the agenda display the disconnected status.
     });
 }
 

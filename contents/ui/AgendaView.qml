@@ -34,7 +34,6 @@ PinchArea {
 
     Component.onCompleted: {
         setTitles()
-        // setConnectionStatus('disconnected')
     }
 
     function setConnectionStatus(status) {
@@ -102,6 +101,7 @@ PinchArea {
 
     function updateGoogleEvents(Date) {
         console.log("updateGoogleEvents")
+        setConnectionStatus("loading")
 
         CalendarBackend.get_month_google_events(
             root.firstCalType, Date
@@ -119,7 +119,9 @@ PinchArea {
             }
 
             getEvents() // This time includes Google events
+            setConnectionStatus("")
         }).catch(function(err) {
+            setConnectionStatus("disconnected")
             console.log("Google event fetch failed:", err)
         })
     }
