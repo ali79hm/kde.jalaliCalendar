@@ -75,6 +75,13 @@ Kirigami.FormLayout {
     }
 
     QQC2.Label {
+        Layout.fillWidth: true
+        text: AppText.tr(plasmoid.configuration.language, "When the event pane is hidden, the popup uses half the selected width. Height stays the same.")
+        opacity: 0.7
+        wrapMode: Text.WordWrap
+    }
+
+    QQC2.Label {
         text: AppText.tr(plasmoid.configuration.language, "Popup height:")
     }
 

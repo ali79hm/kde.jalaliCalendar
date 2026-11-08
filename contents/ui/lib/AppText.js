@@ -31,6 +31,7 @@ var persian = {
   "holidays:": "تعطیلات:",
   "Popup width:": "عرض پنجره:",
   "Popup height:": "ارتفاع پنجره:",
+  "When the event pane is hidden, the popup uses half the selected width. Height stays the same.": "وقتی بخش رویدادها پنهان است، عرض پنجره نصف مقدار انتخاب‌شده خواهد بود. ارتفاع تغییری نمی‌کند.",
   "Allowed range: 600 to 900": "بازهٔ مجاز: ۶۰۰ تا ۹۰۰",
   "Allowed range: 250 to 500": "بازهٔ مجاز: ۲۵۰ تا ۵۰۰",
   "Reset to default": "بازنشانی به پیش‌فرض",
