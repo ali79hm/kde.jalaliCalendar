@@ -16,37 +16,6 @@ MouseArea{
 	property int spacing: 10 * Kirigami.Units.devicePixelRatio
 
 	property var showAgenda:true
-	property int rowHeight: plasmoid.configuration.rowHeight * Kirigami.Units.devicePixelRatio //TODO:add to config
-
-	property int leftColumnWidth: plasmoid.configuration.leftColumnWidth * Kirigami.Units.devicePixelRatio // MonthView //TODO:add to config
-	property int rightColumnWidth: plasmoid.configuration.rightColumnWidth * Kirigami.Units.devicePixelRatio // AgendaView //TODO:add to config
-
-
-	//FIXME: minimumWidth & minimumHeight must set later
-	// Layout.minimumWidth: 800 * Kirigami.Units.devicePixelRatio
-    // Layout.minimumHeight:  400 * Kirigami.Units.devicePixelRatio
-    // width: 800 * Kirigami.Units.devicePixelRatio
-    // height: 400 * Kirigami.Units.devicePixelRatio
-	Layout.minimumWidth: {
-		if(showAgenda){
-			return Kirigami.Units.gridUnit * 40
-		}
-		else{
-			return Kirigami.Units.gridUnit * 20
-		}
-	}
-	Layout.preferredWidth: {
-		if(showAgenda){
-			return (leftColumnWidth + spacing + rightColumnWidth) + (padding * 2)
-		}
-		else{
-			return leftColumnWidth + (padding * 2)
-		}
-	}
-	Layout.minimumHeight: Kirigami.Units.gridUnit * 20
-	Layout.preferredHeight: {
-		return rowHeight + padding * 2
-	}
 
 
 	GridLayout {

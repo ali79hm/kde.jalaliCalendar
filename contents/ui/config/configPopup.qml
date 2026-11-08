@@ -11,7 +11,7 @@ Kirigami.FormLayout {
     LayoutMirroring.childrenInherit: true
 
     property int defaultPopupWidth: 720
-    property int defaultPopupHeight: 400
+    property int defaultPopupHeight: 350
     property int popupWidthValue: Math.min(Math.max(plasmoid.configuration.popupWidth, 600), 900)
     property int popupHeightValue: Math.min(Math.max(plasmoid.configuration.popupHeight, 250), 500)
 
@@ -59,7 +59,7 @@ Kirigami.FormLayout {
             to: 900
             stepSize: 1
             value: page.popupWidthValue
-            onValueChanged: {
+            onMoved: {
                 if (page.popupWidthValue !== value) {
                     page.popupWidthValue = value
                 }
@@ -102,7 +102,7 @@ Kirigami.FormLayout {
             to: 500
             stepSize: 1
             value: page.popupHeightValue
-            onValueChanged: {
+            onMoved: {
                 if (page.popupHeightValue !== value) {
                     page.popupHeightValue = value
                 }

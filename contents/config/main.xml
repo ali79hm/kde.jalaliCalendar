@@ -10,7 +10,7 @@
             <default>720</default>
         </entry>
         <entry name="popupHeight" type="Int">
-            <default>400</default>
+            <default>350</default>
         </entry>
         <entry name="rightColumnWidth" type="Int">
             <default>400</default>

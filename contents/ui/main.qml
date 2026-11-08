@@ -52,17 +52,12 @@ PlasmoidItem{
 
     property var selectedDate : CalendarBackend.get_unvirsal_date(firstCalType)
     preferredRepresentation: compactRepresentation
-    fullRepresentation: Item {
+    fullRepresentation: PopupFrame {
         id: fullRoot
-
-        implicitWidth: plasmoid.configuration.onboarding_completed
-            ? (plasmoid.configuration.show_events
-                ? plasmoid.configuration.popupWidth
-                : Math.max(1, Math.floor(plasmoid.configuration.popupWidth / 2)))
-            : 620
-        implicitHeight: plasmoid.configuration.onboarding_completed
-            ? plasmoid.configuration.popupHeight
-            : 400
+        configuredWidth: plasmoid.configuration.popupWidth
+        configuredHeight: plasmoid.configuration.popupHeight
+        showAgenda: plasmoid.configuration.show_events
+        onboardingCompleted: plasmoid.configuration.onboarding_completed
 
         Calendar {
             id: calendarView
