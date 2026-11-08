@@ -1,3 +1,4 @@
+import "lib/AppText.js" as AppText
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15 as QQC2
@@ -5,14 +6,15 @@ import org.kde.kirigami 2.20 as Kirigami
 
 Kirigami.Page {
     id: onboardingPage
+    LayoutMirroring.enabled: plasmoid.configuration.language === "fa"
+    LayoutMirroring.childrenInherit: true
 
     signal finished()
 
     property var currentConfigLoader: null
     property var eventsConfigLoaderRef: null
-    property var languageDropdownRef: null
 
-    title: i18n("Jalali Calendar Setup")
+    title: AppText.tr(plasmoid.configuration.language, "Jalali Calendar Setup")
 
     QQC2.StackView {
         id: setupStack
@@ -31,13 +33,16 @@ Kirigami.Page {
     }
 
     footer: QQC2.ToolBar {
+        // Navigation stays in the same physical positions in both languages.
+        LayoutMirroring.enabled: false
+        LayoutMirroring.childrenInherit: true
         RowLayout {
             anchors.fill: parent
             anchors.margins: Kirigami.Units.smallSpacing
             spacing: Kirigami.Units.smallSpacing
 
             QQC2.Button {
-                text: i18n("Back")
+                text: AppText.tr(plasmoid.configuration.language, "Back")
                 enabled: setupStack.depth > 1
                 onClicked: onboardingPage.popPage()
             }
@@ -47,23 +52,16 @@ Kirigami.Page {
             }
 
             QQC2.Label {
-                text: i18n("Step %1 of 5", setupStack.depth)
+                text: AppText.tr(plasmoid.configuration.language, "Step %1 of 5", setupStack.depth)
                 opacity: 0.7
             }
 
             QQC2.Button {
-                text: setupStack.depth === 5 ? i18n("Start using app") : i18n("Next")
+                text: setupStack.depth === 5 ? AppText.tr(plasmoid.configuration.language, "Start using app") : AppText.tr(plasmoid.configuration.language, "Next")
                 icon.name: setupStack.depth === 5 ? "dialog-ok-apply" : "go-next"
 
                 onClicked: {
                     if (setupStack.depth === 1) {
-                        if (onboardingPage.languageDropdownRef) {
-                            plasmoid.configuration.language =
-                                onboardingPage.languageDropdownRef.model.get(
-                                    onboardingPage.languageDropdownRef.currentIndex
-                                ).key
-                        }
-
                         onboardingPage.pushPage(calendarPageComponent)
 
                     } else if (setupStack.depth === 2) {
@@ -74,6 +72,9 @@ Kirigami.Page {
 
                             plasmoid.configuration.second_calendar =
                                 onboardingPage.currentConfigLoader.item.cfg_second_calendar
+
+                            plasmoid.configuration.firstCalendarLanguage = onboardingPage.currentConfigLoader.item.cfg_firstCalendarLanguage
+                            plasmoid.configuration.secondCalendarLanguage = onboardingPage.currentConfigLoader.item.cfg_secondCalendarLanguage
 
                             plasmoid.configuration.show_events =
                                 onboardingPage.currentConfigLoader.item.cfg_show_events
@@ -89,6 +90,8 @@ Kirigami.Page {
                                 && onboardingPage.eventsConfigLoaderRef.item) {
                             plasmoid.configuration.events_json_files =
                                 onboardingPage.eventsConfigLoaderRef.item.cfg_events_json_files
+
+                            plasmoid.configuration.eventLanguage = onboardingPage.eventsConfigLoaderRef.item.cfg_eventLanguage
 
                             plasmoid.configuration.holiday_json_files =
                                 onboardingPage.eventsConfigLoaderRef.item.cfg_holiday_json_files
@@ -118,40 +121,22 @@ Kirigami.Page {
 
                 Kirigami.Heading {
                     Layout.fillWidth: true
-                    text: i18n("Welcome to Jalali Calendar")
+                    text: AppText.tr(plasmoid.configuration.language, "Welcome to Jalali Calendar")
                     horizontalAlignment: Text.AlignHCenter
                     wrapMode: Text.WordWrap
                 }
 
                 QQC2.Label {
                     Layout.fillWidth: true
-                    text: i18n("Let’s finish the basic setup before you start using the widget.")
+                    text: AppText.tr(plasmoid.configuration.language, "Let’s finish the basic setup before you start using the widget.")
                     horizontalAlignment: Text.AlignHCenter
                     wrapMode: Text.WordWrap
                 }
 
-                QQC2.ComboBox {
-                    id: languageDropdown
+                Loader {
                     Layout.fillWidth: true
-                    textRole: "label"
-
-                    model: ListModel {
-                        ListElement { key: "en"; label: "English" }
-                        // ListElement { key: "fa"; label: "فارسی" }
-                    }
-
-                    currentIndex: {
-                        var lang = plasmoid.configuration.language || "en"
-                        for (var i = 0; i < model.count; ++i) {
-                            if (model.get(i).key === lang) {
-                                return i
-                            }
-                        }
-                        return 0
-                    }
-                    Component.onCompleted: {
-                        onboardingPage.languageDropdownRef = languageDropdown
-                    }
+                    source: "config/configLanguage.qml"
+                    onLoaded: { item.live = true; item.appOnly = true }
                 }
             }
         }
@@ -167,19 +152,26 @@ Kirigami.Page {
                 spacing: Kirigami.Units.largeSpacing
 
                 Kirigami.Heading {
-                    text: i18n("Calendar Settings")
+                    text: AppText.tr(plasmoid.configuration.language, "Calendar Settings")
                     level: 1
                     Layout.fillWidth: true
                 }
 
                 QQC2.ScrollView {
+                    id: calendarSettingsScroll
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
+                    LayoutMirroring.enabled: false
+                    LayoutMirroring.childrenInherit: true
+                    contentWidth: availableWidth
 
                     Loader {
                         id: calendarConfigLoader
-                        width: parent.width
+                        // Size the form to its contents and align the whole form,
+                        // independently of its own right-to-left field layout.
+                        width: Math.min(calendarSettingsScroll.availableWidth, Math.max(implicitWidth, Kirigami.Units.gridUnit * 24))
+                        x: plasmoid.configuration.language === "fa" ? calendarSettingsScroll.availableWidth - width : 0
                         source: Qt.resolvedUrl("config/configCalendar.qml")
 
                         Component.onCompleted: {
@@ -201,19 +193,26 @@ Kirigami.Page {
                 spacing: Kirigami.Units.largeSpacing
 
                 Kirigami.Heading {
-                    text: i18n("Events Settings")
+                    text: AppText.tr(plasmoid.configuration.language, "Events Settings")
                     level: 1
                     Layout.fillWidth: true
                 }
 
                 QQC2.ScrollView {
+                    id: eventsSettingsScroll
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
+                    LayoutMirroring.enabled: false
+                    LayoutMirroring.childrenInherit: true
+                    contentWidth: availableWidth
 
                     Loader {
                         id: eventsConfigLoader
-                        width: parent.width
+                        // Size the form to its contents and align the whole form,
+                        // independently of its own right-to-left field layout.
+                        width: Math.min(eventsSettingsScroll.availableWidth, Math.max(implicitWidth, Kirigami.Units.gridUnit * 24))
+                        x: plasmoid.configuration.language === "fa" ? eventsSettingsScroll.availableWidth - width : 0
                         source: Qt.resolvedUrl("config/configEvents.qml")
 
                         Component.onCompleted: {
@@ -235,14 +234,14 @@ Kirigami.Page {
                 spacing: Kirigami.Units.largeSpacing
 
                 Kirigami.Heading {
-                    text: i18n("Google Calendar")
+                    text: AppText.tr(plasmoid.configuration.language, "Google Calendar")
                     level: 1
                     Layout.fillWidth: true
                 }
 
                 QQC2.Label {
                     Layout.fillWidth: true
-                    text: i18n("Configure Google Calendar now, or continue and do it later from settings.")
+                    text: AppText.tr(plasmoid.configuration.language, "Configure Google Calendar now, or continue and do it later from settings.")
                     wrapMode: Text.WordWrap
                 }
 
@@ -271,13 +270,13 @@ Kirigami.Page {
 
                 Kirigami.Heading {
                     Layout.fillWidth: true
-                    text: i18n("Setup complete")
+                    text: AppText.tr(plasmoid.configuration.language, "Setup complete")
                     horizontalAlignment: Text.AlignHCenter
                 }
 
                 QQC2.Label {
                     Layout.fillWidth: true
-                    text: i18n("Jalali Calendar is ready to use.")
+                    text: AppText.tr(plasmoid.configuration.language, "Jalali Calendar is ready to use.")
                     horizontalAlignment: Text.AlignHCenter
                     wrapMode: Text.WordWrap
                 }

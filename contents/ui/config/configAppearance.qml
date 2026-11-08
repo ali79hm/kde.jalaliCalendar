@@ -1,3 +1,4 @@
+import "../lib/AppText.js" as AppText
 // import QtQuick 2.2
 // import QtQuick.Controls 2.5
 // import org.kde.kirigami 2.4 as Kirigami
@@ -150,7 +151,7 @@ Item {
 
         PlasmaExtras.Heading {
             id: heading
-            text: "Configure Box Order"
+            text: AppText.tr(plasmoid.configuration.language, "Configure Box Order")
             level: 2
             color: Kirigami.Theme.textColor
             Layout.fillWidth: true
@@ -186,7 +187,7 @@ Item {
             }
         }
         Button {
-            text: "Save Order"
+            text: AppText.tr(plasmoid.configuration.language, "Save Order")
             Layout.fillWidth: true
             onClicked: {
             }
@@ -218,7 +219,7 @@ Item {
 
 //         PlasmaExtras.Heading {
 //             id: heading
-//             text: "Configure Box Order"
+//             text: AppText.tr(plasmoid.configuration.language, "Configure Box Order")
 //             level: 2
 //             color: Kirigami.Theme.textColor
 //             Layout.fillWidth: true
@@ -253,7 +254,7 @@ Item {
 //         }
 
 //         Button {
-//             text: "Save Order"
+//             text: AppText.tr(plasmoid.configuration.language, "Save Order")
 //             onClicked: {
 //                 console.log("Current box order:", root.boxOrder.join(", "))
 //             }

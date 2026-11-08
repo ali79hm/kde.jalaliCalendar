@@ -21,13 +21,20 @@ PlasmoidItem{
     // implicitHeight: 400
 
 
+    property string appLanguage: plasmoid.configuration.language
+    property string firstCalendarLanguage: CalendarBackend.resolve_language(firstCalType, plasmoid.configuration.firstCalendarLanguage)
+    property string secondCalendarLanguage: CalendarBackend.resolve_language(secondCalType, plasmoid.configuration.secondCalendarLanguage)
+    property string eventLanguage: plasmoid.configuration.eventLanguage
+    LayoutMirroring.enabled: appLanguage === "fa"
+    LayoutMirroring.childrenInherit: true
+
     property int startOfWeek: 6 //FIXME:must come from calendar backend
     property var firstCalType : plasmoid.configuration.main_calendar
     property var secondCalType : plasmoid.configuration.second_calendar
     property bool showSecondCal : secondCalType!='NO'
-    property var layoutDirection : CalendarBackend.get_layout_direction(firstCalType)
-    property var weekdaysNames : CalendarBackend.get_weekdays_names(firstCalType)
-    property var monthNames : CalendarBackend.get_month_names(firstCalType)
+    property var layoutDirection : CalendarBackend.get_layout_direction(firstCalType, firstCalendarLanguage)
+    property var weekdaysNames : CalendarBackend.get_weekdays_names(firstCalType, firstCalendarLanguage)
+    property var monthNames : CalendarBackend.get_month_names(firstCalType, firstCalendarLanguage)
     property var today : CalendarBackend.get_unvirsal_date(firstCalType)
     property var currntDate : reset_day(CalendarBackend.get_unvirsal_date(firstCalType))
     property var nextMonthDate : root.currntDate.addMonth()

@@ -1,3 +1,4 @@
+import "../lib/AppText.js" as AppText
 import QtQuick 2.2
 import QtQuick.Controls 2.5 as QQC2
 import org.kde.kirigami 2.4 as Kirigami
@@ -6,6 +7,8 @@ import QtQuick.Layouts 1.0
 
 Kirigami.FormLayout {
     id: page
+    LayoutMirroring.enabled: plasmoid.configuration.language === "fa"
+    LayoutMirroring.childrenInherit: true
 
     property int defaultPopupWidth: 720
     property int defaultPopupHeight: 400
@@ -28,8 +31,8 @@ Kirigami.FormLayout {
     }
 
     QQC2.Label {
-        Kirigami.FormData.label: i18n("Popup width:")
-        text: i18n("Popup width:")
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Popup width:")
+        text: AppText.tr(plasmoid.configuration.language, "Popup width:")
     }
 
     RowLayout {
@@ -66,13 +69,13 @@ Kirigami.FormLayout {
 
     QQC2.Label {
         Layout.fillWidth: true
-        text: i18n("Allowed range: 600 to 900")
+        text: AppText.tr(plasmoid.configuration.language, "Allowed range: 600 to 900")
         opacity: 0.7
         wrapMode: Text.WordWrap
     }
 
     QQC2.Label {
-        text: i18n("Popup height:")
+        text: AppText.tr(plasmoid.configuration.language, "Popup height:")
     }
 
     RowLayout {
@@ -109,14 +112,14 @@ Kirigami.FormLayout {
 
     QQC2.Label {
         Layout.fillWidth: true
-        text: i18n("Allowed range: 250 to 500")
+        text: AppText.tr(plasmoid.configuration.language, "Allowed range: 250 to 500")
         opacity: 0.7
         wrapMode: Text.WordWrap
     }
 
     QQC2.Button {
         Layout.fillWidth: true
-        text: i18n("Reset to default")
+        text: AppText.tr(plasmoid.configuration.language, "Reset to default")
         onClicked: {
             page.popupWidthValue = defaultPopupWidth
             page.popupHeightValue = defaultPopupHeight

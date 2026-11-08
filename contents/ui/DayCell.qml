@@ -32,10 +32,10 @@ MouseArea {
 	}
 
     function getToolTip1(){
-        return CalendarBackend.get_tool_tip(modelData[0],root.firstCalType)
+        return CalendarBackend.get_tool_tip(modelData[0],root.firstCalType, root.firstCalendarLanguage)
     }
     function getToolTip2(){
-        return CalendarBackend.get_tool_tip(modelData[1],root.secondCalType)
+        return CalendarBackend.get_tool_tip(modelData[1],root.secondCalType, root.secondCalendarLanguage)
     }
     function isSelected(){
         if (root.selectedDate == null){
@@ -117,7 +117,7 @@ MouseArea {
                 margins: Kirigami.Units.smallSpacing
             }
             height: daycell.height / 4
-            text: daycell.showSecondCal?CalendarBackend.getLocalNumber(modelData[1][0], root.secondCalType):''
+            text: daycell.showSecondCal?CalendarBackend.getLocalNumber(modelData[1][0], root.secondCalType, root.secondCalendarLanguage):''
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             fontSizeMode: Text.HorizontalFit
@@ -136,7 +136,7 @@ MouseArea {
             height: daycell.showSecondCal ? daycell.height / 3 : daycell.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text: CalendarBackend.getLocalNumber(modelData[0][0], root.firstCalType)
+            text: CalendarBackend.getLocalNumber(modelData[0][0], root.firstCalType, root.firstCalendarLanguage)
             opacity: isCurrentMonth ? 1.0 : 0.3
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
@@ -151,7 +151,7 @@ MouseArea {
     }
 
     function getFirstCalendarFontSize(){
-        if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
+        if (CalendarBackend.isFarsiNumbers(root.firstCalType, root.firstCalendarLanguage)){
             
             return Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))
         }
@@ -160,7 +160,7 @@ MouseArea {
         }
     }
     function getSecondCalendarFontSize(){
-        if (CalendarBackend.isFarsiNumbers(root.secondCalType)){
+        if (CalendarBackend.isFarsiNumbers(root.secondCalType, root.secondCalendarLanguage)){
             
             return Math.floor(Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(daycell.height / 2), Math.floor(daycell.width * 7/8)))/8*4)
         }

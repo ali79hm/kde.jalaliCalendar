@@ -37,7 +37,7 @@ MouseArea {
         textFormat: Text.RichText
         font.pixelSize: Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, 16)
         // text: root.today.format('HH:mm:ss')
-        text:CalendarBackend.calendar_formated_text(root.today,compactRepresentationFormat,root.firstCalType,root.secondCalType)
+        text:CalendarBackend.calendar_formated_text(root.today,compactRepresentationFormat,root.firstCalType,root.secondCalType,root.firstCalendarLanguage,root.secondCalendarLanguage,root.appLanguage)
         // text:get_calendar_text(root.today,compactRepresentationFormat)
         // text:get_calendar_text(root.today,'SD SMMMM SYYYY , HH:mm , MMMM D ddd')
     }
@@ -64,59 +64,7 @@ MouseArea {
 // s : second :6
 
     function get_calendar_text(date, format) {
-        var second_date = CalendarBackend.convert_calendars_light(date,root.firstCalType,root.secondCalType)
-        var second_date = CalendarBackend.get_unvirsal_date(root.secondCalType,second_date)
-        var dateFormated = CalendarBackend.getLocalNumber(date.format('YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s'),root.firstCalType).split('|')
-        var secondDateFormated = CalendarBackend.getLocalNumber(second_date.format('YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s'),root.secondCalType).split('|')
-        var timeFormated = date.format('YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s').split('|')
-        const tokens = {
-            'SYYYY': secondDateFormated[0],
-            'YYYY': dateFormated[0],
-            'SYY': secondDateFormated[1],
-            'YY': dateFormated[1],
-            "SMMMM": secondDateFormated[2],
-            "MMMM": dateFormated[2],
-            "SMMM": secondDateFormated[3],
-            "MMM": dateFormated[3],
-            'SMM': secondDateFormated[4],
-            'MM': dateFormated[4],
-            'SM': secondDateFormated[5],
-            'M': dateFormated[5],
-            'Sddd': secondDateFormated[6],
-            'ddd': dateFormated[6],
-            'Sdd': secondDateFormated[7],
-            'dd': dateFormated[7],
-            'Sd': secondDateFormated[8],
-            'd': dateFormated[8],
-            'SDD': secondDateFormated[9],
-            'DD': dateFormated[9],
-            'SD': secondDateFormated[10],
-            'D': dateFormated[10],
-            'HH':timeFormated[11],
-            'H':timeFormated[12],
-            'hh':timeFormated[13],
-            'h':timeFormated[14],
-            'mm':timeFormated[15],
-            'm':timeFormated[16],
-            'ss':timeFormated[17],
-            's':timeFormated[18],
-        };
-        
-        var mystr =  format.replace(/SYYYY|YYYY|SYY|YY|SMMMM|MMMM|SMMM|MMM|SMM|MM|SM|M|Sddd|ddd|Sdd|dd|Sd|d|SDD|DD|SD|D|HH|H|hh|h|mm|m|ss|s/g, function(match) {
-            return tokens[match];
-        });
-        mystr = mystr.split(' ')
-        var mystr2 = ''
-        for (let i = 0; i < mystr.length; i++) {
-            if (i ==4){
-                mystr2 +='<strong style="font-size: 16px;">&#x2066;'+mystr[i]+'&#x2069; </strong>'
-            }
-            else{
-                mystr2 +='<span style="font-size: 14px;">&#x2066;'+mystr[i]+'&#x2069; </span>'
-            }
-        }
-        //text:get_calendar_text(root.today,'MMM YYYY MMMM d , HH:mm , SYYYY SMMMM Sd')
-        return '<p dir="ltr">'+mystr2+'</p>'
-        // return '<p dir="ltr" style="color:red;">'+mystr2+'</p>'
+        return CalendarBackend.calendar_formated_text(date, format, root.firstCalType, root.secondCalType,
+            root.firstCalendarLanguage, root.secondCalendarLanguage, root.appLanguage)
     }
 }

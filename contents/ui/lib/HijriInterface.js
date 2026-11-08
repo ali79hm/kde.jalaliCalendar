@@ -1,3 +1,4 @@
+.import "./Locale.js" as Locale
 .import './HijriDateBackend.js' as HijriDate
 
 function convertToPersianNumbers(str) {
@@ -19,7 +20,10 @@ function convert_month_names_to_en(string){
 
 function month_names(lang='ar'){
     var names = []
-    if (lang == 'ar' || lang == 'fa'){
+    if (lang == 'fa') {
+        names = ['محرم', 'صفر', 'ربیع‌الاول', 'ربیع‌الثانی', 'جمادی‌الاول', 'جمادی‌الثانی', 'رجب', 'شعبان', 'رمضان', 'شوال', 'ذی‌القعده', 'ذی‌الحجه'];
+    }
+    else if (lang == 'ar'){
         names = ["محرم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"];
     }
     else{
@@ -28,16 +32,21 @@ function month_names(lang='ar'){
     return names
 }
 
-function week_days_names(lang='ar',startOfWeek=6) {
+function week_days_names(lang='ar',startOfWeek=6,short=false) {
     var names = []
     if (lang == 'ar'){
         names = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة","السبت"]
     }
     else if (lang == 'fa'){
-        names =  ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه','شنبه']
+        names =  ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه']
     }
     else{
         names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday"];
+    }
+    if (short) {
+        if (lang === 'fa') names = ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه', 'شنبه'];
+        else if (lang === 'ar') names = ['أحد', 'اثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت'];
+        else names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     }
     return names.slice(startOfWeek).concat(names.slice(0, startOfWeek));
 }
@@ -150,27 +159,12 @@ class Hijri {
         return text
     }
     addMonth(number=1){
-        var month = this.date['month'];
-        var year = this.date['year'];
-        month = month + number
-        if( month>12){
-            year = year + Math.floor(month / 12)
-            month = month - Math.floor(month / 12)*12
-        }
-        return new Hijri([year,month-1,date['day']])
-        // return 
+        var monthIndex = this.getMonth() + number;
+        var year = this.getFullYear() + Math.floor(monthIndex / 12);
+        var month = ((monthIndex % 12) + 12) % 12;
+        return new Hijri([year, month, Math.min(this.getDate(), HijriDate.getDaysInMonth(year, month+1))]);
     }
-    subtractMonth(number=1){
-        var month = this.date['month'];
-        var year = this.date['year'];
-        month = month - number
-        if (month <= 0) {
-            year = year + Math.floor((month - 1) / 12); 
-            month = 12 + (month % 12);
-            if (month === 0) month = 12;
-        }
-        return new Hijri([year,month-1,date['day']])
-    }
+    subtractMonth(number=1){ return this.addMonth(-number); }
     addDate(number=1){
         var day = this.date['day'];
         var month = this.date['month'];
@@ -218,11 +212,19 @@ class Hijri {
 }
 
 function HijriToGregorian(HijriObj){
-    var tmp = HijriDate.toGregorian(HijriObj.getFullYear(),HijriObj.getMonth(),HijriObj.getDate())
+    var tmp = HijriDate.toGregorian(HijriObj.getFullYear(),HijriObj.getMonth()+1,HijriObj.getDate())
     return [tmp['year'],tmp['month']-1,tmp['day']]
 }
 
 function GregorianToHijri(DateObj){
     var tmp = HijriDate.fromGregorian(DateObj.getFullYear(),DateObj.getMonth()+1,DateObj.getDate())
     return [tmp['year'],tmp['month']-1,tmp['day']]
+}
+
+var supportedLanguages = ["fa", "ar", "en"];
+var defaultLanguage = "fa";
+function resolveLanguage(language) { return supportedLanguages.indexOf(language) >= 0 ? language : defaultLanguage; }
+function localizedFormat(date, pattern, language) {
+    language = resolveLanguage(language);
+    return Locale.format(date, pattern, language, month_names(language), week_days_names(language, 0));
 }

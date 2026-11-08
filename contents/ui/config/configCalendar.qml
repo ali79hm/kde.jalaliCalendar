@@ -1,3 +1,4 @@
+import "../lib/AppText.js" as AppText
 import QtQuick 2.2
 import QtQuick.Controls 2.5 as QQC2
 import org.kde.kirigami 2.4 as Kirigami
@@ -10,6 +11,11 @@ import "../lib/main.js" as MainJS
 Kirigami.FormLayout {
     id: page
 
+    property string cfg_firstCalendarLanguage: plasmoid.configuration.firstCalendarLanguage
+    property string cfg_secondCalendarLanguage: plasmoid.configuration.secondCalendarLanguage
+    LayoutMirroring.enabled: plasmoid.configuration.language === "fa"
+    LayoutMirroring.childrenInherit: true
+
     property var firstCalendarDropdownValue : plasmoid.configuration.main_calendar
     property var secondCalendarDropdownValue : plasmoid.configuration.second_calendar
     property var is_event_pane_visible : plasmoid.configuration.show_events
@@ -21,131 +27,94 @@ Kirigami.FormLayout {
 
     property alias cfg_compactRepresentationFormat: _formatField.text
 
-    property var calendar_type_list_old : ["gregorian", "Jalali(shamsi)",'hijri(islamic)']
-    
-    property var calendar_type_list : ListModel {
-        ListElement { key: "GE"; value: 'gegorian' ; enabled1: true }
-        ListElement { key: "JA"; value: 'Jalali(shamsi)' ; enabled1: true }
-        ListElement { key: "GA"; value: 'hijri(islamic)' ; enabled1: true}
+    function calendarChoices(includeNone) {
+        var values = [{key:"GE", value: AppText.tr(plasmoid.configuration.language,"Gregorian")},
+                      {key:"JA", value: AppText.tr(plasmoid.configuration.language,"Jalali")},
+                      {key:"GA", value: AppText.tr(plasmoid.configuration.language,"Hijri")}]
+        if (includeNone) values.push({key:"NO", value:AppText.tr(plasmoid.configuration.language,"None")})
+        return values
     }
-    property var calendar_type_list2 : ListModel{}
-
-    QQC2.ComboBox {
-        id: firstCalendarDropdown
-        Kirigami.FormData.label: i18n("main calendar:")
-        textRole: "value"
-        model: calendar_type_list
-        property int lastchoosenIndex : 0
-        currentIndex : page.getfirstCalendarDropdownValue()
-        delegate: QQC2.ItemDelegate {
-                width: firstCalendarDropdown.width
-                text: value
-                font.weight: firstCalendarDropdown.currentIndex === index ? Font.DemiBold : Font.Normal
-                highlighted: ListView.isCurrentItem
-                enabled: enabled1
-        }
-        onCurrentIndexChanged: {
-            updateSecondDropdownModel()
-            cfg_main_calendar = firstCalendarDropdown.model.get(currentIndex).key
-        }
+    function calendarIndex(model, key) {
+        for (var i=0; i<model.length; i++) if (model[i].key === key) return i
+        return 0
     }
     QQC2.ComboBox {
-        id: secondCalendarDropdown
-        Kirigami.FormData.label: i18n("Second calendar:")
-        property int lastchoosenIndex : 1
-        
-        currentIndex : page.getsecondCalendarDropdownValue()
-        model : calendar_type_list2
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "main calendar:")
+        model: page.calendarChoices(false)
         textRole: "value"
-        delegate: QQC2.ItemDelegate {
-                width: secondCalendarDropdown.width
-                text: value
-                font.weight: secondCalendarDropdown.currentIndex === index ? Font.DemiBold : Font.Normal
-                highlighted: ListView.isCurrentItem
-                enabled: enabled1
-        }
-        onCurrentIndexChanged: {
-            lastchoosenIndex = currentIndex
-            cfg_second_calendar = secondCalendarDropdown.model.get(currentIndex).key
-        }
+        currentIndex: page.calendarIndex(model, page.cfg_main_calendar)
+        onActivated: page.cfg_main_calendar = model[currentIndex].key
+    }
+    QQC2.ComboBox {
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Second calendar:")
+        model: page.calendarChoices(true)
+        textRole: "value"
+        currentIndex: page.calendarIndex(model, page.cfg_second_calendar)
+        onActivated: page.cfg_second_calendar = model[currentIndex].key
+    }
+    QQC2.ComboBox {
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Calendar 1 language")
+        model: MainJS.supported_languages(page.cfg_main_calendar)
+        displayText: AppText.languageName(currentText)
+        delegate: QQC2.ItemDelegate { required property string modelData; text: AppText.languageName(modelData) }
+        currentIndex: model.indexOf(MainJS.resolve_language(page.cfg_main_calendar, page.cfg_firstCalendarLanguage))
+        onActivated: page.cfg_firstCalendarLanguage = model[currentIndex]
+    }
+    QQC2.ComboBox {
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Calendar 2 language")
+        enabled: page.cfg_second_calendar !== "NO"
+        model: MainJS.supported_languages(page.cfg_second_calendar)
+        displayText: AppText.languageName(currentText)
+        delegate: QQC2.ItemDelegate { required property string modelData; text: AppText.languageName(modelData) }
+        currentIndex: model.indexOf(MainJS.resolve_language(page.cfg_second_calendar, page.cfg_secondCalendarLanguage))
+        onActivated: page.cfg_secondCalendarLanguage = model[currentIndex]
     }
     QQC2.CheckBox {
         id: showEvents
         checked: page.is_event_pane_visible
-        text: i18n("Show event pane")
+        text: AppText.tr(plasmoid.configuration.language, "Show event pane")
     }
 
     Kirigami.Separator { Kirigami.FormData.isSection: true }
 
     // QQC2.Label {
-    //     Kirigami.FormData.label: i18n("Clock & Date Format")
-    //     text: i18n("Pattern used in the calendar (Qt format)")
+    //     Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Clock & Date Format")
+    //     text: AppText.tr(plasmoid.configuration.language, "Pattern used in the calendar (Qt format)")
     //     wrapMode: Text.WordWrap
     // }
 
     // 2) The format input
     QQC2.TextField {
         id: _formatField
-        Kirigami.FormData.label: i18n("Clock & Date Format:")
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Clock & Date Format:")
         placeholderText: "'SD SMMMM SYYYY , *HH:mm* , MMMM D ddd'"
         selectByMouse: true
         // clearButtonEnabled: true
         text: page.compactRepresentationFormat
-        onTextChanged: previewTimer.restart()
-    }
 
-    Loader {
-        id: previewHelper
-        source: Qt.resolvedUrl("../CompactRepresentation.qml")
-        active: true
-        visible: false
-        asynchronous: true
-        onLoaded: previewTimer.restart()
     }
-
 
     QQC2.Label {
         id: previewLabel
-        text: i18n(previewText())
+        text: previewText()
         opacity: 0.85
         wrapMode: Text.NoWrap
         textFormat: Text.RichText
         // smooth: true
 
         function previewText() {
-            try {
-                if (previewHelper.status === Loader.Ready &&
-                    previewHelper.item &&
-                    typeof previewHelper.item.get_calendar_text === "function") {
-
-                    var today = MainJS.get_unvirsal_date(
-                        plasmoid.configuration.main_calendar
-                    )
-                    return MainJS.calendar_formated_text(today, _formatField.text, plasmoid.configuration.main_calendar, plasmoid.configuration.second_calendar)
-                }
-            } catch (e) {
-                console.log("Preview error:", e)
-            }
-
-            return ""
+            var today = MainJS.get_unvirsal_date(page.cfg_main_calendar)
+            return MainJS.calendar_formated_text(today, _formatField.text, page.cfg_main_calendar, page.cfg_second_calendar,
+                page.cfg_firstCalendarLanguage, page.cfg_secondCalendarLanguage, plasmoid.configuration.language)
         }
-    }
-
-    // Avoid hammering the helper while typing
-    Timer {
-        id: previewTimer
-        interval: 150
-        repeat: false
-        // onTriggered: previewLabel.text = i18n("Preview: %1", previewLabel.previewText())
-        onTriggered: previewLabel.text = i18n(previewLabel.previewText())
     }
 
     QQC2.Label {
         Kirigami.FormData.isSection: true
-        text: i18n("Common presets:")
+        text: AppText.tr(plasmoid.configuration.language, "Common presets:")
     }
     RowLayout{
-        
+
     }
 
     GridLayout {
@@ -172,64 +141,16 @@ Kirigami.FormLayout {
         }
 
         QQC2.Button {
-            text: i18n("Reset to default")
+            text: AppText.tr(plasmoid.configuration.language, "Reset to default")
             Layout.columnSpan: 3
             onClicked: _formatField.text = "SD SMMMM SYYYY , *HH:mm* , MMMM D ddd"
         }
     }
 
-    // QQC2.Label { //TODO:fix it 
-    //     text: i18n("Tokens: yyyy=year, MM=month, dd=day, hh/HH=hour(12/24), mm=minute, ss=second, EEE=weekday.")
+    // QQC2.Label { //TODO:fix it
+    //     text: AppText.tr(plasmoid.configuration.language, "Tokens: yyyy=year, MM=month, dd=day, hh/HH=hour(12/24), mm=minute, ss=second, EEE=weekday.")
     //     wrapMode: Text.WordWrap
     //     opacity: 0.7
     // }
 
-    function calendar_type_list2Init(){
-        calendar_type_list2.insert(0, { 'key': "NO", 'value': '--' , 'enabled1': true })
-        for (let i = 0; i < calendar_type_list.count; i++){
-            calendar_type_list2.insert(i, calendar_type_list.get(i))
-        }
-        calendar_type_list2.setProperty(firstCalendarDropdown.currentIndex, "enabled1", false)
-    }
-
-    function set_event_list(){
-        for (let key in EventsModule.all_events) {
-            eventList2.append({
-                key: key,
-                value: EventsModule.all_events[key],
-                enabled1: true
-            });
-        }
-    }
-    function updateSecondDropdownModel() {
-        var firstCalendarDropdownKey = firstCalendarDropdown.model.get(firstCalendarDropdown.currentIndex)
-        if (firstCalendarDropdown.lastchoosenIndex != -1){
-            calendar_type_list2.setProperty(firstCalendarDropdown.lastchoosenIndex, "enabled1", true)
-        }
-        calendar_type_list2.setProperty(firstCalendarDropdown.currentIndex, "enabled1", false)
-        secondCalendarDropdown.model = calendar_type_list2
-        if (secondCalendarDropdown.lastchoosenIndex == firstCalendarDropdown.currentIndex)
-        {
-            secondCalendarDropdown.currentIndex = 1 ? firstCalendarDropdown.currentIndex==0 : 0
-        }
-        firstCalendarDropdown.lastchoosenIndex = firstCalendarDropdown.currentIndex
-    }
-
-    function getfirstCalendarDropdownValue() {
-        for(var i = 0; i < firstCalendarDropdown.model.count; ++i) {
-            if (firstCalendarDropdown.model.get(i).key == plasmoid.configuration.main_calendar ) return i;
-        }   
-        return 0;
-    }
-
-    function getsecondCalendarDropdownValue() {
-        for(var i = 0; i < secondCalendarDropdown.model.count; ++i) {
-            if (secondCalendarDropdown.model.get(i).key == plasmoid.configuration.second_calendar ) return i;
-        }   
-        return 0;
-    }
-
-    Component.onCompleted : {
-        calendar_type_list2Init()
-    }
 }

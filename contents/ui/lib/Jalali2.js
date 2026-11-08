@@ -1,3 +1,4 @@
+.import "./Locale.js" as Locale
 .import './PersianDate.js' as PersianDate
 
 function convertToPersianNumbers(str) {
@@ -28,13 +29,18 @@ function month_names(lang='fa'){
     return names
 }
 
-function week_days_names(lang='fa',startOfWeek=6) {
+function week_days_names(lang='fa',startOfWeek=6,short=false) {
     var names = []
     if (lang == 'fa'){
-        names =  ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه','شنبه']
+        names =  ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه']
     }
     else{
         names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday"];
+    }
+    if (short) {
+        if (lang === 'fa') names = ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه', 'شنبه'];
+        else if (lang === 'ar') names = ['أحد', 'اثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت'];
+        else names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     }
     return names.slice(startOfWeek).concat(names.slice(0, startOfWeek));
 }
@@ -179,4 +185,11 @@ function GregorianToJalali(DateObj){
 function rotateAndWrap(num) {
     let rotation = [6, 0, 1, 2, 3, 4, 5];
     return (rotation[num] + 7) % 7;
+}
+var supportedLanguages = ["fa", "en"];
+var defaultLanguage = "fa";
+function resolveLanguage(language) { return supportedLanguages.indexOf(language) >= 0 ? language : defaultLanguage; }
+function localizedFormat(date, pattern, language) {
+    language = resolveLanguage(language);
+    return Locale.format(date, pattern, language, month_names(language), week_days_names(language, 0));
 }

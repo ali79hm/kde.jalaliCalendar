@@ -18,7 +18,7 @@ Item{
 		Component.onCompleted: {
 			for (var i = 0; i < 12; ++i) {
 				append({
-					label: CalendarBackend.get_month_name(root.firstCalType,i),
+					label: CalendarBackend.get_month_name(root.firstCalType,i, root.firstCalendarLanguage),
 					monthNumber: i + 1,
 					isCurrent: true,
 				})

@@ -1,3 +1,4 @@
+import "../lib/AppText.js" as AppText
 import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
@@ -6,6 +7,8 @@ import "../lib/GoogleEventManager.js" as GoogleEventManager
 
 Item {
     id: root
+    LayoutMirroring.enabled: plasmoid.configuration.language === "fa"
+    LayoutMirroring.childrenInherit: true
     width: 560
     implicitHeight: column.implicitHeight
 
@@ -20,12 +23,12 @@ Item {
         return tok.slice(0, 6) + "…" + tok.slice(-6);
     }
     function ttlString(ts) {
-        if (!ts || ts <= 0) return "not set";
-        const s = ts - nowSec(); if (s <= 0) return "expired";
+        if (!ts || ts <= 0) return AppText.tr(plasmoid.configuration.language, "not set");
+        const s = ts - nowSec(); if (s <= 0) return AppText.tr(plasmoid.configuration.language, "expired");
         const m = Math.floor(s/60), h = Math.floor(m/60), d = Math.floor(h/24);
-        if (d > 0) return d + " day(s)";
-        if (h > 0) return h + " hour(s)";
-        return m + " minute(s)";
+        if (d > 0) return AppText.tr(plasmoid.configuration.language, "%1 day(s)", d);
+        if (h > 0) return AppText.tr(plasmoid.configuration.language, "%1 hour(s)", h);
+        return AppText.tr(plasmoid.configuration.language, "%1 minute(s)", m);
     }
 
     ColumnLayout {
@@ -35,7 +38,7 @@ Item {
 
         // --- AUTH VIEW (not signed-in) ---
         GroupBox {
-            title: "Google OAuth"
+            title: AppText.tr(plasmoid.configuration.language, "Google OAuth")
             Layout.fillWidth: true
             visible: !isAuthorized()
 
@@ -46,7 +49,7 @@ Item {
                 TextField {
                     id: clientId
                     Layout.fillWidth: true
-                    placeholderText: "Client ID"
+                    placeholderText: AppText.tr(plasmoid.configuration.language, "Client ID")
                     text: plasmoid.configuration.latestClientId
                     onTextChanged: plasmoid.configuration.latestClientId = text
                 }
@@ -54,7 +57,7 @@ Item {
                 TextField {
                     id: clientSecret
                     Layout.fillWidth: true
-                    placeholderText: "Client Secret"
+                    placeholderText: AppText.tr(plasmoid.configuration.language, "Client Secret")
                     echoMode: TextInput.Password
                     text: plasmoid.configuration.latestClientSecret
                     onTextChanged: plasmoid.configuration.latestClientSecret = text
@@ -63,26 +66,27 @@ Item {
                 Label {
                     Layout.fillWidth: true
                     wrapMode: Text.WordWrap
-                    text: "Redirect URI: http://127.0.0.1:<random-port>/ (handled by the built-in helper)"
+                    text: AppText.tr(plasmoid.configuration.language, "Redirect URI: http://127.0.0.1:<random-port>/ (handled by the built-in helper)")
                 }
 
                 RowLayout {
                     spacing: 8
                     Button {
                         id: authBtn
-                        text: "Authorize with Google"
+                        text: AppText.tr(plasmoid.configuration.language, "Authorize with Google")
                         enabled: clientId.text.length > 0 && clientSecret.text.length > 0
                         onClicked: {
-                            err.text = "";
+                            err.sourceMessage = "";
                             manager.startAuth(plasmoid.configuration.latestClientId,
                                               plasmoid.configuration.latestClientSecret);
                         }
                     }
                     Label {
                         id: err
+                        property string sourceMessage: ""
                         color: "tomato"
                         visible: text.length > 0
-                        text: ""
+                        text: AppText.tr(plasmoid.configuration.language, sourceMessage)
                         Layout.fillWidth: true
                         wrapMode: Text.WordWrap
                     }
@@ -92,7 +96,7 @@ Item {
 
         // --- STATUS VIEW (signed-in) ---
         GroupBox {
-            title: "Google Account Status"
+            title: AppText.tr(plasmoid.configuration.language, "Google Account Status")
             Layout.fillWidth: true
             visible: isAuthorized()
 
@@ -102,27 +106,27 @@ Item {
 
                 Label {
                     Layout.fillWidth: true
-                    text: "Access token: " + mask(plasmoid.configuration.accessToken)
+                    text: AppText.tr(plasmoid.configuration.language, "Access token: ") + mask(plasmoid.configuration.accessToken)
                     elide: Text.ElideRight
                 }
                 Label {
                     Layout.fillWidth: true
-                    text: "Token type: " + (plasmoid.configuration.accessTokenType || "—")
+                    text: AppText.tr(plasmoid.configuration.language, "Token type: ") + (plasmoid.configuration.accessTokenType || "—")
                 }
                 Label {
                     Layout.fillWidth: true
-                    text: "Expires in: " + ttlString(plasmoid.configuration.accessTokenExpiresAt)
+                    text: AppText.tr(plasmoid.configuration.language, "Expires in: ") + ttlString(plasmoid.configuration.accessTokenExpiresAt)
                 }
                 Label {
                     Layout.fillWidth: true
-                    text: "refresh token: " + mask(plasmoid.configuration.refreshToken)
+                    text: AppText.tr(plasmoid.configuration.language, "refresh token: ") + mask(plasmoid.configuration.refreshToken)
                     elide: Text.ElideRight
                 }
 
                 RowLayout {
                     spacing: 8
                     Button {
-                        text: "Logout"
+                        text: AppText.tr(plasmoid.configuration.language, "Logout")
                         onClicked: {
                             // optional revoke; otherwise just clear locally
                             if (manager.signOut) manager.signOut();
@@ -134,7 +138,7 @@ Item {
                         }
                     }
                     Button {
-                        text: "Refresh Token"
+                        text: AppText.tr(plasmoid.configuration.language, "Refresh Token")
                         visible: plasmoid.configuration.refreshToken !== ""
                         onClicked: {
                             // trigger refresh manually
@@ -167,9 +171,9 @@ Item {
                 plasmoid.configuration.refreshTokenIssuedAt = Math.floor(Date.now()/1000);
             }
 
-            err.text = "";
+            err.sourceMessage = "";
         }
 
-        onAuthError: function(message) { err.text = message || "Authorization failed."; }
+        onAuthError: function(message) { err.sourceMessage = message || "Authorization failed."; }
     }
 }

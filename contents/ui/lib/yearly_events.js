@@ -40,6 +40,8 @@ const event_sample = {
 };
 
 const persian_event = {
+    sourceLanguage: "fa",
+    translationFiles: {fa: "translations/events/persian_event.fa.js", en: "translations/events/persian_event.en.js"},
     name: "persian events",
     type: "Jalali",
     events: {
@@ -429,6 +431,8 @@ const persian_event = {
 }
 
 const AncientIran_event = {
+    sourceLanguage: "fa",
+    translationFiles: {fa: "translations/events/AncientIran_event.fa.js", en: "translations/events/AncientIran_event.en.js"},
     name: "Ancient persian events",
     type: "Jalali",
     events: {
@@ -497,6 +501,8 @@ const AncientIran_event = {
 }
 
 const Gregorian_Calendar_events = {
+    sourceLanguage: "fa",
+    translationFiles: {fa: "translations/events/Gregorian_Calendar_events.fa.js", en: "translations/events/Gregorian_Calendar_events.en.js"},
     name: "Gregorian Calendar Events",
     type: "gegorian",
     events: {
@@ -652,6 +658,8 @@ const Gregorian_Calendar_events = {
 }
 
 const Islamic_events = {
+    sourceLanguage: "fa",
+    translationFiles: {fa: "translations/events/Islamic_events.fa.js", en: "translations/events/Islamic_events.en.js"},
     name: "Islamic events",
     type: "hijri",
     events: {

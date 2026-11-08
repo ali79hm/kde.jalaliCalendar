@@ -1,3 +1,5 @@
+import "../lib/EventManager.js" as EventManager
+import "../lib/AppText.js" as AppText
 import QtQuick 2.2
 import QtQuick.Controls 2.5 as QQC2
 import org.kde.kirigami 2.4 as Kirigami
@@ -7,6 +9,18 @@ import "../lib/yearly_events.js" as EventsModule
 
 Kirigami.FormLayout {
     id: page
+    property string cfg_eventLanguage: plasmoid.configuration.eventLanguage
+    LayoutMirroring.enabled: plasmoid.configuration.language === "fa"
+    LayoutMirroring.childrenInherit: true
+    QQC2.ComboBox {
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Event language")
+        model: EventManager.supported_languages(page.eventsJsonFiles)
+        displayText: AppText.languageName(currentText)
+        delegate: QQC2.ItemDelegate { required property string modelData; text: AppText.languageName(modelData) }
+        currentIndex: Math.max(0, model.indexOf(page.cfg_eventLanguage))
+        onActivated: page.cfg_eventLanguage = model[currentIndex]
+    }
+
 
     property var holidayJsonFilesStr: plasmoid.configuration.holiday_json_files
     property var holidayJsonFiles: holidayJsonFilesStr.split(",").filter(item => item !== "") // Deserialize as array
@@ -25,7 +39,7 @@ Kirigami.FormLayout {
     }
 
     QQC2.GroupBox {
-        Kirigami.FormData.label: i18n("Visible Events:")
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "Visible Events:")
         width: parent.width
         QQC2.ScrollView {
             width: parent.width
@@ -39,7 +53,7 @@ Kirigami.FormLayout {
                 Repeater {
                     model: eventList2
                     delegate: QQC2.CheckBox {
-                        text: value
+                        text: EventManager.translate(key, EventsModule[key].name, page.cfg_eventLanguage)
                         checked: eventsJsonFiles.includes(key) // Restore state from string
                         onCheckedChanged: {
                             if (checked) {
@@ -64,7 +78,7 @@ Kirigami.FormLayout {
     }
 
     QQC2.GroupBox {
-        Kirigami.FormData.label: i18n("holidays:")
+        Kirigami.FormData.label: AppText.tr(plasmoid.configuration.language, "holidays:")
         width: parent.width
         QQC2.ScrollView {
             width: parent.width
@@ -78,7 +92,7 @@ Kirigami.FormLayout {
                 Repeater {
                     model: holidayList2
                     delegate: QQC2.CheckBox {
-                        text: value
+                        text: EventManager.translate(key, EventsModule[key].name, page.cfg_eventLanguage)
                         checked: holidayJsonFiles.includes(key) // Restore state from string
                         onCheckedChanged: {
                             if (checked) {

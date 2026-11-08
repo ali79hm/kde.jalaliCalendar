@@ -64,14 +64,15 @@ MouseArea {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top
             }
+            width: Math.max(0, monthcell.width - Kirigami.Units.smallSpacing * 2)
             height: monthcell.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text: modelData[1]
+            text: CalendarBackend.get_month_name(root.firstCalType, modelData[0]-1, root.firstCalendarLanguage)
             opacity: 1.0
-            wrapMode: Text.NoWrap
-            elide: Text.ElideRight
-            fontSizeMode: Text.HorizontalFit
+            wrapMode: Text.Wrap
+            elide: Text.ElideNone
+            fontSizeMode: Text.FixedSize
             font.pixelSize: getFirstCalendarFontSize()
             font.pointSize: -1
             color: Kirigami.Theme.textColor
@@ -82,14 +83,6 @@ MouseArea {
     }
 
     function getFirstCalendarFontSize(){
-        return Math.min(Math.floor(monthcell.height / 3), Math.floor(monthcell.width * 0.2))
-        //TODO : need change
-        if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
-            
-            return Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(monthcell.height / 2), Math.floor(monthcell.width * 7/8)))
-        }
-        else{
-            return Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(monthcell.height / 32 *13), Math.floor(monthcell.width * 7/8)))
-        }
+        return Math.min(Math.floor(monthcell.height / 3), Math.floor(monthcell.width * 0.165))
     }
 }

@@ -68,7 +68,7 @@ MouseArea {
             height: yearcell.height
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            text: CalendarBackend.getLocalNumber(modelData[1],firstCalType)
+            text: CalendarBackend.getLocalNumber(modelData[1],firstCalType, root.firstCalendarLanguage)
             opacity: 1.0
             wrapMode: Text.NoWrap
             elide: Text.ElideRight
@@ -85,7 +85,7 @@ MouseArea {
     function getFirstCalendarFontSize(){
         return Math.min(Math.floor(yearcell.height / 3), Math.floor(yearcell.width * 0.2))
         //TODO : need change
-        if (CalendarBackend.isFarsiNumbers(root.firstCalType)){
+        if (CalendarBackend.isFarsiNumbers(root.firstCalType, root.firstCalendarLanguage)){
             
             return Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, Math.min(Math.floor(yearcell.height / 2), Math.floor(yearcell.width * 7/8)))
         }

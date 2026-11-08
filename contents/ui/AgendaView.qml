@@ -1,3 +1,4 @@
+import "lib/AppText.js" as AppText
 import QtQuick 2.2
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
@@ -75,6 +76,9 @@ PinchArea {
 
     Connections {
         target: root
+        function onFirstCalendarLanguageChanged() { setTitles() }
+        function onSecondCalendarLanguageChanged() { setTitles() }
+        function onEventLanguageChanged() { updateEvents(agendaView.selectedDate); getEvents() }
         function onEventsTypesChanged() {
             updateEvents(agendaView.selectedDate)
             getEvents()
@@ -125,7 +129,7 @@ PinchArea {
         var month_events = CalendarBackend.get_month_events(
             root.firstCalType,
             Date,
-            root.eventsTypes
+            root.eventsTypes, root.eventLanguage
         )
 
         month_events_cache = {}
@@ -158,12 +162,13 @@ PinchArea {
     }
 
     function getFirstTitle() {
-        return CalendarBackend.get_agenda_tool_tip(agendaView.selectedDate, firstCalType, true)
+        return CalendarBackend.get_agenda_tool_tip(agendaView.selectedDate, firstCalType, true, root.firstCalendarLanguage)
     }
 
     function getSecondTitle() {
+        if (!root.showSecondCal) return ""
         var tmp = CalendarBackend.convert_calendars_light(selectedDate, firstCalType, secondCalType)
-        return CalendarBackend.get_agenda_tool_tip(CalendarBackend.get_unvirsal_date(secondCalType, tmp), secondCalType)
+        return CalendarBackend.get_agenda_tool_tip(CalendarBackend.get_unvirsal_date(secondCalType, tmp), secondCalType, false, root.secondCalendarLanguage)
     }
 
     // end info
@@ -243,8 +248,8 @@ PinchArea {
                     id: googleConnectionStatus
 
                     readonly property string tooltipText: agendaView.googleConnectionState === "loading"
-                        ? i18n("Loading Google Calendar events")
-                        : i18n("Google Calendar unavailable")
+                        ? AppText.tr(plasmoid.configuration.language, "Loading Google Calendar events")
+                        : AppText.tr(plasmoid.configuration.language, "Google Calendar unavailable")
 
                     width: contentColumn.width
                     height: visible ? 18 : 0
@@ -292,10 +297,11 @@ PinchArea {
                     model: agendaView.myagendaList
                     AgendaCell {
                         width: contentColumn.width
-                        eventTitle: modelData[0]
+                        eventTitle: modelData[1] === 'Google Calendar' && modelData[0] === '(no title)'
+                            ? AppText.tr(plasmoid.configuration.language, '(no title)') : modelData[0]
                         eventColor: modelData[2]
                         eventBackgroudColor: modelData[2]
-                        eventSourceName: modelData[1]
+                        eventSourceName: modelData[1] === 'Google Calendar' ? AppText.tr(plasmoid.configuration.language, 'Google Calendar') : modelData[1]
                         eventLink: modelData[3]
                     }
                 }
@@ -329,7 +335,7 @@ PinchArea {
     PlasmaComponents3.Label {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        text: "today has no events :)"
+        text: AppText.tr(plasmoid.configuration.language, "today has no events :)")
         color: "grey"
         font.pixelSize: 15
         visible: myagendaList.length === 0

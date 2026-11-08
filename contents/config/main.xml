@@ -21,6 +21,9 @@
         <entry name="onboarding_completed" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="firstCalendarLanguage" type="String"><default>fa</default></entry>
+        <entry name="secondCalendarLanguage" type="String"><default>en</default></entry>
+        <entry name="eventLanguage" type="String"><default>fa</default></entry>
         <entry name="language" type="String">
             <default>en</default>
         </entry>

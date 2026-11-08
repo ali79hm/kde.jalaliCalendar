@@ -1,3 +1,4 @@
+import "lib/AppText.js" as AppText
 import QtQuick 2.2
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.1
@@ -53,7 +54,7 @@ Item{
 					font.pixelSize: Math.max((Kirigami.Theme.defaultFont && Kirigami.Theme.defaultFont.pixelSize > 0) ? Kirigami.Theme.defaultFont.pixelSize : 12, parent.height)
 					y: layoutDirection=='R'?-font.pixelSize*0.3:-font.pixelSize*0.3
 					horizontalAlignment: Text.AlignLeft
-					text:CalendarBackend.get_title(firstCalType, root.currntDate)
+					text:CalendarBackend.get_title(firstCalType, root.currntDate, root.firstCalendarLanguage)
 					}
 				onClicked: {
 					if (!stack.busy) {
@@ -67,7 +68,7 @@ Item{
 				id: previousButton
 				icon.name: "go-previous"
 				onClicked: root.layoutDirection=='L'? daysPage.prevMonth() : daysPage.nextMonth()
-				property string tooltip: root.layoutDirection=='L'? i18nd("libplasma5", "Previous Month"):i18nd("libplasma5", "Next Month")
+				property string tooltip: root.layoutDirection=='L'? AppText.tr(plasmoid.configuration.language, "Previous Month"):AppText.tr(plasmoid.configuration.language, "Next Month")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
 				QQC2.ToolTip.visible: hovered
@@ -79,12 +80,12 @@ Item{
 			PlasmaComponents3.ToolButton {
 				icon.name: "go-jump-today"
 				onClicked: daysPage.resetToToday()
-				property string tooltip: i18ndc("libplasma5", "Reset calendar to today", "Today")
+				property string tooltip: AppText.tr(plasmoid.configuration.language, "Today")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
 				QQC2.ToolTip.visible: hovered
 				Accessible.name: tooltip
-				Accessible.description: i18nd("libplasma5", "Reset calendar to today")
+				Accessible.description: AppText.tr(plasmoid.configuration.language, "Reset calendar to today")
 				//SEE QTBUG-58307
 				Layout.preferredHeight: implicitHeight + implicitHeight%2 //TODO:what is this
 			}
@@ -93,7 +94,7 @@ Item{
 				id: nextButton
 				icon.name: "go-next"
 				onClicked: root.layoutDirection=='L'? daysPage.nextMonth() : daysPage.prevMonth()
-				property string tooltip: root.layoutDirection=='L'?i18nd("libplasma5", "Next Month"):i18nd("libplasma5", "Previous Month")
+				property string tooltip: root.layoutDirection=='L'?AppText.tr(plasmoid.configuration.language, "Next Month"):AppText.tr(plasmoid.configuration.language, "Previous Month")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
 				QQC2.ToolTip.visible: hovered
@@ -128,7 +129,8 @@ Item{
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
-                    fontSizeMode: Text.HorizontalFit
+                    fontSizeMode: Text.FixedSize
+                    wrapMode: Text.NoWrap
                 }
 
             }
@@ -257,8 +259,8 @@ Item{
 		yearIndexes.push(currntDate1.getFullYear())
 		for(let i = prevMonthLastDay-countDaysBefore;i<prevMonthLastDay;i++){
 			prevMonthTmp.push([
-								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
-								root.showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
+								[currntDate1.getDate(),currntDate1.getMonth(),currntDate1.getFullYear()],
+								root.showSecondCal?[currntDate2.getDate(),currntDate2.getMonth(),currntDate2.getFullYear()]:[0,0,0]
 							])
 			currntDate1 = currntDate1.addDate(1)
 			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
@@ -269,8 +271,8 @@ Item{
 		yearIndexes.push(currntDate1.getFullYear())
 		for (let i=0;i<countDays;i++){
 			currntMonthTmp.push([
-									[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
-									root.showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
+									[currntDate1.getDate(),currntDate1.getMonth(),currntDate1.getFullYear()],
+									root.showSecondCal?[currntDate2.getDate(),currntDate2.getMonth(),currntDate2.getFullYear()]:[0,0,0]
 								])
 			currntDate1 = currntDate1.addDate(1)
 			if (root.showSecondCal){currntDate2 = currntDate2.addDate(1)}
@@ -280,8 +282,8 @@ Item{
 		yearIndexes.push(currntDate1.getFullYear())
 		for (let i=0;i<(countDaysAfter);i++){
 			nextMonthTmp.push([
-								[currntDate1.getDate(),currntDate1.format('MMMM'),currntDate1.getFullYear()],
-								showSecondCal?[currntDate2.getDate(),currntDate2.format('MMMM'),currntDate2.getFullYear()]:[0,0,0]
+								[currntDate1.getDate(),currntDate1.getMonth(),currntDate1.getFullYear()],
+								showSecondCal?[currntDate2.getDate(),currntDate2.getMonth(),currntDate2.getFullYear()]:[0,0,0]
 							])
 			currntDate1 = currntDate1.addDate(1)
 			if (showSecondCal){currntDate2 = currntDate2.addDate(1)}

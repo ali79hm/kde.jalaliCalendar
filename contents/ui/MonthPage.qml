@@ -1,3 +1,4 @@
+import "lib/AppText.js" as AppText
 import QtQuick 2.2
 import QtQuick.Controls 2.2 as QQC2
 import QtQuick.Layouts 1.1
@@ -29,7 +30,7 @@ Item{
 	}
 
 	function get_year_string(year){
-		return CalendarBackend.getLocalNumber(String(year),firstCalType)
+		return CalendarBackend.getLocalNumber(String(year),firstCalType, root.firstCalendarLanguage)
 	}
 		
 	Item{
@@ -75,7 +76,7 @@ Item{
 				id: previousButton
 				icon.name: "go-previous"
 				onClicked: root.layoutDirection=='L'? monthPage.prevYear() : monthPage.nextYear()
-				property string tooltip: root.layoutDirection=='L'? i18nd("libplasma5", "Previous Year"):i18nd("libplasma5", "Next Year")
+				property string tooltip: root.layoutDirection=='L'? AppText.tr(plasmoid.configuration.language, "Previous Year"):AppText.tr(plasmoid.configuration.language, "Next Year")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
 				QQC2.ToolTip.visible: hovered
@@ -87,12 +88,12 @@ Item{
 			PlasmaComponents3.ToolButton {
 				icon.name: "go-jump-today"
 				onClicked: monthPage.resetToCurrentYear()
-				property string tooltip: i18ndc("libplasma5", "Reset calendar to this year", "This year")
+				property string tooltip: AppText.tr(plasmoid.configuration.language, "This year")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
 				QQC2.ToolTip.visible: hovered
 				Accessible.name: tooltip
-				Accessible.description: i18nd("libplasma5", "Reset calendar this year")
+				Accessible.description: AppText.tr(plasmoid.configuration.language, "Reset calendar this year")
 				//SEE QTBUG-58307
 				Layout.preferredHeight: implicitHeight + implicitHeight%2 //TODO:what is this
 			}
@@ -101,7 +102,7 @@ Item{
 				id: nextButton
 				icon.name: "go-next"
 				onClicked: root.layoutDirection=='L'? monthPage.nextYear() : monthPage.prevYear()
-				property string tooltip: root.layoutDirection=='L'?i18nd("libplasma5", "Next Year"):i18nd("libplasma5", "Previous Year")
+				property string tooltip: root.layoutDirection=='L'?AppText.tr(plasmoid.configuration.language, "Next Year"):AppText.tr(plasmoid.configuration.language, "Previous Year")
 				QQC2.ToolTip.delay: Kirigami.Units.toolTipDelay
 				QQC2.ToolTip.text: tooltip
 				QQC2.ToolTip.visible: hovered

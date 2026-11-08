@@ -1,3 +1,4 @@
+.import "./Locale.js" as Locale
 // .import './Jalali.js' as Jalali
 .import './Jalali2.js' as Jalali
 .import './gregorian.js' as Gregorian
@@ -11,14 +12,8 @@ var calendar_type = {
     'hijri': "GA"
     }
 
-function get_layout_direction(calType){
-    if (calType==calendar_type.Jalali){
-        return "R"
-    }
-    else{
-        return "L"
-    }
-}
+function get_layout_direction(calType, language) { return language === 'fa' || language === 'ar' ? 'R' : 'L'; }
+
 function get_unvirsal_date(calType, IN_Date){
     // IN_Date = [year,month,day] or [year,month] or [year]
     
@@ -37,56 +32,13 @@ function daysBedoreCurrentMonth(startOfWeek, first_day_of_month) {
     return ans==0 ? 7 :ans 
 }
 
-function get_title(calType, IN_Date){
-    // IN_Date = date obj
-    if (calType==calendar_type.Jalali){
-        return IN_Date.getTitle()
-    }
-    if (calType==calendar_type.gegorian){
-        return IN_Date.getTitle()
-    }
-    if (calType==calendar_type.hijri){
-        return IN_Date.getTitle()
-    }
-}
+function get_title(calType, date, language) { return format_date(calType, date, 'MMMM , YYYY', language); }
 
-function get_month_names(calType){
-    // IN_Date = date obj
-    if (calType==calendar_type.Jalali){
-        return Jalali.month_names('fa')
-    }
-    if (calType==calendar_type.gegorian){
-        return Gregorian.month_names('en')
-    }
-    if (calType==calendar_type.hijri){
-        return Hijri.month_names('fa')
-    }
-}
+function get_month_names(calType, language) { var backend = calendar_library(calType); return backend.month_names(backend.resolveLanguage(language)); }
 
-function get_month_name(calType,index){
-    // IN_Date = date obj
-    if (calType==calendar_type.Jalali){
-        return Jalali.month_names('fa')[index]
-    }
-    if (calType==calendar_type.gegorian){
-        return Gregorian.month_names('en')[index]
-    }
-    if (calType==calendar_type.hijri){
-        return Hijri.month_names('fa')[index]
-    }
-}
+function get_month_name(calType, index, language) { return get_month_names(calType, language)[index]; }
 
-function get_weekdays_names(calType){
-    if (calType==calendar_type.Jalali){
-        return Jalali.week_days_names('fa',6)// better lang='fa',startOfWeek=6
-    }
-    else if (calType==calendar_type.gegorian){
-        return Gregorian.week_days_names('en',6,true)// better lang='fa',startOfWeek=6
-    }
-    else if (calType==calendar_type.hijri){
-        return Hijri.week_days_names('fa',6)// better lang='fa',startOfWeek=6
-    }
-}
+function get_weekdays_names(calType, language) { var backend = calendar_library(calType); return backend.week_days_names(backend.resolveLanguage(language), 6, true); }
 
 function convertToPersianNumbers(str) {
     str = str.toString()
@@ -104,7 +56,7 @@ function get_month_weekends(calType, IN_Date){
 }
 
 function convert_calendars_light(IN_date,InCalType,OutCalType){
-    // console.log(IN_date.format(),InCalType,OutCalType)
+    if (InCalType === OutCalType) return [IN_date.getFullYear(), IN_date.getMonth(), IN_date.getDate()]
     if (InCalType==calendar_type.Jalali){
         if (OutCalType==calendar_type.gegorian){
             return Jalali.JalaliToGregorian(IN_date)
@@ -134,46 +86,16 @@ function convert_calendars_light(IN_date,InCalType,OutCalType){
     }
 }
 
-function get_tool_tip(IN_date,InCalType){
-    if (InCalType==calendar_type.Jalali || InCalType==calendar_type.hijri){
-        return convertToPersianNumbers(IN_date[0].toString())+' '+IN_date[1].toString()+' '+convertToPersianNumbers(IN_date[2].toString())
-    }
-    else if (InCalType==calendar_type.gegorian){
-        return IN_date[0].toString()+' '+IN_date[1].toString()+' '+IN_date[2].toString()
-    }
-}
-function get_agenda_tool_tip(date,InCalType,isReturnDay=false){
-    
-    var myformat = ''
-    if (isReturnDay){
-        myformat = 'ddd D MMMM YYYY'
-    }
-    else{
-        myformat = 'D MMMM YYYY'
-    }
-    if (InCalType==calendar_type.Jalali || InCalType==calendar_type.hijri){
-        return convertToPersianNumbers(date.format(myformat))
-    }
-    else if (InCalType==calendar_type.gegorian){
-        return date.format(myformat)
-    } 
-    // IN_date[0].toString()+' '+IN_date[1].toString()+' '+convertToPersianNumbers(IN_date[2].toString()
-    
-    // if (InCalType==calendar_type.Jalali){
-    //     return convertToPersianNumbers(IN_date[0].toString())+' '+IN_date[1].toString()+' '+convertToPersianNumbers(IN_date[2].toString())
-    // }
-    // else if (InCalType==calendar_type.gegorian){
-    //     return IN_date[0].toString()+' '+IN_date[1].toString()+' '+IN_date[2].toString()
-    // } 
-    
-}
+function get_tool_tip(date, calType, language) { return getLocalNumber(date[0]+' '+get_month_name(calType, date[1], language)+' '+date[2], calType, language); }
 
-function calendar_formated_text(date, format,firstCalType,secondCalType) {
-    var second_date = convert_calendars_light(date,firstCalType,secondCalType)
-    var second_date = get_unvirsal_date(secondCalType,second_date)
-    var dateFormated = getLocalNumber(date.format('YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s'),firstCalType).split('|')
-    var secondDateFormated = getLocalNumber(second_date.format('YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s'),secondCalType).split('|')
-    var timeFormated = date.format('YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s').split('|')
+function get_agenda_tool_tip(date, calType, includeDay, language) { return format_date(calType, date, includeDay ? 'ddd D MMMM YYYY' : 'D MMMM YYYY', language); }
+
+function calendar_formated_text(date, format,firstCalType,secondCalType,firstLanguage,secondLanguage,appLanguage) {
+    var second_date = secondCalType === "NO" ? [date.getFullYear(),date.getMonth(),date.getDate()] : convert_calendars_light(date,firstCalType,secondCalType)
+    var second_date = get_unvirsal_date(secondCalType === "NO" ? firstCalType : secondCalType,second_date)
+    var dateFormated = format_date(firstCalType, date, 'YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s', firstLanguage).split('|')
+    var secondDateFormated = format_date(secondCalType, second_date, 'YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s', secondLanguage).split('|')
+    var timeFormated = format_date(firstCalType, date, 'YYYY|YY|MMMM|MMM|MM|M|ddd|dd|d|DD|D|HH|H|hh|h|mm|m|ss|s', appLanguage || 'en').split('|')
     const tokens = {
         'SYYYY': secondDateFormated[0],
         'YYYY': dateFormated[0],
@@ -208,44 +130,30 @@ function calendar_formated_text(date, format,firstCalType,secondCalType) {
     };
     
     var mystr =  format.replace(/SYYYY|YYYY|SYY|YY|SMMMM|MMMM|SMMM|MMM|SMM|MM|SM|M|Sddd|ddd|Sdd|dd|Sd|d|SDD|DD|SD|D|HH|H|hh|h|mm|m|ss|s/g, function(match) {
-        return tokens[match];
+        return secondCalType === 'NO' && match[0] === 'S' ? '' : tokens[match];
     });
     mystr = mystr.split(' ')
     // var mystr2 = mystr
     var mystr2 = ''
     for (let i = 0; i < mystr.length; i++) {
         if (mystr[i][0] == '*'){
-            mystr2 +='<strong style="font-size: 16px;">&#x2066;'+mystr[i].replace(/\*/g, "")+'&#x2069; </strong>'
+            mystr2 +='<strong style="font-size: 16px;">&#x2068;'+mystr[i].replace(/\*/g, "")+'&#x2069; </strong>'
             // is_bold = !is_bold
             // console.log(is_bold)
         }
         else{
-            mystr2 +='<span style="font-size: 14px;">&#x2066;'+mystr[i]+'&#x2069; </span>'
+            mystr2 +='<span style="font-size: 14px;">&#x2068;'+mystr[i]+'&#x2069; </span>'
         }
     }
-    return '<p dir="ltr">'+mystr2+'</p>'
+    return '<p dir="'+(appLanguage === 'fa' ? 'rtl' : 'ltr')+'">'+mystr2+'</p>'
     // return '<p dir="ltr" style="color:red;">'+mystr2+'</p>'
 }
 
-function getLocalNumber(instr,InCalType){
-    if(InCalType==calendar_type.Jalali || InCalType==calendar_type.hijri){
-        return convertToPersianNumbers(instr)
-    }
-    else if (InCalType==calendar_type.gegorian){
-        return instr
-    }
-}
+function getLocalNumber(value, calType, language) { return Locale.digits(value, resolve_language(calType, language)); }
 
-function isFarsiNumbers(InCalType){
-    if(InCalType==calendar_type.Jalali || InCalType==calendar_type.hijri){
-        return true
-    }
-    else{
-        return false
-    } 
-}
+function isFarsiNumbers(calType, language) { return resolve_language(calType, language) !== 'en'; }
 
-function get_month_events(InCalType,IN_Date,eventSources){
+function get_month_events(InCalType,IN_Date,eventSources,eventLanguage){
 
     const month_events = {};
     for (let i = 1; i <= 31; i++) {
@@ -253,7 +161,9 @@ function get_month_events(InCalType,IN_Date,eventSources){
     }
 
     for (let idx = 0; idx < eventSources.length; idx++) { // loop through all event sources
-        var eventSource = EventManager.get_events(eventSources[idx])
+        var sourceId = eventSources[idx]
+        var eventSource = EventManager.get_events(sourceId)
+        if (!eventSource) continue
 
         // must make new object from IN_Date so changes on it doesn not affect IN_Date outside of function
         var currntDate = get_unvirsal_date(InCalType,[IN_Date.getFullYear(),IN_Date.getMonth(),IN_Date.getDate()])
@@ -273,10 +183,10 @@ function get_month_events(InCalType,IN_Date,eventSources){
         for (let idx = 1; idx <= days_in_month; idx++) {
             var tmpevents = eventSource.events[currntDate.getMonth()][currntDate.getDate()] || []
             for (let key in tmpevents) {
-                var text = tmpevents[key][0]
+                var text = EventManager.translate(sourceId, tmpevents[key][0], eventLanguage)
                 var is_holiday = tmpevents[key][1]
                 var link = ''
-                var event_source = eventSource.name
+                var event_source = EventManager.translate(sourceId, eventSource.name, eventLanguage)
                 var event = {'text':text,'is_holiday':is_holiday,'event_source':event_source,'link':link}
                 month_events[idx].push(event);
             }
@@ -287,10 +197,10 @@ function get_month_events(InCalType,IN_Date,eventSources){
                     month_number_irregular_events = get_month_irregular_events(currntDate,eventSource.irregular_events[currntDate.getMonth()])
                 }
                 for (let irregular_event of month_number_irregular_events[currntDate.getDate()]){
-                    var text = irregular_event[0]
+                    var text = EventManager.translate(sourceId, irregular_event[0], eventLanguage)
                     var is_holiday = irregular_event[1]
                     var link = ''
-                    var event_source = eventSource.name
+                    var event_source = EventManager.translate(sourceId, eventSource.name, eventLanguage)
                     var event = {'text':text,'is_holiday':is_holiday,'event_source':event_source,'link':link}
                     month_events[idx].push(event);
                 }
@@ -390,3 +300,7 @@ function loadEvents2(eventSources){
 function loadhlolidays2(eventSources){
     return EventManager.loadhlolidays2(eventSources)
 }
+function calendar_library(type) { return type === 'JA' ? Jalali : type === 'GA' ? Hijri : Gregorian; }
+function supported_languages(type) { return calendar_library(type).supportedLanguages; }
+function resolve_language(type, language) { return calendar_library(type).resolveLanguage(language); }
+function format_date(type, date, pattern, language) { return calendar_library(type).localizedFormat(date, pattern, language); }

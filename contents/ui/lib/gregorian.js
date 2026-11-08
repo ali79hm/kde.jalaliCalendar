@@ -1,3 +1,4 @@
+.import "./Locale.js" as Locale
 function convert_month_names_to_fa(string){
     var names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     var names_replce = ["ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن", "جولای", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر"]
@@ -22,13 +23,18 @@ function month_names(lang='fa'){
 function week_days_names(lang='en',startOfWeek=6,short=false) {
     var names = []
     if (lang == 'fa'){
-        names =  ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه','شنبه']
+        names =  ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه']
     }
     else if (!short){
         names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday","Saturday"];
     }
     else{
         names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    }
+    if (short) {
+        if (lang === 'fa') names = ['۱شنبه', '۲شنبه', '۳شنبه', '۴شنبه', '۵شنبه', 'جمعه', 'شنبه'];
+        else if (lang === 'ar') names = ['أحد', 'اثن', 'ثلا', 'أرب', 'خمي', 'جمع', 'سبت'];
+        else names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     }
     return names.slice(startOfWeek).concat(names.slice(0, startOfWeek));
 }
@@ -145,4 +151,11 @@ class Gregorian {
             return formatDate(this.date,args)
         }
     }
+}
+var supportedLanguages = ["fa", "en"];
+var defaultLanguage = "en";
+function resolveLanguage(language) { return supportedLanguages.indexOf(language) >= 0 ? language : defaultLanguage; }
+function localizedFormat(date, pattern, language) {
+    language = resolveLanguage(language);
+    return Locale.format(date, pattern, language, month_names(language), week_days_names(language, 0));
 }
