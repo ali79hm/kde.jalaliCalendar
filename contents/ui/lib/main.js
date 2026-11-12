@@ -250,6 +250,66 @@ function get_month_irregular_events(date,irregular_events){
     return events
 }
 
+// Convert note markup to plain text without rendering HTML or loading resources.
+function plain_event_note(value) {
+    var text = String(value || '').replace(/\r\n?/g, '\n');
+    text = text.replace(/<!--[^]*?-->/g, '')
+        .replace(/<(script|style)\b[^>]*>[^]*?<\/\1\s*>/gi, '')
+        .replace(/<br\b[^>]*\/?\s*>/gi, '\n')
+        .replace(/<\/(?:p|div|h[1-6]|li|blockquote|pre|tr|ul|ol)\s*>/gi, '\n')
+        .replace(/<(?:p|div|h[1-6]|li|blockquote|pre|tr|ul|ol)\b[^>]*>/gi, function(match, offset, source) {
+            return offset > 0 && source.charAt(offset - 1) !== '\n' ? '\n' : '';
+        })
+        .replace(/<\/?[a-z][^>]*>/gi, '');
+    var entities = {amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+        bull: '•', ndash: '–', mdash: '—', hellip: '…', copy: '©', reg: '®'};
+    text = text.replace(/&(#x[0-9a-f]+|#[0-9]+|[a-z]+);/gi, function(match, entity) {
+        if (entity.charAt(0) !== '#') return entities[entity] !== undefined ? entities[entity] : match;
+        var number = entity.charAt(1).toLowerCase() === 'x' ? parseInt(entity.slice(2), 16) : parseInt(entity.slice(1), 10);
+        return number > 0 && number <= 0x10ffff && !(number >= 0xd800 && number <= 0xdfff)
+            ? String.fromCodePoint(number) : match;
+    });
+    return text.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+function google_event_details(ev) {
+    var start = ev.start || {}, end = ev.end || {};
+    var allDay = !!start.date && !start.dateTime;
+    function parse(value, dateOnly) {
+        if (!value) return null;
+        var parts = value.split('-');
+        var date = dateOnly ? new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])) : new Date(value);
+        return isNaN(date.getTime()) ? null : date;
+    }
+    function dateText(date) {
+        if (!date) return '';
+        var jalali = convert_calendars_light(date, 'GE', 'JA');
+        return jalali[0] + '/' + (jalali[1] + 1) + '/' + jalali[2] + ' (Jalali) / '
+            + date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' (Gregorian)';
+    }
+    function timeText(date) {
+        return date ? ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) : '';
+    }
+    var first = parse(start.dateTime || start.date, allDay);
+    var last = parse(end.dateTime || end.date, !!end.date && !end.dateTime);
+    if (allDay && last) last.setDate(last.getDate() - 1);
+    var date = dateText(first);
+    if (last && (!first || first.toDateString() !== last.toDateString()))
+        date += (date ? ' – ' : '') + dateText(last);
+    var meeting = ev.hangoutLink || '';
+    var entries = (ev.conferenceData || {}).entryPoints || [];
+    for (var i = 0; !meeting && i < entries.length; i++) {
+        if (entries[i].entryPointType === 'video') meeting = entries[i].uri || '';
+    }
+    return {
+        date: date, allDay: allDay,
+        startTime: allDay ? '' : timeText(first), endTime: allDay ? '' : timeText(last),
+        location: ev.location || '', description: ev.description || '',
+        recurring: !!ev.recurringEventId || !!(ev.recurrence && ev.recurrence.length),
+        source: 'Google Calendar', meetingLink: meeting
+    };
+}
+
 function get_month_google_events(InCalType, IN_Date){
     
     // need to convert
@@ -283,7 +343,8 @@ function get_month_google_events(InCalType, IN_Date){
                 text: ev.summary || "(no title)",
                 is_holiday: false,
                 event_source: "Google Calendar",
-                link: ev.htmlLink || ""
+                link: ev.htmlLink || "",
+                details: google_event_details(ev)
             });
         }
         return out;

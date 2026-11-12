@@ -1,6 +1,23 @@
 // Explicit language argument makes QML bindings update on selection changes.
 .import "./Locale.js" as Locale
 var persian = {
+  "Open event": "باز کردن رویداد",
+  "Join with Google Meet": "پیوستن با گوگل میت",
+  "Join meeting": "پیوستن به جلسه",
+  "Repeat": "تکرار",
+  "Recurring event": "رویداد تکرارشونده",
+  "Note": "یادداشت",
+  "Date": "تاریخ",
+  "Time": "زمان",
+  "All day": "تمام روز",
+  "Start": "شروع",
+  "End": "پایان",
+  "Location": "مکان",
+  "Description": "توضیحات",
+  "Calendar source": "منبع تقویم",
+  "Meeting link": "پیوند جلسه",
+  "Expand event details": "نمایش جزئیات رویداد",
+  "Collapse event details": "بستن جزئیات رویداد",
   "not set": "تنظیم نشده",
   "%1 day(s)": "%1 روز",
   "%1 hour(s)": "%1 ساعت",

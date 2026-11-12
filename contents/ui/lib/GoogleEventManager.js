@@ -101,7 +101,7 @@ function _eventsOnce(accessToken, calendarId, opts){
         timeMax: _iso8601(opts.timeMax),
         pageToken: opts.pageToken,
         q: opts.q,
-        fields: "items(id,summary,description,location,start,end,htmlLink,creator,organizer,hangoutLink,conferenceData),nextPageToken"
+        fields: "items(id,summary,description,location,start,end,htmlLink,creator,organizer,hangoutLink,conferenceData,recurringEventId,recurrence),nextPageToken"
     };
     var base = "https://www.googleapis.com/calendar/v3/calendars/";
     var url = base + encodeURIComponent(calendarId) + "/events?" + _encode(params);

@@ -18,6 +18,9 @@ PinchArea {
     property var firstCalType: root.firstCalType
     property var secondCalType: root.secondCalType
 
+    property int expandedEventIndex: -1
+    onMyagendaListChanged: expandedEventIndex = -1
+
     property var myagendaList: []
     // property var myagendaList:[['اربعین حسینی','','red','',CalendarBackend.get_unvirsal_date('Jalali',[1403,2,1])] ]
 
@@ -96,7 +99,7 @@ PinchArea {
         var color = is_holiday ? colors[1] : colors[0]
         var link = event['link']
         var sub_text = event['event_source']
-        return [text, sub_text, color, link]
+        return [text, sub_text, color, link, event.details || null]
     }
 
     function updateGoogleEvents(Date) {
@@ -304,7 +307,10 @@ PinchArea {
                         eventColor: modelData[2]
                         eventBackgroudColor: modelData[2]
                         eventSourceName: modelData[1] === 'Google Calendar' ? AppText.tr(plasmoid.configuration.language, 'Google Calendar') : modelData[1]
-                        eventLink: modelData[3]
+                        eventLink: modelData[3] || ""
+                        eventDetails: modelData[4] || null
+                        expanded: agendaView.expandedEventIndex === index
+                        onToggleRequested: agendaView.expandedEventIndex = expanded ? -1 : index
                     }
                 }
             }
