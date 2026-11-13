@@ -49,6 +49,9 @@
         </entry>
     </group>
     <group name="Google Calendar">
+        <entry name="googleReminderSound" type="String"><default>message-new-instant</default></entry>
+        <entry name="googleRemindersEnabled" type="Bool"><default>true</default></entry>
+        <entry name="googleReminderState" type="String"><default></default></entry>
         <entry name="latestClientId" type="String">
 			<default>431326325703-n0fk9t2cqp42ghdlbk4ejaujt87qvqli.apps.googleusercontent.com</default>
 		</entry>

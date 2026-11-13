@@ -310,7 +310,7 @@ function google_event_details(ev) {
     };
 }
 
-function get_month_google_events(InCalType, IN_Date){
+function get_month_google_events(InCalType, IN_Date, fetchMonth){
     
     // need to convert
     var currntDate = get_unvirsal_date(InCalType,[IN_Date.getFullYear(),IN_Date.getMonth(),1])
@@ -324,10 +324,9 @@ function get_month_google_events(InCalType, IN_Date){
 
     var out = {}; for (var d = 1; d <= daysInMonth; d++) out[d] = [];
 
-    return GoogleEventManager.fetchAllEventsFromConfig("primary", {
-        timeMin: start,
-        timeMax: end
-    }).then(function(items){
+    var request = fetchMonth ? fetchMonth(start, end)
+        : GoogleEventManager.fetchAllEventsFromConfig("primary", {timeMin: start, timeMax: end});
+    return request.then(function(items){
         for (var i = 0; i < items.length; i++){
             var ev = items[i];
             var s  = ev._start || (ev._startISO ? new Date(ev._startISO) : null);

@@ -18,6 +18,7 @@ PinchArea {
     property var firstCalType: root.firstCalType
     property var secondCalType: root.secondCalType
 
+    property int googleRequestSerial: 0
     property int expandedEventIndex: -1
     onMyagendaListChanged: expandedEventIndex = -1
 
@@ -78,6 +79,7 @@ PinchArea {
 
     Connections {
         target: root
+        function onGoogleEventsRefreshed() { updateGoogleEvents(agendaView.selectedDate) }
         function onFirstCalendarLanguageChanged() { setTitles() }
         function onSecondCalendarLanguageChanged() { setTitles() }
         function onEventLanguageChanged() { updateEvents(agendaView.selectedDate); getEvents() }
@@ -103,12 +105,14 @@ PinchArea {
     }
 
     function updateGoogleEvents(Date) {
-        console.log("updateGoogleEvents")
+        var requestSerial = ++googleRequestSerial
         setConnectionStatus("loading")
 
         CalendarBackend.get_month_google_events(
-            root.firstCalType, Date
+            root.firstCalType, Date,
+            function(start, end) { return root.googleMonthEvents(start, end) }
         ).then(function(googleEvents) {
+            if (requestSerial !== googleRequestSerial) return
 
             month_google_events_cache = {}
             for (let i = 1; i <= 31; i++) {
@@ -124,6 +128,7 @@ PinchArea {
             getEvents() // This time includes Google events
             setConnectionStatus("")
         }).catch(function(err) {
+            if (requestSerial !== googleRequestSerial) return
             setConnectionStatus("disconnected")
             console.log("Google event fetch failed:", err)
         })

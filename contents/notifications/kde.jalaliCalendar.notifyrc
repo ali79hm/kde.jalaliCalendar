@@ -1,0 +1,10 @@
+[Global]
+IconName=view-calendar
+Name=Jalali Calendar
+Comment=Google Calendar event reminders
+
+[Event/eventReminder]
+Name=Event reminder
+Comment=A Google Calendar event is starting soon
+Action=Popup|Sound
+Sound=message-new-instant

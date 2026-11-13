@@ -4,7 +4,7 @@ function _nowSec(){ return Math.floor(Date.now()/1000); }
 function _iso8601(d){
     if(!d) return null;
     if (typeof d==="string") return d;   // assume already RFC3339
-    return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString();
+    return d.toISOString();
 }
 function _encode(params){
     var out=[]; for (var k in params){ var v=params[k];
@@ -49,7 +49,16 @@ function _isExpiredOrNear(){
     return !_token() || (_nowSec() >= (_expiry() - 10));
 }
 
+var _refreshPromise = null;
 function _refreshToken(){
+    if (_refreshPromise) return _refreshPromise;
+    _refreshPromise = _refreshTokenOnce().then(function(value) {
+        _refreshPromise = null; return value;
+    }, function(error) { _refreshPromise = null; throw error; });
+    return _refreshPromise;
+}
+
+function _refreshTokenOnce(){
     var refreshToken = plasmoid.configuration.refreshToken || "";
     if (!refreshToken) return Promise.reject(new Error("No refresh token; re-authorize once."));
 
@@ -101,7 +110,7 @@ function _eventsOnce(accessToken, calendarId, opts){
         timeMax: _iso8601(opts.timeMax),
         pageToken: opts.pageToken,
         q: opts.q,
-        fields: "items(id,summary,description,location,start,end,htmlLink,creator,organizer,hangoutLink,conferenceData,recurringEventId,recurrence),nextPageToken"
+        fields: "items(id,summary,description,location,start,end,htmlLink,creator,organizer,hangoutLink,conferenceData,recurringEventId,recurrence,status,attendees(self,responseStatus),reminders),nextPageToken"
     };
     var base = "https://www.googleapis.com/calendar/v3/calendars/";
     var url = base + encodeURIComponent(calendarId) + "/events?" + _encode(params);
@@ -121,6 +130,13 @@ function fetchEventsPage(calendarId, opts){
     });
 }
 
+function _parseEventDate(value) {
+    if (value.dateTime) return new Date(value.dateTime);
+    if (!value.date) return null;
+    var parts = value.date.split('-');
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+}
+
 function fetchAllEvents(calendarId, opts){
     var accum = []; opts = opts || {};
     function loop(pageToken){
@@ -131,8 +147,8 @@ function fetchAllEvents(calendarId, opts){
                     var ev=res.items[i], s=(ev.start||{}), e=(ev.end||{});
                     ev._startISO = s.dateTime || s.date || null;
                     ev._endISO   = e.dateTime || e.date || null;
-                    try{ ev._start = ev._startISO ? new Date(ev._startISO) : null;
-                         ev._end   = ev._endISO ? new Date(ev._endISO) : null; } catch(e2){}
+                    try{ ev._start = _parseEventDate(s);
+                         ev._end = _parseEventDate(e); } catch(e2){}
                     accum.push(ev);
                 }
             }
@@ -159,3 +175,16 @@ var GoogleEventManager = {
     fetchAllEventsFromConfig: fetchAllEventsFromConfig,
     manualRefreshToken: manualRefreshToken
 };
+
+// Includes user-specific inherited reminder settings, unlike calendars.get.
+function fetchCalendarSettings(calendarId) {
+    function request(token) {
+        return _xhr("GET", "https://www.googleapis.com/calendar/v3/users/me/calendarList/"
+            + encodeURIComponent(calendarId || "primary") + "?fields=id,timeZone,defaultReminders",
+            {"Authorization": "Bearer " + token}, null, 30000);
+    }
+    return _ensureUsableToken().then(request).catch(function(error) {
+        if (error._status === 401) return _refreshToken().then(request);
+        throw error;
+    });
+}

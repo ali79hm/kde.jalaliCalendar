@@ -11,6 +11,23 @@ import "lib/main.js" as CalendarBackend
 PlasmoidItem{
     id:root
 
+    ReminderSound { sound: plasmoid.configuration.googleReminderSound || "message-new-instant" }
+
+    GoogleCalendarService {
+        id: googleCalendarService
+        configuration: plasmoid.configuration
+        onReminderDue: function(reminder) {
+            var notification = eventNotificationComponent.createObject(root,
+                {reminder: reminder, language: root.appLanguage})
+            notification.sendEvent()
+        }
+        onEventsRefreshed: root.googleEventsRefreshed()
+    }
+    Component { id: eventNotificationComponent; EventNotification {} }
+    signal googleEventsRefreshed()
+    function googleMonthEvents(start, end) { return googleCalendarService.monthEvents(start, end) }
+    onExpandedChanged: if (expanded) googleEventsRefreshed()
+
     // Layout.minimumWidth: 200
     // Layout.minimumHeight: 200
 
@@ -88,7 +105,10 @@ PlasmoidItem{
        repeat: true
        running: true
        triggeredOnStart: true
-       onTriggered: today = CalendarBackend.get_unvirsal_date(firstCalType)
+       onTriggered: {
+           today = CalendarBackend.get_unvirsal_date(firstCalType)
+           googleCalendarService.clockTick(Date.now())
+       }
    }
     // Component.onCompleted : {
     //     console.log("===============================")
