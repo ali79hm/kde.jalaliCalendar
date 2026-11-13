@@ -1,6 +1,6 @@
 const all_events = {
     // "event_sample": "event sample",
-    "persian_event": "persian calendar events",
+    "persian_event": "Iranian national events",
     "Gregorian_Calendar_events": "Gregorian Calendar Events",
     "Islamic_events": "Islamic events",
     // "Islamic_events_1446":"Islamic events 1446(1403-1404)",
@@ -9,7 +9,7 @@ const all_events = {
 
 const all_holidays = {
     // "event_sample": "event sample",
-    "persian_event": "persian calendar events",
+    "persian_event": "Iranian national events",
     "Gregorian_Calendar_events": "Gregorian Calendar Events",
     "Islamic_events": "Islamic events",
     // "AncientIran_event": "Ancient persian events",
@@ -42,7 +42,7 @@ const event_sample = {
 const persian_event = {
     sourceLanguage: "fa",
     translationFiles: {fa: "translations/events/persian_event.fa.js", en: "translations/events/persian_event.en.js"},
-    name: "persian events",
+    name: "Iranian national events",
     type: "Jalali",
     events: {
         0: {

@@ -30,7 +30,7 @@ ConfigModel {
         source: "config/configEvents.qml"
     }
     ConfigCategory {
-		name: AppText.tr(plasmoid.configuration.language, "Google Events")
+		name: AppText.tr(plasmoid.configuration.language, "Google Account")
         icon: "configure"
 		// icon: plasmoid.file("", "icons/Google_Calendar_2020.svg")
 		source: "config/ConfigGoogleCalendar.qml"

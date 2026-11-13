@@ -1,4 +1,4 @@
 // Original event titles map to translated display text.
 var translations = {
-  "persian events": "رویدادهای فارسی"
+  "Iranian national events": "رویدادهای ملی ایران"
 };

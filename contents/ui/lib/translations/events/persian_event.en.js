@@ -288,5 +288,5 @@ var translations = {
   "بمباران شیمیایی حلبچه به دست ارتش بعث عراق (۱۳۶۶ ه .ش)": "Chemical bombing of Halabja by Iraq's Baathist army (1366 SH)",
   "روز ملی شدن صنعت نفت ایران (۱۳۲۹ ه .ش)": "Nationalization of Iran's Oil Industry Day (1329 SH)",
   "چهارشنبه‌سوری (آخرین سه‌شنبهٔ سال)": "Chaharshanbe Suri (last Tuesday night of the year)",
-  "persian events": "Persian events"
+  "Iranian national events": "Iranian national events"
 };

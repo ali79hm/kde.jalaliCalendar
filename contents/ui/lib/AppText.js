@@ -1,6 +1,20 @@
 // Explicit language argument makes QML bindings update on selection changes.
 .import "./Locale.js" as Locale
 var persian = {
+  "Main calendar": "تقویم اصلی",
+  "Calendar type:": "نوع تقویم:",
+  "Calendar language:": "زبان تقویم:",
+  "Panel Clock Format": "قالب ساعت پنل",
+  "Google Account": "حساب گوگل",
+  "Email:": "ایمیل:",
+  "Connected to Google": "متصل به گوگل",
+  "Calendars language": "زبان تقویم‌ها",
+  "Events language": "زبان رویدادها",
+  "First calendar": "تقویم اول",
+  "Second calendar": "تقویم دوم",
+  "Clock and date format": "قالب ساعت و تاریخ",
+  "Event pane": "پنل رویدادها",
+  "Popup size": "اندازهٔ پنجره",
   "Instant message (default)": "پیام فوری (پیش‌فرض)",
   "Event selection": "انتخاب رویدادها",
   "Notifications": "اعلان‌ها",
@@ -136,8 +150,9 @@ var persian = {
   "Save Order": "ذخیرهٔ ترتیب",
   "(no title)": "بدون عنوان",
   "expired": "منقضی شده",
-  "persian calendar events": "رویدادهای تقویم فارسی",
-  "persian events": "رویدادهای فارسی",
+  "Iranian national events": "رویدادهای ملی ایران",
+  "persian calendar events": "رویدادهای ملی ایران",
+  "persian events": "رویدادهای ملی ایران",
   "Gregorian Calendar Events": "رویدادهای تقویم میلادی",
   "Islamic events": "رویدادهای اسلامی",
   "Ancient persian events": "رویدادهای ایران باستان"

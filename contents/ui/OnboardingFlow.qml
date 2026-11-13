@@ -135,7 +135,7 @@ Kirigami.Page {
 
                 Loader {
                     Layout.fillWidth: true
-                    source: "config/configLanguage.qml"
+                    source: "onboarding/configLanguage.qml"
                     onLoaded: { item.live = true; item.appOnly = true }
                 }
             }
@@ -172,7 +172,7 @@ Kirigami.Page {
                         // independently of its own right-to-left field layout.
                         width: Math.min(calendarSettingsScroll.availableWidth, Math.max(implicitWidth, Kirigami.Units.gridUnit * 24))
                         x: plasmoid.configuration.language === "fa" ? calendarSettingsScroll.availableWidth - width : 0
-                        source: Qt.resolvedUrl("config/configCalendar.qml")
+                        source: Qt.resolvedUrl("onboarding/configCalendar.qml")
 
                         Component.onCompleted: {
                             onboardingPage.currentConfigLoader = calendarConfigLoader
@@ -213,7 +213,7 @@ Kirigami.Page {
                         // independently of its own right-to-left field layout.
                         width: Math.min(eventsSettingsScroll.availableWidth, Math.max(implicitWidth, Kirigami.Units.gridUnit * 24))
                         x: plasmoid.configuration.language === "fa" ? eventsSettingsScroll.availableWidth - width : 0
-                        source: Qt.resolvedUrl("config/configEvents.qml")
+                        source: Qt.resolvedUrl("onboarding/configEvents.qml")
 
                         Component.onCompleted: {
                             onboardingPage.eventsConfigLoaderRef = eventsConfigLoader
@@ -252,7 +252,7 @@ Kirigami.Page {
 
                     Loader {
                         width: parent.width
-                        source: Qt.resolvedUrl("config/ConfigGoogleCalendar.qml")
+                        source: Qt.resolvedUrl("onboarding/ConfigGoogleCalendar.qml")
                     }
                 }
             }
