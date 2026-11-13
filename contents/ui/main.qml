@@ -21,12 +21,13 @@ PlasmoidItem{
                 {reminder: reminder, language: root.appLanguage})
             notification.sendEvent()
         }
-        onEventsRefreshed: root.googleEventsRefreshed()
+        onRefreshRequested: root.googleEventsRefreshed()
     }
     Component { id: eventNotificationComponent; EventNotification {} }
     signal googleEventsRefreshed()
-    function googleMonthEvents(start, end) { return googleCalendarService.monthEvents(start, end) }
-    onExpandedChanged: if (expanded) googleEventsRefreshed()
+    function googleMonthEvents(start, end, force) { return googleCalendarService.monthEvents(start, end, force) }
+    function refreshGoogleEvents() { googleCalendarService.refreshAll() }
+    onExpandedChanged: function(expanded) { if (expanded) refreshGoogleEvents() }
 
     // Layout.minimumWidth: 200
     // Layout.minimumHeight: 200

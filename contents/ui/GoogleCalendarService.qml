@@ -26,6 +26,16 @@ Item {
     ReminderTimeZones { id: timeZones }
     signal reminderDue(var reminder)
     signal eventsRefreshed()
+    signal refreshRequested()
+    property double lastAgendaAttempt: 0
+    property double retryDelay: Logic.minute
+
+    function refreshAll() {
+        if (!authorized) return
+        lastAgendaAttempt = Date.now()
+        refreshRequested()
+        refresh()
+    }
 
     function save() {
         delivered = Logic.pruneDelivered(delivered, Date.now())
@@ -60,20 +70,26 @@ Item {
         save()
     }
 
-    function monthEvents(start, end) {
+    function monthEvents(start, end, force) {
         if (!authorized) return Promise.reject(new Error('Google Calendar is not connected'))
         var key = start.toISOString() + '/' + end.toISOString()
         var cached = Logic.getMonth(store, key, Date.now())
-        if (cached !== null) return Promise.resolve(cached)
+        if (!force && cached !== null) return Promise.resolve(cached)
         if (pendingMonths[key]) return pendingMonths[key]
         var requestGeneration = generation
         var pending = fetchEvents({timeMin: start, timeMax: end}).then(function(events) {
             if (requestGeneration !== generation) throw new Error('Google connection changed')
             Logic.putMonth(store, key, events, Date.now())
+            lastError = ""
+            retryDelay = Logic.minute
             delete pendingMonths[key]
             return events
         }, function(error) {
-            if (requestGeneration === generation) delete pendingMonths[key]
+            if (requestGeneration === generation) {
+                delete pendingMonths[key]
+                lastError = String(error.message || error)
+                retryDelay = Math.min(10 * Logic.minute, retryDelay * 2)
+            }
             throw error
         })
         pendingMonths[key] = pending
@@ -150,24 +166,21 @@ Item {
     function clockTick(now) {
         var gap = now - lastClock
         lastClock = now
-        if (!enabled) return
-        if (gap > 60000 || gap < 0 || now - lastRefresh >= 15 * Logic.minute) {
-            // Retry failed refreshes at most once a minute; normal refresh is every 15 minutes.
-            if (!refreshing && (gap < 0 || now - lastAttempt >= Logic.minute)) {
-                lastAttempt = now
-                refresh()
-            }
+        if (authorized && (gap > 60000 || gap < 0 ||
+                now - lastAgendaAttempt >= (lastError ? retryDelay : 10 * Logic.minute))) {
+            refreshAll()
         }
-        if (gap > 60000 || gap < 0) processDue()
+        if (enabled && (gap > 60000 || gap < 0)) processDue()
     }
+
     property double lastAttempt: 0
 
     Timer { id: alarm; repeat: false; onTriggered: service.processDue() }
     Timer {
-        interval: 15 * 60000
+        interval: 10 * 60000
         repeat: true
-        running: service.enabled
-        onTriggered: { service.lastAttempt = Date.now(); service.refresh() }
+        running: service.authorized
+        onTriggered: service.refreshAll()
     }
     onRefreshCredentialChanged: {
         if (!initialized) return

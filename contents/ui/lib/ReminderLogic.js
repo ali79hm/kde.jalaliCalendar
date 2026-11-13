@@ -96,7 +96,7 @@ function putMonth(store, key, events, now) {
 }
 function getMonth(store, key, now) {
     var index = store.months.findIndex(function(month) { return month.key === key; });
-    if (index < 0 || now - store.months[index].fetched >= 15 * minute) return null;
+    if (index < 0 || now - store.months[index].fetched >= 10 * minute) return null;
     var month = store.months.splice(index, 1)[0];
     store.months.push(month);
     return month.ids.map(function(id) { return store.events[id]; });

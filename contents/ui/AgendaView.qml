@@ -35,6 +35,7 @@ PinchArea {
 
     // Supported values: "disconnected", "loading", or "" to hide the row.
     property string googleConnectionState: ""
+    property double lastGoogleSync: 0
 
     Component.onCompleted: {
         setTitles()
@@ -79,7 +80,7 @@ PinchArea {
 
     Connections {
         target: root
-        function onGoogleEventsRefreshed() { updateGoogleEvents(agendaView.selectedDate) }
+        function onGoogleEventsRefreshed() { updateGoogleEvents(agendaView.selectedDate, true) }
         function onFirstCalendarLanguageChanged() { setTitles() }
         function onSecondCalendarLanguageChanged() { setTitles() }
         function onEventLanguageChanged() { updateEvents(agendaView.selectedDate); getEvents() }
@@ -104,13 +105,13 @@ PinchArea {
         return [text, sub_text, color, link, event.details || null]
     }
 
-    function updateGoogleEvents(Date) {
+    function updateGoogleEvents(eventDate, force) {
         var requestSerial = ++googleRequestSerial
         setConnectionStatus("loading")
 
         CalendarBackend.get_month_google_events(
-            root.firstCalType, Date,
-            function(start, end) { return root.googleMonthEvents(start, end) }
+            root.firstCalType, eventDate,
+            function(start, end) { return root.googleMonthEvents(start, end, force) }
         ).then(function(googleEvents) {
             if (requestSerial !== googleRequestSerial) return
 
@@ -125,6 +126,7 @@ PinchArea {
                 }
             }
 
+            lastGoogleSync = Date.now()
             getEvents() // This time includes Google events
             setConnectionStatus("")
         }).catch(function(err) {
@@ -134,11 +136,11 @@ PinchArea {
         })
     }
 
-    function updateEvents(Date) {
+    function updateEvents(eventDate) {
         console.log("updateEvents")
         var month_events = CalendarBackend.get_month_events(
             root.firstCalType,
-            Date,
+            eventDate,
             root.eventsTypes, root.eventLanguage
         )
 
@@ -153,7 +155,7 @@ PinchArea {
                 month_events_cache[Number(key)].push(event)
             }
         }
-        month_events_cache_index = Date.getFullYear() * 100 + Date.getMonth()
+        month_events_cache_index = eventDate.getFullYear() * 100 + eventDate.getMonth()
     }
 
     function getEvents() {
@@ -204,6 +206,7 @@ PinchArea {
             top: seperatorLine.bottom
             bottom: parent.bottom
             margins: 5
+            topMargin: 0
             bottomMargin : 10
         }
 
@@ -251,54 +254,60 @@ PinchArea {
             Column {
                 id: contentColumn
                 width: flick.width
-                spacing: 5
+                spacing: 0
                 height: implicitHeight   // ensure height follows children
 
                 Item {
                     id: googleConnectionStatus
 
-                    readonly property string tooltipText: agendaView.googleConnectionState === "loading"
-                        ? AppText.tr(plasmoid.configuration.language, "Loading Google Calendar events")
-                        : AppText.tr(plasmoid.configuration.language, "Google Calendar unavailable")
+                    readonly property string tooltipText: AppText.tr(plasmoid.configuration.language,
+                        agendaView.googleConnectionState === "loading" ? "Refreshing"
+                            : agendaView.googleConnectionState === "disconnected" ? "Not connected" : "Connected")
+                        + "\n" + AppText.tr(plasmoid.configuration.language, "Click to refresh")
+                        + "\n" + AppText.tr(plasmoid.configuration.language, "Last refresh") + ": "
+                        + (lastGoogleSync ? Qt.formatTime(new Date(lastGoogleSync), "HH:mm")
+                            : AppText.tr(plasmoid.configuration.language, "Never"))
 
                     width: contentColumn.width
-                    height: visible ? 18 : 0
-                    visible: agendaView.googleConnectionState !== ""
+                    height: visible ? connectionButton.height : 0
+                    visible: googleCalendarService.authorized
 
-                    Kirigami.Icon {
-                        id: connectionIcon
+                    PlasmaComponents3.ToolButton {
+                        id: connectionButton
+                        anchors.right: parent.right
+                        width: 20
+                        height: 20
+                        implicitWidth: 20
+                        implicitHeight: 20
+                        padding: 0
+                        topInset: 0
+                        bottomInset: 0
+                        leftInset: 0
+                        rightInset: 0
+                        onClicked: root.refreshGoogleEvents()
 
-                        anchors {
-                            right: parent.right
-                            rightMargin: Kirigami.Units.smallSpacing
-                            verticalCenter: parent.verticalCenter
+                        contentItem: Image {
+                            width: 20
+                            height: 20
+                            sourceSize.width: 20
+                            sourceSize.height: 20
+                            fillMode: Image.PreserveAspectFit
+                            source: agendaView.googleConnectionState === "loading"
+                                ? Qt.resolvedUrl("icons/view-refresh.svg")
+                                : agendaView.googleConnectionState === "disconnected"
+                                    ? Qt.resolvedUrl("icons/notconnected.svg") : Qt.resolvedUrl("icons/connected.svg")
+                            RotationAnimator on rotation {
+                                from: 0
+                                to: 360
+                                duration: 1200
+                                loops: Animation.Infinite
+                                running: agendaView.googleConnectionState === "loading"
+                                onRunningChanged: if (!running) connectionButton.contentItem.rotation = 0
+                            }
                         }
-                        width: 16
-                        height: 16
-                        source: agendaView.googleConnectionState === "loading"
-                            ? "view-refresh"
-                            : "network-disconnect"
-
-                        RotationAnimator on rotation {
-                            from: 0
-                            to: 360
-                            duration: 1200
-                            loops: Animation.Infinite
-                            running: agendaView.googleConnectionState === "loading"
-                        }
-
-                        MouseArea {
-                            id: connectionHoverArea
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            acceptedButtons: Qt.NoButton
-
-                            ToolTip.delay: Kirigami.Units.toolTipDelay
-                            ToolTip.text: googleConnectionStatus.tooltipText
-                            ToolTip.visible: containsMouse
-                        }
-
+                        ToolTip.delay: Kirigami.Units.toolTipDelay
+                        ToolTip.text: googleConnectionStatus.tooltipText
+                        ToolTip.visible: hovered
                         Accessible.name: googleConnectionStatus.tooltipText
                     }
                 }
